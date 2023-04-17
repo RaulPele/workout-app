@@ -9,6 +9,6 @@ import UIKit
 
 protocol Coordinator: AnyObject {
     
-    var rootViewController: UIViewController? { get }
+    var rootViewController: UIViewController? { get } //TODO: do we need navigation controller here?
     func start(options connectionOptions: UIScene.ConnectionOptions?)
 }

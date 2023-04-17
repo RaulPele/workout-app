@@ -7,19 +7,40 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = DE3353E429E1DCF6002D4891 /* Introspect */; };
+		DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */; };
+		DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E929E97FBF002D4891 /* AuthenticationService.swift */; };
+		DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */; };
+		DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C529D8936200DFA6E4 /* RoundedButton.swift */; };
+		DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */; };
+		DEC29D6729E1909C0039B2C8 /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6629E1909C0039B2C8 /* RoundedTextField.swift */; };
+		DEC29D6929E19B220039B2C8 /* Previews + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */; };
+		DEC29D6C29E1C9BE0039B2C8 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6B29E1C9BE0039B2C8 /* ActivityIndicator.swift */; };
+		DEC29D7129E1CABE0039B2C8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6E29E1CABE0039B2C8 /* LoginViewController.swift */; };
+		DEC29D7229E1CABE0039B2C8 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6F29E1CABE0039B2C8 /* LoginView.swift */; };
+		DEC29D7329E1CABE0039B2C8 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D7029E1CABE0039B2C8 /* LoginViewModel.swift */; };
 		DEDA4AA929CF2125000AFBBF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA4AA829CF2125000AFBBF /* AppDelegate.swift */; };
 		DEDA4AAB29CF2125000AFBBF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA4AAA29CF2125000AFBBF /* SceneDelegate.swift */; };
-		DEDA4AAD29CF2125000AFBBF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA4AAC29CF2125000AFBBF /* ViewController.swift */; };
 		DEDA4AB229CF2127000AFBBF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEDA4AB129CF2127000AFBBF /* Assets.xcassets */; };
 		DEDA4AB529CF2127000AFBBF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEDA4AB329CF2127000AFBBF /* LaunchScreen.storyboard */; };
 		DEDA4ABD29CF5E2A000AFBBF /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationCoordinator.swift; sourceTree = "<group>"; };
+		DE3353E929E97FBF002D4891 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
+		DEA431C529D8936200DFA6E4 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
+		DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
+		DEC29D6629E1909C0039B2C8 /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
+		DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Previews + Extensions.swift"; sourceTree = "<group>"; };
+		DEC29D6B29E1C9BE0039B2C8 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
+		DEC29D6E29E1CABE0039B2C8 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		DEC29D6F29E1CABE0039B2C8 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		DEC29D7029E1CABE0039B2C8 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		DEDA4AA529CF2125000AFBBF /* WorkoutApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkoutApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEDA4AA829CF2125000AFBBF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DEDA4AAA29CF2125000AFBBF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		DEDA4AAC29CF2125000AFBBF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DEDA4AB129CF2127000AFBBF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DEDA4AB429CF2127000AFBBF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DEDA4AB629CF2127000AFBBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -31,12 +52,65 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DE3353E829E97F8D002D4891 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				DEC29D6E29E1CABE0039B2C8 /* LoginViewController.swift */,
+				DEC29D6F29E1CABE0039B2C8 /* LoginView.swift */,
+				DEC29D7029E1CABE0039B2C8 /* LoginViewModel.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		DEA431C329D8932900DFA6E4 /* ButtonStyles */ = {
+			isa = PBXGroup;
+			children = (
+				DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */,
+			);
+			path = ButtonStyles;
+			sourceTree = "<group>";
+		};
+		DEA431C429D8933B00DFA6E4 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				DEA431C329D8932900DFA6E4 /* ButtonStyles */,
+				DEA431C529D8936200DFA6E4 /* RoundedButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		DEC29D6429E1905F0039B2C8 /* InputFields */ = {
+			isa = PBXGroup;
+			children = (
+				DEC29D6529E190800039B2C8 /* TextField */,
+			);
+			path = InputFields;
+			sourceTree = "<group>";
+		};
+		DEC29D6529E190800039B2C8 /* TextField */ = {
+			isa = PBXGroup;
+			children = (
+				DEC29D6629E1909C0039B2C8 /* RoundedTextField.swift */,
+			);
+			path = TextField;
+			sourceTree = "<group>";
+		};
+		DEC29D6D29E1CA490039B2C8 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				DE3353E829E97F8D002D4891 /* Login */,
+				DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
 		DEDA4A9C29CF2125000AFBBF = {
 			isa = PBXGroup;
 			children = (
@@ -63,7 +137,6 @@
 				DEDA4ABF29CF611B000AFBBF /* Reusables */,
 				DEDA4AA829CF2125000AFBBF /* AppDelegate.swift */,
 				DEDA4AAA29CF2125000AFBBF /* SceneDelegate.swift */,
-				DEDA4AAC29CF2125000AFBBF /* ViewController.swift */,
 				DEDA4AB129CF2127000AFBBF /* Assets.xcassets */,
 				DEDA4AB329CF2127000AFBBF /* LaunchScreen.storyboard */,
 				DEDA4AB629CF2127000AFBBF /* Info.plist */,
@@ -74,6 +147,8 @@
 		DEDA4ABE29CF6110000AFBBF /* Flows */ = {
 			isa = PBXGroup;
 			children = (
+				DEC29D6D29E1CA490039B2C8 /* Authentication */,
+				DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */,
 			);
 			path = Flows;
 			sourceTree = "<group>";
@@ -81,6 +156,9 @@
 		DEDA4ABF29CF611B000AFBBF /* Reusables */ = {
 			isa = PBXGroup;
 			children = (
+				DEC29D6429E1905F0039B2C8 /* InputFields */,
+				DEA431C429D8933B00DFA6E4 /* Buttons */,
+				DEC29D6B29E1C9BE0039B2C8 /* ActivityIndicator.swift */,
 			);
 			path = Reusables;
 			sourceTree = "<group>";
@@ -89,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */,
+				DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -96,6 +175,7 @@
 		DEDA4AC129CF6133000AFBBF /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				DE3353E929E97FBF002D4891 /* AuthenticationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -123,6 +203,9 @@
 			dependencies = (
 			);
 			name = WorkoutApp;
+			packageProductDependencies = (
+				DE3353E429E1DCF6002D4891 /* Introspect */,
+			);
 			productName = WorkoutApp;
 			productReference = DEDA4AA529CF2125000AFBBF /* WorkoutApp.app */;
 			productType = "com.apple.product-type.application";
@@ -151,6 +234,9 @@
 				Base,
 			);
 			mainGroup = DEDA4A9C29CF2125000AFBBF;
+			packageReferences = (
+				DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+			);
 			productRefGroup = DEDA4AA629CF2125000AFBBF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -178,9 +264,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEDA4ABD29CF5E2A000AFBBF /* Coordinator.swift in Sources */,
-				DEDA4AAD29CF2125000AFBBF /* ViewController.swift in Sources */,
+				DEC29D6929E19B220039B2C8 /* Previews + Extensions.swift in Sources */,
+				DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */,
+				DEC29D6729E1909C0039B2C8 /* RoundedTextField.swift in Sources */,
+				DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */,
+				DEC29D7229E1CABE0039B2C8 /* LoginView.swift in Sources */,
+				DEC29D6C29E1C9BE0039B2C8 /* ActivityIndicator.swift in Sources */,
+				DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */,
+				DEC29D7329E1CABE0039B2C8 /* LoginViewModel.swift in Sources */,
 				DEDA4AA929CF2125000AFBBF /* AppDelegate.swift in Sources */,
+				DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */,
 				DEDA4AAB29CF2125000AFBBF /* SceneDelegate.swift in Sources */,
+				DEC29D7129E1CABE0039B2C8 /* LoginViewController.swift in Sources */,
+				DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +484,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DE3353E429E1DCF6002D4891 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DEDA4A9D29CF2125000AFBBF /* Project object */;
 }
