@@ -1,15 +1,13 @@
 //
-// LoginView.swift
-// WorkoutApp
+//  AccountVerificationView.swift
+//  WorkoutApp
 //
-// Created by Raul Pele on 08.04.2023.
-//
+//  Created by Raul Pele on 19.04.2023.
 //
 
-import Foundation
 import SwiftUI
 
-struct Login {
+struct AccountVerification {
     
     struct ContentView: View {
         
@@ -25,11 +23,6 @@ struct Login {
                                      placeHolderText: "Enter your email...",
                                      keyboardType: .emailAddress,
                                      textContentType: .emailAddress)
-                    RoundedTextField(text: $viewModel.password,
-                                     placeHolderText: "Password",
-                                     textContentType: .password)
-                    
-                    
                     
                     
                     Buttons.Filled(title: "Continue") {
@@ -38,20 +31,16 @@ struct Login {
                 }
                 .padding(.horizontal, 24)
             }
-            .onAppear {
-                viewModel.testAPI()
-            }
-            
         }
     }
 }
 
 #if DEBUG
-struct Login_Previews: PreviewProvider {
+struct AccountVerification_Previews: PreviewProvider {
     
     static var previews: some View {
         ForEach(previewDevices) { device in
-            Login.ContentView(viewModel: .init(authenticationService: MockedAuthenticationService()))
+            AccountVerification.ContentView(viewModel: .init(authenticationService: MockedAuthenticationService()))
                 .previewDevice(device)
                 .previewDisplayName(device.rawValue)
         }
