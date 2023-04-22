@@ -15,6 +15,12 @@ class RootCoordinator: Coordinator {
     private let navigationController: UINavigationController = .init()
     private var authenticationCoordinator: AuthenticationCoordinator?
     
+    private let dependencyContainer: DependencyContainer = MockedDependencyContainer()
+    
+    init() {
+        navigationController.navigationBar.isHidden = true
+    }
+    
     var rootViewController: UIViewController? {
        return  navigationController
     }
@@ -26,9 +32,9 @@ class RootCoordinator: Coordinator {
     }
     
     private func showAuthenticationFlow() {
-        authenticationCoordinator = .init(navigationController: navigationController)
+        authenticationCoordinator = .init(navigationController: navigationController,
+                                          authenticationService: dependencyContainer.authenticationService)
         authenticationCoordinator?.start(options: nil)
-
     }
     
 }

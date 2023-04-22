@@ -10,9 +10,18 @@
 		DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = DE3353E429E1DCF6002D4891 /* Introspect */; };
 		DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */; };
 		DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E929E97FBF002D4891 /* AuthenticationService.swift */; };
+		DE3353ED29ED8AAD002D4891 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */; };
+		DE3353F229ED9302002D4891 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353F129ED9302002D4891 /* HTTPClient.swift */; };
+		DE3353F529F07BDE002D4891 /* AccountVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353F429F07BDE002D4891 /* AccountVerificationView.swift */; };
+		DE3353F729F07C0C002D4891 /* AccountVerificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353F629F07C0C002D4891 /* AccountVerificationViewModel.swift */; };
+		DE3353F929F07C6D002D4891 /* AccountVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353F829F07C6D002D4891 /* AccountVerificationViewController.swift */; };
+		DE3353FC29F07F3D002D4891 /* AccountStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353FB29F07F3D002D4891 /* AccountStatus.swift */; };
+		DE3353FF29F083E1002D4891 /* MockedAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353FE29F083E1002D4891 /* MockedAuthenticationService.swift */; };
+		DE33540129F08420002D4891 /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE33540029F08420002D4891 /* DependencyContainer.swift */; };
 		DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */; };
 		DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C529D8936200DFA6E4 /* RoundedButton.swift */; };
 		DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */; };
+		DEBBEC6A29F4432400A87094 /* HTTPClientConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBBEC6929F4432400A87094 /* HTTPClientConfiguration.swift */; };
 		DEC29D6729E1909C0039B2C8 /* RoundedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6629E1909C0039B2C8 /* RoundedTextField.swift */; };
 		DEC29D6929E19B220039B2C8 /* Previews + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */; };
 		DEC29D6C29E1C9BE0039B2C8 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC29D6B29E1C9BE0039B2C8 /* ActivityIndicator.swift */; };
@@ -29,9 +38,18 @@
 /* Begin PBXFileReference section */
 		DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationCoordinator.swift; sourceTree = "<group>"; };
 		DE3353E929E97FBF002D4891 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
+		DE3353F129ED9302002D4891 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
+		DE3353F429F07BDE002D4891 /* AccountVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountVerificationView.swift; sourceTree = "<group>"; };
+		DE3353F629F07C0C002D4891 /* AccountVerificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountVerificationViewModel.swift; sourceTree = "<group>"; };
+		DE3353F829F07C6D002D4891 /* AccountVerificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountVerificationViewController.swift; sourceTree = "<group>"; };
+		DE3353FB29F07F3D002D4891 /* AccountStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStatus.swift; sourceTree = "<group>"; };
+		DE3353FE29F083E1002D4891 /* MockedAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedAuthenticationService.swift; sourceTree = "<group>"; };
+		DE33540029F08420002D4891 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
 		DEA431C529D8936200DFA6E4 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
+		DEBBEC6929F4432400A87094 /* HTTPClientConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClientConfiguration.swift; sourceTree = "<group>"; };
 		DEC29D6629E1909C0039B2C8 /* RoundedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextField.swift; sourceTree = "<group>"; };
 		DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Previews + Extensions.swift"; sourceTree = "<group>"; };
 		DEC29D6B29E1C9BE0039B2C8 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -67,6 +85,35 @@
 				DEC29D7029E1CABE0039B2C8 /* LoginViewModel.swift */,
 			);
 			path = Login;
+			sourceTree = "<group>";
+		};
+		DE3353EB29ED8A95002D4891 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */,
+				DE3353F129ED9302002D4891 /* HTTPClient.swift */,
+				DEBBEC6929F4432400A87094 /* HTTPClientConfiguration.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		DE3353F329F07BAA002D4891 /* AccountVerification */ = {
+			isa = PBXGroup;
+			children = (
+				DE3353F429F07BDE002D4891 /* AccountVerificationView.swift */,
+				DE3353F629F07C0C002D4891 /* AccountVerificationViewModel.swift */,
+				DE3353F829F07C6D002D4891 /* AccountVerificationViewController.swift */,
+			);
+			path = AccountVerification;
+			sourceTree = "<group>";
+		};
+		DE3353FD29F083CC002D4891 /* AuthenticationService */ = {
+			isa = PBXGroup;
+			children = (
+				DE3353E929E97FBF002D4891 /* AuthenticationService.swift */,
+				DE3353FE29F083E1002D4891 /* MockedAuthenticationService.swift */,
+			);
+			path = AuthenticationService;
 			sourceTree = "<group>";
 		};
 		DEA431C329D8932900DFA6E4 /* ButtonStyles */ = {
@@ -105,6 +152,7 @@
 		DEC29D6D29E1CA490039B2C8 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				DE3353F329F07BAA002D4891 /* AccountVerification */,
 				DE3353E829E97F8D002D4891 /* Login */,
 				DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */,
 			);
@@ -130,6 +178,7 @@
 		DEDA4AA729CF2125000AFBBF /* WorkoutApp */ = {
 			isa = PBXGroup;
 			children = (
+				DE3353EB29ED8A95002D4891 /* Networking */,
 				DEDA4ABE29CF6110000AFBBF /* Flows */,
 				DEDA4AC229CF613F000AFBBF /* Model */,
 				DEDA4AC129CF6133000AFBBF /* Services */,
@@ -168,6 +217,7 @@
 			children = (
 				DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */,
 				DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */,
+				DE33540029F08420002D4891 /* DependencyContainer.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -175,7 +225,7 @@
 		DEDA4AC129CF6133000AFBBF /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				DE3353E929E97FBF002D4891 /* AuthenticationService.swift */,
+				DE3353FD29F083CC002D4891 /* AuthenticationService */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -183,6 +233,7 @@
 		DEDA4AC229CF613F000AFBBF /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DE3353FB29F07F3D002D4891 /* AccountStatus.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -272,11 +323,20 @@
 				DEC29D6C29E1C9BE0039B2C8 /* ActivityIndicator.swift in Sources */,
 				DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */,
 				DEC29D7329E1CABE0039B2C8 /* LoginViewModel.swift in Sources */,
+				DE3353F729F07C0C002D4891 /* AccountVerificationViewModel.swift in Sources */,
+				DE3353FF29F083E1002D4891 /* MockedAuthenticationService.swift in Sources */,
+				DE3353F529F07BDE002D4891 /* AccountVerificationView.swift in Sources */,
 				DEDA4AA929CF2125000AFBBF /* AppDelegate.swift in Sources */,
+				DE3353F229ED9302002D4891 /* HTTPClient.swift in Sources */,
 				DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */,
 				DEDA4AAB29CF2125000AFBBF /* SceneDelegate.swift in Sources */,
+				DE33540129F08420002D4891 /* DependencyContainer.swift in Sources */,
+				DE3353FC29F07F3D002D4891 /* AccountStatus.swift in Sources */,
+				DE3353ED29ED8AAD002D4891 /* HTTPRequest.swift in Sources */,
 				DEC29D7129E1CABE0039B2C8 /* LoginViewController.swift in Sources */,
 				DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */,
+				DEBBEC6A29F4432400A87094 /* HTTPClientConfiguration.swift in Sources */,
+				DE3353F929F07C6D002D4891 /* AccountVerificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
