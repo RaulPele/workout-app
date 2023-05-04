@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Combine
 
 protocol Coordinator: AnyObject {
     
     var rootViewController: UIViewController? { get } //TODO: do we need navigation controller here?
-    func start(options connectionOptions: UIScene.ConnectionOptions?)
+    func start(options connectionOptions: UIScene.ConnectionOptions?) //TODO: add combine
 }

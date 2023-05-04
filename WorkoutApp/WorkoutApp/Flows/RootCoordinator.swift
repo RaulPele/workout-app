@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 class RootCoordinator: Coordinator {
     
@@ -14,6 +15,7 @@ class RootCoordinator: Coordinator {
     
     private let navigationController: UINavigationController = .init()
     private var authenticationCoordinator: AuthenticationCoordinator?
+    private var mainCoordinator: MainCoordinator?
     
     private let dependencyContainer: DependencyContainer = MockedDependencyContainer()
     
@@ -28,13 +30,23 @@ class RootCoordinator: Coordinator {
     //MARK: - Methods
     
     func start(options connectionOptions: UIScene.ConnectionOptions?) {
-        showAuthenticationFlow()
+        showAuthenticationCoordinator()
     }
     
-    private func showAuthenticationFlow() {
+    private func showAuthenticationCoordinator() {
         authenticationCoordinator = .init(navigationController: navigationController,
-                                          authenticationService: dependencyContainer.authenticationService)
+                                          authenticationService: dependencyContainer.authenticationService) { [unowned self] in
+            self.showMainCoordinator()
+        }
+        
         authenticationCoordinator?.start(options: nil)
+    }
+    
+    private func showMainCoordinator() {
+        mainCoordinator = .init(navigationController: navigationController,
+                                workoutRepository: dependencyContainer.workoutRepository)
+        
+        mainCoordinator?.start(options: nil)
     }
     
 }

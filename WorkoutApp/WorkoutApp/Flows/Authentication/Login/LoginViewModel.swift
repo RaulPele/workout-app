@@ -22,8 +22,16 @@ extension Login {
         
         private let authenticationService: AuthenticationServiceProtocol
         
+        var onLoginCompleted: (() -> Void)? = nil
+        
+        var loginTask: Task<Void, Never>?
+        
         init(authenticationService: AuthenticationServiceProtocol) {
             self.authenticationService = authenticationService
+        }
+        
+        deinit {
+            loginTask?.cancel()
         }
         
         func testAPI() {
@@ -43,8 +51,18 @@ extension Login {
         
         //MARK: - Event handlers
         func handleContinueButtonTapped() {
-//            checkAccount()
-            //TODO: login
+            loginTask?.cancel()
+            
+            loginTask = Task(priority: .userInitiated) { @MainActor in
+                do {
+                    try await authenticationService.login(email: email, password: password) //TODO: catch response
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                        self?.onLoginCompleted?()
+                    }
+                } catch {
+                    print("Error while logging in \(error.localizedDescription)")
+                }
+            }
         }
     }
 }

@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE012DDD2A01446F0071601B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DDA2A01446F0071601B /* HomeViewController.swift */; };
+		DE012DDE2A01446F0071601B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DDB2A01446F0071601B /* HomeView.swift */; };
+		DE012DDF2A01446F0071601B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DDC2A01446F0071601B /* HomeViewModel.swift */; };
+		DE012DE12A0145090071601B /* View + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DE02A0145090071601B /* View + Extensions.swift */; };
+		DE012DE32A0146CC0071601B /* Color + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DE22A0146CC0071601B /* Color + Extensions.swift */; };
+		DE012DE52A014DD90071601B /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DE42A014DD90071601B /* Workout.swift */; };
+		DE012DE72A0188DD0071601B /* Workout + Mocked.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DE62A0188DD0071601B /* Workout + Mocked.swift */; };
+		DE012DEA2A018D6C0071601B /* WorkoutCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DE92A018D6C0071601B /* WorkoutCardView.swift */; };
+		DE012DEC2A01944A0071601B /* Font + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DEB2A01944A0071601B /* Font + Extension.swift */; };
+		DE012DEF2A02CB0D0071601B /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DEE2A02CB0D0071601B /* Repository.swift */; };
+		DE012DF12A02CBD10071601B /* WorkoutRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DF02A02CBD10071601B /* WorkoutRepository.swift */; };
+		DE012DF42A02CE160071601B /* WorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DF32A02CE160071601B /* WorkoutService.swift */; };
+		DE012DF62A02CE8A0071601B /* MockedWorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DF52A02CE8A0071601B /* MockedWorkoutService.swift */; };
+		DE10523E2A02D99B00399C2B /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE10523D2A02D99B00399C2B /* MainCoordinator.swift */; };
 		DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = DE3353E429E1DCF6002D4891 /* Introspect */; };
 		DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */; };
 		DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E929E97FBF002D4891 /* AuthenticationService.swift */; };
@@ -36,6 +50,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DE012DDA2A01446F0071601B /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		DE012DDB2A01446F0071601B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		DE012DDC2A01446F0071601B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		DE012DE02A0145090071601B /* View + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View + Extensions.swift"; sourceTree = "<group>"; };
+		DE012DE22A0146CC0071601B /* Color + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color + Extensions.swift"; sourceTree = "<group>"; };
+		DE012DE42A014DD90071601B /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
+		DE012DE62A0188DD0071601B /* Workout + Mocked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Workout + Mocked.swift"; sourceTree = "<group>"; };
+		DE012DE92A018D6C0071601B /* WorkoutCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCardView.swift; sourceTree = "<group>"; };
+		DE012DEB2A01944A0071601B /* Font + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font + Extension.swift"; sourceTree = "<group>"; };
+		DE012DEE2A02CB0D0071601B /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
+		DE012DF02A02CBD10071601B /* WorkoutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutRepository.swift; sourceTree = "<group>"; };
+		DE012DF32A02CE160071601B /* WorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutService.swift; sourceTree = "<group>"; };
+		DE012DF52A02CE8A0071601B /* MockedWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedWorkoutService.swift; sourceTree = "<group>"; };
+		DE10523D2A02D99B00399C2B /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationCoordinator.swift; sourceTree = "<group>"; };
 		DE3353E929E97FBF002D4891 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
@@ -77,6 +105,51 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DE012DD92A0144220071601B /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				DE012DDA2A01446F0071601B /* HomeViewController.swift */,
+				DE012DDB2A01446F0071601B /* HomeView.swift */,
+				DE012DDC2A01446F0071601B /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		DE012DE82A018D580071601B /* WorkoutCards */ = {
+			isa = PBXGroup;
+			children = (
+				DE012DE92A018D6C0071601B /* WorkoutCardView.swift */,
+			);
+			path = WorkoutCards;
+			sourceTree = "<group>";
+		};
+		DE012DED2A02CAFA0071601B /* DataLayer */ = {
+			isa = PBXGroup;
+			children = (
+				DE012DEE2A02CB0D0071601B /* Repository.swift */,
+				DE012DF02A02CBD10071601B /* WorkoutRepository.swift */,
+			);
+			path = DataLayer;
+			sourceTree = "<group>";
+		};
+		DE012DF22A02CDC60071601B /* WorkoutService */ = {
+			isa = PBXGroup;
+			children = (
+				DE012DF32A02CE160071601B /* WorkoutService.swift */,
+				DE012DF52A02CE8A0071601B /* MockedWorkoutService.swift */,
+			);
+			path = WorkoutService;
+			sourceTree = "<group>";
+		};
+		DE10523C2A02D98700399C2B /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				DE012DD92A0144220071601B /* Home */,
+				DE10523D2A02D99B00399C2B /* MainCoordinator.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
 		DE3353E829E97F8D002D4891 /* Login */ = {
 			isa = PBXGroup;
 			children = (
@@ -178,6 +251,7 @@
 		DEDA4AA729CF2125000AFBBF /* WorkoutApp */ = {
 			isa = PBXGroup;
 			children = (
+				DE012DED2A02CAFA0071601B /* DataLayer */,
 				DE3353EB29ED8A95002D4891 /* Networking */,
 				DEDA4ABE29CF6110000AFBBF /* Flows */,
 				DEDA4AC229CF613F000AFBBF /* Model */,
@@ -196,6 +270,7 @@
 		DEDA4ABE29CF6110000AFBBF /* Flows */ = {
 			isa = PBXGroup;
 			children = (
+				DE10523C2A02D98700399C2B /* Main */,
 				DEC29D6D29E1CA490039B2C8 /* Authentication */,
 				DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */,
 			);
@@ -205,6 +280,7 @@
 		DEDA4ABF29CF611B000AFBBF /* Reusables */ = {
 			isa = PBXGroup;
 			children = (
+				DE012DE82A018D580071601B /* WorkoutCards */,
 				DEC29D6429E1905F0039B2C8 /* InputFields */,
 				DEA431C429D8933B00DFA6E4 /* Buttons */,
 				DEC29D6B29E1C9BE0039B2C8 /* ActivityIndicator.swift */,
@@ -218,6 +294,9 @@
 				DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */,
 				DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */,
 				DE33540029F08420002D4891 /* DependencyContainer.swift */,
+				DE012DE02A0145090071601B /* View + Extensions.swift */,
+				DE012DE22A0146CC0071601B /* Color + Extensions.swift */,
+				DE012DEB2A01944A0071601B /* Font + Extension.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -225,6 +304,7 @@
 		DEDA4AC129CF6133000AFBBF /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				DE012DF22A02CDC60071601B /* WorkoutService */,
 				DE3353FD29F083CC002D4891 /* AuthenticationService */,
 			);
 			path = Services;
@@ -234,6 +314,8 @@
 			isa = PBXGroup;
 			children = (
 				DE3353FB29F07F3D002D4891 /* AccountStatus.swift */,
+				DE012DE42A014DD90071601B /* Workout.swift */,
+				DE012DE62A0188DD0071601B /* Workout + Mocked.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -317,23 +399,37 @@
 				DEDA4ABD29CF5E2A000AFBBF /* Coordinator.swift in Sources */,
 				DEC29D6929E19B220039B2C8 /* Previews + Extensions.swift in Sources */,
 				DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */,
+				DE012DF12A02CBD10071601B /* WorkoutRepository.swift in Sources */,
+				DE012DDE2A01446F0071601B /* HomeView.swift in Sources */,
 				DEC29D6729E1909C0039B2C8 /* RoundedTextField.swift in Sources */,
+				DE012DEF2A02CB0D0071601B /* Repository.swift in Sources */,
 				DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */,
 				DEC29D7229E1CABE0039B2C8 /* LoginView.swift in Sources */,
 				DEC29D6C29E1C9BE0039B2C8 /* ActivityIndicator.swift in Sources */,
 				DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */,
+				DE012DE32A0146CC0071601B /* Color + Extensions.swift in Sources */,
 				DEC29D7329E1CABE0039B2C8 /* LoginViewModel.swift in Sources */,
 				DE3353F729F07C0C002D4891 /* AccountVerificationViewModel.swift in Sources */,
 				DE3353FF29F083E1002D4891 /* MockedAuthenticationService.swift in Sources */,
+				DE012DDD2A01446F0071601B /* HomeViewController.swift in Sources */,
 				DE3353F529F07BDE002D4891 /* AccountVerificationView.swift in Sources */,
+				DE10523E2A02D99B00399C2B /* MainCoordinator.swift in Sources */,
 				DEDA4AA929CF2125000AFBBF /* AppDelegate.swift in Sources */,
+				DE012DEC2A01944A0071601B /* Font + Extension.swift in Sources */,
+				DE012DE12A0145090071601B /* View + Extensions.swift in Sources */,
 				DE3353F229ED9302002D4891 /* HTTPClient.swift in Sources */,
+				DE012DE72A0188DD0071601B /* Workout + Mocked.swift in Sources */,
 				DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */,
 				DEDA4AAB29CF2125000AFBBF /* SceneDelegate.swift in Sources */,
 				DE33540129F08420002D4891 /* DependencyContainer.swift in Sources */,
+				DE012DF42A02CE160071601B /* WorkoutService.swift in Sources */,
 				DE3353FC29F07F3D002D4891 /* AccountStatus.swift in Sources */,
+				DE012DEA2A018D6C0071601B /* WorkoutCardView.swift in Sources */,
+				DE012DF62A02CE8A0071601B /* MockedWorkoutService.swift in Sources */,
 				DE3353ED29ED8AAD002D4891 /* HTTPRequest.swift in Sources */,
+				DE012DDF2A01446F0071601B /* HomeViewModel.swift in Sources */,
 				DEC29D7129E1CABE0039B2C8 /* LoginViewController.swift in Sources */,
+				DE012DE52A014DD90071601B /* Workout.swift in Sources */,
 				DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */,
 				DEBBEC6A29F4432400A87094 /* HTTPClientConfiguration.swift in Sources */,
 				DE3353F929F07C6D002D4891 /* AccountVerificationViewController.swift in Sources */,

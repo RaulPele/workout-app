@@ -9,14 +9,23 @@ import Foundation
 
 class DependencyContainer {
     let authenticationService: AuthenticationServiceProtocol
+    let workoutRepository: any WorkoutRepository
+    let workoutService: WorkoutService
     
-    init(authenticationService: AuthenticationServiceProtocol) {
+    init(authenticationService: AuthenticationServiceProtocol,
+         workoutService: WorkoutService,
+         workoutRepository: any WorkoutRepository) {
         self.authenticationService = authenticationService
+        self.workoutService = workoutService
+        self.workoutRepository = workoutRepository
+        
     }
 }
 
 class MockedDependencyContainer: DependencyContainer {
     init() {
-        super.init(authenticationService: MockedAuthenticationService())
+        super.init(authenticationService: MockedAuthenticationService(),
+                   workoutService: MockedWorkoutService(),
+                   workoutRepository: MockedWorkoutRepository())
     }
 }

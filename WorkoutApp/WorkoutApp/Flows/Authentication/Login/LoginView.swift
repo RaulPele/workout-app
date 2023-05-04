@@ -17,8 +17,8 @@ struct Login {
         
         var body: some View {
             ZStack {
-                Color.black.opacity(0.8)
-                    .ignoresSafeArea()
+                Color.background
+                
                 VStack {
                     //TODO: change the way the placeholders are created
                     RoundedTextField(text: $viewModel.email,
@@ -28,9 +28,6 @@ struct Login {
                     RoundedTextField(text: $viewModel.password,
                                      placeHolderText: "Password",
                                      textContentType: .password)
-                    
-                    
-                    
                     
                     Buttons.Filled(title: "Continue") {
                         viewModel.handleContinueButtonTapped()

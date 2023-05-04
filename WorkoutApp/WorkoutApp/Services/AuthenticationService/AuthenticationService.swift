@@ -10,6 +10,7 @@ import Foundation
 protocol AuthenticationServiceProtocol {
     
     func checkAccount(email: String) async throws -> AccountStatus
+    func login(email: String, password: String) async throws
 }
 
 class AuthenticationService: AuthenticationServiceProtocol {
@@ -18,6 +19,10 @@ class AuthenticationService: AuthenticationServiceProtocol {
     
     func checkAccount(email: String) async throws -> AccountStatus {
         return .active
+    }
+    
+    func login(email: String, password: String) async throws {
+        
     }
 }
 

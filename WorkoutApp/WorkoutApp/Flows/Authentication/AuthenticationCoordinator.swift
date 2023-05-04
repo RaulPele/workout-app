@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 class AuthenticationCoordinator: Coordinator {
     
@@ -14,10 +15,14 @@ class AuthenticationCoordinator: Coordinator {
     
     private let authenticationService: AuthenticationServiceProtocol
     
+    private let onAuthenticationCompleted: () -> Void
+    
     init(navigationController: UINavigationController,
-         authenticationService: AuthenticationServiceProtocol) {
+         authenticationService: AuthenticationServiceProtocol,
+         onAuthenticationCompleted: @escaping () -> Void) {
         self.navigationController = navigationController
         self.authenticationService = authenticationService
+        self.onAuthenticationCompleted = onAuthenticationCompleted
     }
     
     var rootViewController: UIViewController? {
@@ -26,6 +31,7 @@ class AuthenticationCoordinator: Coordinator {
     
     func start(options connectionOptions: UIScene.ConnectionOptions?) {
         showAccountVerificationScreen()
+        
     }
     
     private func showAccountVerificationScreen() {
@@ -39,6 +45,9 @@ class AuthenticationCoordinator: Coordinator {
     private func showLoginScreen(email: String) {
         let viewController = Login.ViewController(authenticationService: authenticationService)
         viewController.viewModel.email = email
+        viewController.viewModel.onLoginCompleted = { [weak self] in
+            self?.onAuthenticationCompleted()
+        }
         //TODO: inject viewmodel??
         navigationController.pushViewController(viewController, animated: true)
     }
