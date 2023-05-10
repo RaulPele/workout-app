@@ -9,7 +9,7 @@ import Foundation
 
 extension Workout {
     
-    static let mocked1: Workout = .init(id: 0,
+    static let mocked1: Workout = .init(id: .init(),
                                  title: "Day 3 Week 4",
                                  averageHeartRate: 155,
                                  duration: 5450,
@@ -17,7 +17,7 @@ extension Workout {
                                  activeCalories: 780,
                                  date: .init())
     
-    static let mocked2: Workout = .init(id: 1,
+    static let mocked2: Workout = .init(id: .init(),
                                  title: "Morning session",
                                  averageHeartRate: 155,
                                  duration: 5450,
@@ -25,7 +25,7 @@ extension Workout {
                                  activeCalories: 780,
                                  date: .init())
     
-    static let mocked3: Workout = .init(id: 2,
+    static let mocked3: Workout = .init(id: .init(),
                                  title: "After work session",
                                  averageHeartRate: 155,
                                  duration: 5450,
@@ -33,7 +33,7 @@ extension Workout {
                                  activeCalories: 780,
                                  date: .init())
     
-    static let mocked4: Workout = .init(id: 3,
+    static let mocked4: Workout = .init(id: .init(),
                                  title: "TSW Day 3 Week 4",
                                  averageHeartRate: 155,
                                  duration: 5450,

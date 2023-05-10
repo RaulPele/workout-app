@@ -30,6 +30,16 @@ class MainCoordinator: Coordinator {
     
     func showHomeScreen() {
         let vc = Home.ViewController(workoutRepository: workoutRepository)
+        vc.viewModel.onWorkoutTapped = showWorkoutDetailsScreen
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func showWorkoutDetailsScreen(for workout: Workout) {
+        let vc = WorkoutDetails.ViewController(workout: workout)
+        vc.viewModel.onBack = { [unowned self] in
+            navigationController.popViewController(animated: true)
+            
+        }
         navigationController.pushViewController(vc, animated: true)
     }
     

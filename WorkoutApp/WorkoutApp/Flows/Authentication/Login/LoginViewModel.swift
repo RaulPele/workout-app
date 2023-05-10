@@ -52,16 +52,16 @@ extension Login {
         //MARK: - Event handlers
         func handleContinueButtonTapped() {
             loginTask?.cancel()
+            isLoading = true
             
             loginTask = Task(priority: .userInitiated) { @MainActor in
                 do {
                     try await authenticationService.login(email: email, password: password) //TODO: catch response
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                        self?.onLoginCompleted?()
-                    }
+                    onLoginCompleted?()
                 } catch {
                     print("Error while logging in \(error.localizedDescription)")
                 }
+                isLoading = false
             }
         }
     }

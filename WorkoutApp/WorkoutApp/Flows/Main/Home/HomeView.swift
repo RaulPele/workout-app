@@ -19,7 +19,11 @@ struct Home {
             ScrollView {
                 LazyVStack(spacing: 5) {
                     ForEach(viewModel.workouts) { workout in
-                        WorkoutCardView(workout: workout)
+                        Button {
+                            viewModel.handleWorkoutTapped(for: workout)
+                        } label: {
+                            WorkoutCardView(workout: workout)
+                        }.buttonStyle(.plain)
                     }
                 }
                 .padding()
@@ -27,6 +31,20 @@ struct Home {
             .frame(maxHeight: .infinity, alignment: .top)
             .background(Color.background)
             .onAppear(perform: viewModel.handleOnAppear)
+            .overlay {
+                loadingView
+            }
+        }
+        
+        @ViewBuilder
+        private var loadingView: some View {
+            if viewModel.isLoading {
+                ZStack {
+                    Color.black
+                    ActivityIndicator(color: .red, scale: 2)
+                }
+                .ignoresSafeArea()
+            }
         }
     }
 }

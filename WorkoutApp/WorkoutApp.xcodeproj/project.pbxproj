@@ -21,6 +21,11 @@
 		DE012DF42A02CE160071601B /* WorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DF32A02CE160071601B /* WorkoutService.swift */; };
 		DE012DF62A02CE8A0071601B /* MockedWorkoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DF52A02CE8A0071601B /* MockedWorkoutService.swift */; };
 		DE10523E2A02D99B00399C2B /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE10523D2A02D99B00399C2B /* MainCoordinator.swift */; };
+		DE1052412A04280B00399C2B /* WorkoutDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052402A04280B00399C2B /* WorkoutDetailsView.swift */; };
+		DE1052432A04286800399C2B /* WorkoutDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052422A04286800399C2B /* WorkoutDetailsViewModel.swift */; };
+		DE1052452A0428C300399C2B /* WorkoutDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052442A0428C300399C2B /* WorkoutDetailsViewController.swift */; };
+		DE1052472A0655B500399C2B /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052462A0655B500399C2B /* NavigationBar.swift */; };
+		DE1052492A06AF9800399C2B /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052482A06AF9800399C2B /* HealthKitManager.swift */; };
 		DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = DE3353E429E1DCF6002D4891 /* Introspect */; };
 		DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */; };
 		DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E929E97FBF002D4891 /* AuthenticationService.swift */; };
@@ -32,6 +37,7 @@
 		DE3353FC29F07F3D002D4891 /* AccountStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353FB29F07F3D002D4891 /* AccountStatus.swift */; };
 		DE3353FF29F083E1002D4891 /* MockedAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353FE29F083E1002D4891 /* MockedAuthenticationService.swift */; };
 		DE33540129F08420002D4891 /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE33540029F08420002D4891 /* DependencyContainer.swift */; };
+		DEA0BAB12A07D8E200F9BBBA /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0BAB02A07D8E200F9BBBA /* ListView.swift */; };
 		DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */; };
 		DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C529D8936200DFA6E4 /* RoundedButton.swift */; };
 		DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */; };
@@ -47,6 +53,8 @@
 		DEDA4AB229CF2127000AFBBF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEDA4AB129CF2127000AFBBF /* Assets.xcassets */; };
 		DEDA4AB529CF2127000AFBBF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DEDA4AB329CF2127000AFBBF /* LaunchScreen.storyboard */; };
 		DEDA4ABD29CF5E2A000AFBBF /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */; };
+		DEDFC2F12A0AC6B300E736E0 /* HKWorkout + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F02A0AC6B300E736E0 /* HKWorkout + Extensions.swift */; };
+		DEDFC2F32A0AC70400E736E0 /* WorkoutParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F22A0AC70400E736E0 /* WorkoutParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +72,12 @@
 		DE012DF32A02CE160071601B /* WorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutService.swift; sourceTree = "<group>"; };
 		DE012DF52A02CE8A0071601B /* MockedWorkoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedWorkoutService.swift; sourceTree = "<group>"; };
 		DE10523D2A02D99B00399C2B /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
+		DE1052402A04280B00399C2B /* WorkoutDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailsView.swift; sourceTree = "<group>"; };
+		DE1052422A04286800399C2B /* WorkoutDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailsViewModel.swift; sourceTree = "<group>"; };
+		DE1052442A0428C300399C2B /* WorkoutDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutDetailsViewController.swift; sourceTree = "<group>"; };
+		DE1052462A0655B500399C2B /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		DE1052482A06AF9800399C2B /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		DE10524A2A06B34200399C2B /* WorkoutApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkoutApp.entitlements; sourceTree = "<group>"; };
 		DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationCoordinator.swift; sourceTree = "<group>"; };
 		DE3353E929E97FBF002D4891 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
@@ -74,6 +88,7 @@
 		DE3353FB29F07F3D002D4891 /* AccountStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStatus.swift; sourceTree = "<group>"; };
 		DE3353FE29F083E1002D4891 /* MockedAuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedAuthenticationService.swift; sourceTree = "<group>"; };
 		DE33540029F08420002D4891 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
+		DEA0BAB02A07D8E200F9BBBA /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
 		DEA431C529D8936200DFA6E4 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
@@ -91,6 +106,8 @@
 		DEDA4AB429CF2127000AFBBF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DEDA4AB629CF2127000AFBBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		DEDFC2F02A0AC6B300E736E0 /* HKWorkout + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HKWorkout + Extensions.swift"; sourceTree = "<group>"; };
+		DEDFC2F22A0AC70400E736E0 /* WorkoutParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,10 +161,21 @@
 		DE10523C2A02D98700399C2B /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				DE10523F2A0427F300399C2B /* WorkoutDetails */,
 				DE012DD92A0144220071601B /* Home */,
 				DE10523D2A02D99B00399C2B /* MainCoordinator.swift */,
 			);
 			path = Main;
+			sourceTree = "<group>";
+		};
+		DE10523F2A0427F300399C2B /* WorkoutDetails */ = {
+			isa = PBXGroup;
+			children = (
+				DE1052402A04280B00399C2B /* WorkoutDetailsView.swift */,
+				DE1052422A04286800399C2B /* WorkoutDetailsViewModel.swift */,
+				DE1052442A0428C300399C2B /* WorkoutDetailsViewController.swift */,
+			);
+			path = WorkoutDetails;
 			sourceTree = "<group>";
 		};
 		DE3353E829E97F8D002D4891 /* Login */ = {
@@ -187,6 +215,14 @@
 				DE3353FE29F083E1002D4891 /* MockedAuthenticationService.swift */,
 			);
 			path = AuthenticationService;
+			sourceTree = "<group>";
+		};
+		DEA0BAAF2A07D8D000F9BBBA /* List */ = {
+			isa = PBXGroup;
+			children = (
+				DEA0BAB02A07D8E200F9BBBA /* ListView.swift */,
+			);
+			path = List;
 			sourceTree = "<group>";
 		};
 		DEA431C329D8932900DFA6E4 /* ButtonStyles */ = {
@@ -251,6 +287,7 @@
 		DEDA4AA729CF2125000AFBBF /* WorkoutApp */ = {
 			isa = PBXGroup;
 			children = (
+				DE10524A2A06B34200399C2B /* WorkoutApp.entitlements */,
 				DE012DED2A02CAFA0071601B /* DataLayer */,
 				DE3353EB29ED8A95002D4891 /* Networking */,
 				DEDA4ABE29CF6110000AFBBF /* Flows */,
@@ -280,10 +317,12 @@
 		DEDA4ABF29CF611B000AFBBF /* Reusables */ = {
 			isa = PBXGroup;
 			children = (
+				DEA0BAAF2A07D8D000F9BBBA /* List */,
 				DE012DE82A018D580071601B /* WorkoutCards */,
 				DEC29D6429E1905F0039B2C8 /* InputFields */,
 				DEA431C429D8933B00DFA6E4 /* Buttons */,
 				DEC29D6B29E1C9BE0039B2C8 /* ActivityIndicator.swift */,
+				DE1052462A0655B500399C2B /* NavigationBar.swift */,
 			);
 			path = Reusables;
 			sourceTree = "<group>";
@@ -297,6 +336,8 @@
 				DE012DE02A0145090071601B /* View + Extensions.swift */,
 				DE012DE22A0146CC0071601B /* Color + Extensions.swift */,
 				DE012DEB2A01944A0071601B /* Font + Extension.swift */,
+				DEDFC2F02A0AC6B300E736E0 /* HKWorkout + Extensions.swift */,
+				DEDFC2F22A0AC70400E736E0 /* WorkoutParser.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -306,6 +347,7 @@
 			children = (
 				DE012DF22A02CDC60071601B /* WorkoutService */,
 				DE3353FD29F083CC002D4891 /* AuthenticationService */,
+				DE1052482A06AF9800399C2B /* HealthKitManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -403,6 +445,8 @@
 				DE012DDE2A01446F0071601B /* HomeView.swift in Sources */,
 				DEC29D6729E1909C0039B2C8 /* RoundedTextField.swift in Sources */,
 				DE012DEF2A02CB0D0071601B /* Repository.swift in Sources */,
+				DEA0BAB12A07D8E200F9BBBA /* ListView.swift in Sources */,
+				DEDFC2F12A0AC6B300E736E0 /* HKWorkout + Extensions.swift in Sources */,
 				DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */,
 				DEC29D7229E1CABE0039B2C8 /* LoginView.swift in Sources */,
 				DEC29D6C29E1C9BE0039B2C8 /* ActivityIndicator.swift in Sources */,
@@ -410,7 +454,9 @@
 				DE012DE32A0146CC0071601B /* Color + Extensions.swift in Sources */,
 				DEC29D7329E1CABE0039B2C8 /* LoginViewModel.swift in Sources */,
 				DE3353F729F07C0C002D4891 /* AccountVerificationViewModel.swift in Sources */,
+				DEDFC2F32A0AC70400E736E0 /* WorkoutParser.swift in Sources */,
 				DE3353FF29F083E1002D4891 /* MockedAuthenticationService.swift in Sources */,
+				DE1052412A04280B00399C2B /* WorkoutDetailsView.swift in Sources */,
 				DE012DDD2A01446F0071601B /* HomeViewController.swift in Sources */,
 				DE3353F529F07BDE002D4891 /* AccountVerificationView.swift in Sources */,
 				DE10523E2A02D99B00399C2B /* MainCoordinator.swift in Sources */,
@@ -419,6 +465,9 @@
 				DE012DE12A0145090071601B /* View + Extensions.swift in Sources */,
 				DE3353F229ED9302002D4891 /* HTTPClient.swift in Sources */,
 				DE012DE72A0188DD0071601B /* Workout + Mocked.swift in Sources */,
+				DE1052432A04286800399C2B /* WorkoutDetailsViewModel.swift in Sources */,
+				DE1052452A0428C300399C2B /* WorkoutDetailsViewController.swift in Sources */,
+				DE1052492A06AF9800399C2B /* HealthKitManager.swift in Sources */,
 				DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */,
 				DEDA4AAB29CF2125000AFBBF /* SceneDelegate.swift in Sources */,
 				DE33540129F08420002D4891 /* DependencyContainer.swift in Sources */,
@@ -430,6 +479,7 @@
 				DE012DDF2A01446F0071601B /* HomeViewModel.swift in Sources */,
 				DEC29D7129E1CABE0039B2C8 /* LoginViewController.swift in Sources */,
 				DE012DE52A014DD90071601B /* Workout.swift in Sources */,
+				DE1052472A0655B500399C2B /* NavigationBar.swift in Sources */,
 				DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */,
 				DEBBEC6A29F4432400A87094 /* HTTPClientConfiguration.swift in Sources */,
 				DE3353F929F07C6D002D4891 /* AccountVerificationViewController.swift in Sources */,
@@ -569,11 +619,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WorkoutApp/WorkoutApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3FF7ZT5TR7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkoutApp/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Our application needs to read your workouts";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Our application needs to write workouts to HealthKit";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -596,11 +649,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WorkoutApp/WorkoutApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3FF7ZT5TR7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WorkoutApp/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Our application needs to read your workouts";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Our application needs to write workouts to HealthKit";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

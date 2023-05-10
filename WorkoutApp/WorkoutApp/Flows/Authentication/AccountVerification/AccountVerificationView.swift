@@ -25,7 +25,10 @@ struct AccountVerification {
                                      textContentType: .emailAddress)
                     
                     
-                    Buttons.Filled(title: "Continue") {
+                    Buttons.Filled(
+                        title: "Continue",
+                        isLoading: viewModel.isLoading
+                    ) {
                         viewModel.handleContinueButtonTapped()
                     }
                 }

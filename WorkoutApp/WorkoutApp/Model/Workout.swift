@@ -9,7 +9,7 @@ import Foundation
 
 struct Workout: Identifiable, Hashable {
     
-    let id: Int
+    let id: UUID
     let title: String //TODO: change type from string to workout type
     let averageHeartRate: Int //TODO: show all heart rate intervals
     let duration: TimeInterval //TODO: workout start time workout end time

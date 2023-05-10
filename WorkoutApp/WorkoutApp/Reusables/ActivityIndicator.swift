@@ -9,12 +9,14 @@ import SwiftUI
 
 struct ActivityIndicator: View {
     
-    @State var color: Color = .gray
+    var color: Color = .gray
+    var scale: CGFloat = 1
     
     var body: some View {
         ProgressView()
             .progressViewStyle(.circular)
             .tint(color)
+            .scaleEffect(scale)
     }
 }
 

@@ -16,9 +16,11 @@ extension Home {
         @Published var workouts: [Workout] = Workout.mockedSet
         
         private let workoutRepository: any WorkoutRepository
+        var onWorkoutTapped: ((_ for: Workout) -> Void)?
         
         init(workoutRepository: any WorkoutRepository) {
             self.workoutRepository = workoutRepository
+
         }
         
         func handleOnAppear() {
@@ -39,6 +41,10 @@ extension Home {
                 
                 isLoading = false
             }
+        }
+        
+        func handleWorkoutTapped(for workout: Workout) {
+            onWorkoutTapped?(workout)
         }
         
     }

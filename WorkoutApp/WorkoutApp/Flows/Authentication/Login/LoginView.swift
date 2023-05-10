@@ -16,29 +16,27 @@ struct Login {
         @ObservedObject var viewModel: ViewModel
         
         var body: some View {
-            ZStack {
-                Color.background
+            VStack {
+                //TODO: change the way the placeholders are created
+                RoundedTextField(text: $viewModel.email,
+                                 placeHolderText: "Enter your email...",
+                                 keyboardType: .emailAddress,
+                                 textContentType: .emailAddress)
+                RoundedTextField(text: $viewModel.password,
+                                 placeHolderText: "Password",
+                                 textContentType: .password)
                 
-                VStack {
-                    //TODO: change the way the placeholders are created
-                    RoundedTextField(text: $viewModel.email,
-                                     placeHolderText: "Enter your email...",
-                                     keyboardType: .emailAddress,
-                                     textContentType: .emailAddress)
-                    RoundedTextField(text: $viewModel.password,
-                                     placeHolderText: "Password",
-                                     textContentType: .password)
-                    
-                    Buttons.Filled(title: "Continue") {
-                        viewModel.handleContinueButtonTapped()
-                    }
+                
+                Buttons.Filled(
+                    title: "Continue",
+                    isLoading: viewModel.isLoading
+                ) {
+                    viewModel.handleContinueButtonTapped()
                 }
-                .padding(.horizontal, 24)
             }
-            .onAppear {
-                viewModel.testAPI()
-            }
-            
+            .padding(.horizontal, 24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.background)
         }
     }
 }

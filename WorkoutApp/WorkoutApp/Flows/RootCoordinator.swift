@@ -17,10 +17,20 @@ class RootCoordinator: Coordinator {
     private var authenticationCoordinator: AuthenticationCoordinator?
     private var mainCoordinator: MainCoordinator?
     
-    private let dependencyContainer: DependencyContainer = MockedDependencyContainer()
+    private let dependencyContainer: DependencyContainer
     
     init() {
         navigationController.navigationBar.isHidden = true
+        
+        let authService = MockedAuthenticationService()
+        let workoutService = MockedWorkoutService()
+        let workoutRepository = WorkoutAPIRepository(workoutService: workoutService)
+        
+        dependencyContainer = DependencyContainer(
+            authenticationService: authService,
+            workoutService: workoutService,
+            workoutRepository: workoutRepository
+        )
     }
     
     var rootViewController: UIViewController? {
