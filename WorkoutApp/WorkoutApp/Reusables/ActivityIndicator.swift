@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActivityIndicator: View {
     
-    var color: Color = .gray
+    var color: Color = .white
     var scale: CGFloat = 1
     
     var body: some View {
@@ -23,7 +23,11 @@ struct ActivityIndicator: View {
 #if DEBUG
 struct ActivityIndicator_Previews: PreviewProvider {
     static var previews: some View {
-        ActivityIndicator()
+        ZStack {
+            Color.background
+                .ignoresSafeArea()
+            ActivityIndicator()
+        }
     }
 }
 #endif

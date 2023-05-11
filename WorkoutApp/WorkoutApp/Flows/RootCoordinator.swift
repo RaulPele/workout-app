@@ -24,12 +24,14 @@ class RootCoordinator: Coordinator {
         
         let authService = MockedAuthenticationService()
         let workoutService = MockedWorkoutService()
-        let workoutRepository = WorkoutAPIRepository(workoutService: workoutService)
+        let healthKitManager = HealthKitManager()
+        let workoutRepository = WorkoutAPIRepository(workoutService: workoutService, healthKitManager: healthKitManager)
         
         dependencyContainer = DependencyContainer(
             authenticationService: authService,
             workoutService: workoutService,
-            workoutRepository: workoutRepository
+            workoutRepository: workoutRepository,
+            healthKitManager: healthKitManager
         )
     }
     
@@ -40,7 +42,8 @@ class RootCoordinator: Coordinator {
     //MARK: - Methods
     
     func start(options connectionOptions: UIScene.ConnectionOptions?) {
-        showAuthenticationCoordinator()
+//        showAuthenticationCoordinator()
+        showMainCoordinator()
     }
     
     private func showAuthenticationCoordinator() {
@@ -54,7 +57,8 @@ class RootCoordinator: Coordinator {
     
     private func showMainCoordinator() {
         mainCoordinator = .init(navigationController: navigationController,
-                                workoutRepository: dependencyContainer.workoutRepository)
+                                workoutRepository: dependencyContainer.workoutRepository,
+                                healthKitManager: dependencyContainer.healthKitManager)
         
         mainCoordinator?.start(options: nil)
     }

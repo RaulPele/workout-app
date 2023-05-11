@@ -16,8 +16,9 @@ extension Home {
         
         let viewModel: ViewModel
         
-        init(workoutRepository: any WorkoutRepository) {
-            viewModel = ViewModel(workoutRepository: workoutRepository)
+        init(workoutRepository: any WorkoutRepository,
+             healthKitManager: HealthKitManager) {
+            viewModel = ViewModel(workoutRepository: workoutRepository, healthKitManager: healthKitManager)
             super.init(rootView: .init(viewModel: viewModel))
         }
         

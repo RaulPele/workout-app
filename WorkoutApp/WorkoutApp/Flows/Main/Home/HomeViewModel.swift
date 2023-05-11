@@ -16,15 +16,28 @@ extension Home {
         @Published var workouts: [Workout] = Workout.mockedSet
         
         private let workoutRepository: any WorkoutRepository
+        private let healthKitManager: HealthKitManager
+        
         var onWorkoutTapped: ((_ for: Workout) -> Void)?
         
-        init(workoutRepository: any WorkoutRepository) {
+        init(workoutRepository: any WorkoutRepository,
+             healthKitManager: HealthKitManager) {
             self.workoutRepository = workoutRepository
-
+            self.healthKitManager = healthKitManager
         }
         
         func handleOnAppear() {
+            requestHealthKitPermissions() //TODO: find a better place to request permissions
             loadWorkouts()
+        }
+        
+        private func requestHealthKitPermissions() {
+            Task(priority: .high) {
+                try await healthKitManager.requestPermissions(fromWatch: false)
+            }
+//            healthKitManager.requestPermissions { error in
+//                print("ERROR: \(error?.localizedDescription)")
+//            }
         }
         
         func loadWorkouts() {

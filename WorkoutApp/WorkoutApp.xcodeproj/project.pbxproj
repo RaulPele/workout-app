@@ -55,6 +55,10 @@
 		DEDA4ABD29CF5E2A000AFBBF /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */; };
 		DEDFC2F12A0AC6B300E736E0 /* HKWorkout + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F02A0AC6B300E736E0 /* HKWorkout + Extensions.swift */; };
 		DEDFC2F32A0AC70400E736E0 /* WorkoutParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F22A0AC70400E736E0 /* WorkoutParser.swift */; };
+		DEDFC2F62A0B827800E736E0 /* HealthKitAuthorizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F52A0B827800E736E0 /* HealthKitAuthorizationView.swift */; };
+		DEDFC2F82A0B834700E736E0 /* HealthKitAuthorizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F72A0B834700E736E0 /* HealthKitAuthorizationViewModel.swift */; };
+		DEDFC2FA2A0B83F300E736E0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F92A0B83F300E736E0 /* Constants.swift */; };
+		DEDFC2FC2A0B88BB00E736E0 /* HealthKitAuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2FB2A0B88BB00E736E0 /* HealthKitAuthorizationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +112,10 @@
 		DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		DEDFC2F02A0AC6B300E736E0 /* HKWorkout + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HKWorkout + Extensions.swift"; sourceTree = "<group>"; };
 		DEDFC2F22A0AC70400E736E0 /* WorkoutParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutParser.swift; sourceTree = "<group>"; };
+		DEDFC2F52A0B827800E736E0 /* HealthKitAuthorizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitAuthorizationView.swift; sourceTree = "<group>"; };
+		DEDFC2F72A0B834700E736E0 /* HealthKitAuthorizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitAuthorizationViewModel.swift; sourceTree = "<group>"; };
+		DEDFC2F92A0B83F300E736E0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		DEDFC2FB2A0B88BB00E736E0 /* HealthKitAuthorizationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitAuthorizationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +169,7 @@
 		DE10523C2A02D98700399C2B /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				DEDFC2F42A0B823000E736E0 /* HealthKitVerification */,
 				DE10523F2A0427F300399C2B /* WorkoutDetails */,
 				DE012DD92A0144220071601B /* Home */,
 				DE10523D2A02D99B00399C2B /* MainCoordinator.swift */,
@@ -338,6 +347,7 @@
 				DE012DEB2A01944A0071601B /* Font + Extension.swift */,
 				DEDFC2F02A0AC6B300E736E0 /* HKWorkout + Extensions.swift */,
 				DEDFC2F22A0AC70400E736E0 /* WorkoutParser.swift */,
+				DEDFC2F92A0B83F300E736E0 /* Constants.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -360,6 +370,16 @@
 				DE012DE62A0188DD0071601B /* Workout + Mocked.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		DEDFC2F42A0B823000E736E0 /* HealthKitVerification */ = {
+			isa = PBXGroup;
+			children = (
+				DEDFC2F52A0B827800E736E0 /* HealthKitAuthorizationView.swift */,
+				DEDFC2F72A0B834700E736E0 /* HealthKitAuthorizationViewModel.swift */,
+				DEDFC2FB2A0B88BB00E736E0 /* HealthKitAuthorizationViewController.swift */,
+			);
+			path = HealthKitVerification;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -446,10 +466,12 @@
 				DEC29D6729E1909C0039B2C8 /* RoundedTextField.swift in Sources */,
 				DE012DEF2A02CB0D0071601B /* Repository.swift in Sources */,
 				DEA0BAB12A07D8E200F9BBBA /* ListView.swift in Sources */,
+				DEDFC2FC2A0B88BB00E736E0 /* HealthKitAuthorizationViewController.swift in Sources */,
 				DEDFC2F12A0AC6B300E736E0 /* HKWorkout + Extensions.swift in Sources */,
 				DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */,
 				DEC29D7229E1CABE0039B2C8 /* LoginView.swift in Sources */,
 				DEC29D6C29E1C9BE0039B2C8 /* ActivityIndicator.swift in Sources */,
+				DEDFC2F82A0B834700E736E0 /* HealthKitAuthorizationViewModel.swift in Sources */,
 				DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */,
 				DE012DE32A0146CC0071601B /* Color + Extensions.swift in Sources */,
 				DEC29D7329E1CABE0039B2C8 /* LoginViewModel.swift in Sources */,
@@ -460,6 +482,7 @@
 				DE012DDD2A01446F0071601B /* HomeViewController.swift in Sources */,
 				DE3353F529F07BDE002D4891 /* AccountVerificationView.swift in Sources */,
 				DE10523E2A02D99B00399C2B /* MainCoordinator.swift in Sources */,
+				DEDFC2FA2A0B83F300E736E0 /* Constants.swift in Sources */,
 				DEDA4AA929CF2125000AFBBF /* AppDelegate.swift in Sources */,
 				DE012DEC2A01944A0071601B /* Font + Extension.swift in Sources */,
 				DE012DE12A0145090071601B /* View + Extensions.swift in Sources */,
@@ -478,6 +501,7 @@
 				DE3353ED29ED8AAD002D4891 /* HTTPRequest.swift in Sources */,
 				DE012DDF2A01446F0071601B /* HomeViewModel.swift in Sources */,
 				DEC29D7129E1CABE0039B2C8 /* LoginViewController.swift in Sources */,
+				DEDFC2F62A0B827800E736E0 /* HealthKitAuthorizationView.swift in Sources */,
 				DE012DE52A014DD90071601B /* Workout.swift in Sources */,
 				DE1052472A0655B500399C2B /* NavigationBar.swift in Sources */,
 				DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */,

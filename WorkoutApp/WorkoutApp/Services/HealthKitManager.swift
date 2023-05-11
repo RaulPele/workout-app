@@ -11,9 +11,8 @@ import HealthKit
 class HealthKitManager {
     
     private let healthStore = HKHealthStore()
-    private var errorMessage: String = ""
     
-    func requestPermissions(fromWatch: Bool = false, completion: @escaping () -> ()) {
+    func requestPermissions(fromWatch: Bool = false, completion: @escaping (Error?) -> ()) {
         let typesToShare: Set = [HKObjectType.workoutType()]
           
           let typesToRead: Set = [
@@ -25,14 +24,9 @@ class HealthKitManager {
           ]
           
           healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
-              DispatchQueue.main.async {
-                  completion()
-                  
-                  if let error = error {
-                      self.errorMessage = error.localizedDescription
-                  }
-              }
-              
+              print("QWEQOPEQWE: \(error?.localizedDescription)")
+              print("SUCCESS \(success)")
+                completion(error)
 //              if !fromWatch {
 //                  self.loadPreviousWorkouts { workouts in
 //                      self.previousWorkouts = workouts
@@ -40,6 +34,21 @@ class HealthKitManager {
 //              }
           }
       }
+    
+    func requestPermissions(fromWatch: Bool = false) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            requestPermissions(fromWatch: fromWatch) { error in
+                if let error {
+                    print("ERROR: \(error.localizedDescription)")
+                    continuation.resume(throwing: error)
+                } else {
+                    print("RESUME")
+
+                    continuation.resume()
+                }
+            }
+        }
+    }
     
     private func loadWorkouts(completion: @escaping ([HKWorkout]?, Error?) -> Void) {
             let workoutPredicate = HKQuery.predicateForWorkouts(with: .traditionalStrengthTraining)

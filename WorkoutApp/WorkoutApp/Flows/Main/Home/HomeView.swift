@@ -54,7 +54,7 @@ struct Home_Preview: PreviewProvider {
     
     static var previews: some View {
         ForEach(previewDevices) { device in
-            Home.ContentView(viewModel: .init(workoutRepository: MockedWorkoutRepository()))
+            Home.ContentView(viewModel: .init(workoutRepository: MockedWorkoutRepository(), healthKitManager: HealthKitManager()))
                 .preview(device)
         }
     }

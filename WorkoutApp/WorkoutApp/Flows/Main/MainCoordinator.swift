@@ -12,12 +12,15 @@ class MainCoordinator: Coordinator {
     
     let navigationController: UINavigationController
     let workoutRepository: any WorkoutRepository
+    let healthKitManager: HealthKitManager
     
     init(navigationController: UINavigationController,
-         workoutRepository: any WorkoutRepository) {
+         workoutRepository: any WorkoutRepository,
+         healthKitManager: HealthKitManager) {
         
         self.navigationController = navigationController
         self.workoutRepository = workoutRepository
+        self.healthKitManager = healthKitManager
     }
     
     var rootViewController: UIViewController? {
@@ -29,7 +32,7 @@ class MainCoordinator: Coordinator {
     }
     
     func showHomeScreen() {
-        let vc = Home.ViewController(workoutRepository: workoutRepository)
+        let vc = Home.ViewController(workoutRepository: workoutRepository, healthKitManager: healthKitManager)
         vc.viewModel.onWorkoutTapped = showWorkoutDetailsScreen
         navigationController.pushViewController(vc, animated: true)
     }

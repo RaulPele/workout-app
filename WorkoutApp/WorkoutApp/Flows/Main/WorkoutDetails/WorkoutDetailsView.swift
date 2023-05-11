@@ -26,7 +26,6 @@ struct WorkoutDetails {
                 )
                 .foregroundColor(.white)
                 ScrollView {
-                    //                titleView
                     workoutDetailsView
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
