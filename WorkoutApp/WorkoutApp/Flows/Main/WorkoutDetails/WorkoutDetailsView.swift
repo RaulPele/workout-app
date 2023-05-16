@@ -26,7 +26,11 @@ struct WorkoutDetails {
                 )
                 .foregroundColor(.white)
                 ScrollView {
-                    workoutDetailsView
+                    
+                    VStack(spacing: 20) {
+                        workoutDetailsView
+                        exercisesView
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .padding(.horizontal)
@@ -55,12 +59,41 @@ struct WorkoutDetails {
             
         }
         
+        private var exercisesView: some View {
+            VStack(alignment: .leading) {
+                Text("Performed exercises")
+                    .foregroundColor(.white)
+                    .font(.heading2)
+                
+                ListView(items: viewModel.workout.performedExercises) { performedExercise in
+                    exerciseListItemView(for: performedExercise)
+                }
+                
+            }
+        }
+        
+        private func exerciseListItemView(for performedExercise: PerformedExercise) -> some View {
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Text(performedExercise.exercise.name)
+                    Text("\(performedExercise.numberOfSets) x \(performedExercise.setData.reps) x \(performedExercise.setData.weight.formatted()) kg")
+                    
+                }
+                
+                Group {
+                    Text("Sets: \(performedExercise.numberOfSets ) / \(performedExercise.exercise.numberOfSets) ")
+                    Text("Repetitions: \(performedExercise.setData.reps ) / \(performedExercise.exercise.setData.reps)")
+                    Text("Weight: \(performedExercise.setData.weight.formatted(.number.precision(.fractionLength(2)))) kg")
+                    Text("Set rest time: \(performedExercise.setData.restTime.formatted()) mins")
+                }.padding(.leading, 12)
+            }
+            .foregroundColor(.mint)
+        }
+        
         private var divider: some View {
             Rectangle()
                 .foregroundColor(.white)
                 .frame(height: 1)
-                
-                
         }
         
         private func rowView(for rowData: WorkoutDetails.RowData) -> some View {

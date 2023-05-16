@@ -43,7 +43,7 @@ struct WorkoutCardView: View {
 private extension WorkoutCardView {
     
     var dateView: some View {
-        Text(workout.date, style: .date)
+        Text(workout.endDate, style: .date)
             .foregroundColor(.white)
     }
 }

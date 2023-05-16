@@ -13,7 +13,7 @@ extension Home {
     class ViewModel: ObservableObject {
         
         @Published var isLoading: Bool = false
-        @Published var workouts: [Workout] = Workout.mockedSet
+        @Published var workouts: [Workout] = []
         
         private let workoutRepository: any WorkoutRepository
         private let healthKitManager: HealthKitManager
@@ -24,10 +24,13 @@ extension Home {
              healthKitManager: HealthKitManager) {
             self.workoutRepository = workoutRepository
             self.healthKitManager = healthKitManager
+//            requestHealthKitPermissions() //TODO: find a better place to request permissions
+//            loadWorkouts()
         }
         
         func handleOnAppear() {
             requestHealthKitPermissions() //TODO: find a better place to request permissions
+            
             loadWorkouts()
         }
         
@@ -50,6 +53,7 @@ extension Home {
                     self.workouts = workouts
                 } catch {
                     print("Error while loading workouts: \(error.localizedDescription)")
+                    self.workouts = Workout.mockedSet
                 }
                 
                 isLoading = false

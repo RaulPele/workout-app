@@ -12,7 +12,7 @@ class HealthKitManager {
     
     private let healthStore = HKHealthStore()
     
-    func requestPermissions(fromWatch: Bool = false, completion: @escaping (Error?) -> ()) {
+    private func requestPermissions(fromWatch: Bool = false, completion: @escaping (Error?) -> ()) {
         let typesToShare: Set = [HKObjectType.workoutType()]
           
           let typesToRead: Set = [

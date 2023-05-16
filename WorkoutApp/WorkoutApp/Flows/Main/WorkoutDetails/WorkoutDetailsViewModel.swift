@@ -68,14 +68,17 @@ extension WorkoutDetails {
         @Published var isLoading: Bool = false
         @Published var workout: Workout
         var workoutDetailsData = [RowData]()
+//        var exercisesData = [PerformedExercise]()
         
         var onBack: (() -> Void)?
         
         init(workout: Workout) {
             self.workout = workout
             computeWorkoutDetailsData()
+//            computeExercisesData()
         }
         
+        //MARK: - Compute data for display
         private func computeWorkoutDetailsData() {
             let avgHeartRate = WorkoutCharacteristic(key: .avgHeartRate, value: "\(workout.averageHeartRate)")
             let totalCalories = WorkoutCharacteristic(key: .totalCalories, value: "\(workout.totalCalories)")
@@ -87,5 +90,7 @@ extension WorkoutDetails {
                 .init(first: activecalories, second: totalCalories)
             ]
         }
+        
+       
     }
 }

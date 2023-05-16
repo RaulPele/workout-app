@@ -13,7 +13,7 @@ struct WorkoutParser {
     let healthKitManager: HealthKitManager
     
     func toModelWorkout(_ workout: HKWorkout) async throws -> Workout {
-        let title = "Traditional strength training" //TODO: change
+        let title = WorkoutTemplate.mockedWorkoutTemplate.name//TODO: change
         let averageHeartRate = try await healthKitManager.getAverageHeartRate(for: workout)
         let duration = workout.duration
         
@@ -22,11 +22,14 @@ struct WorkoutParser {
         
         let modelWorkout = Workout(id: workout.uuid,
                                    title: title,
+                                   workoutTemplate: .mockedWorkoutTemplate,
+                                   performedExercises: [.mockedBBBenchPress, .mockedBBSquats],
                                    averageHeartRate: Int(averageHeartRate),
                                    duration: duration,
+                                   startDate: workout.startDate,
+                                   endDate: workout.endDate,
                                    totalCalories: totalCalories,
-                                   activeCalories: activeCalories,
-                                   date: workout.startDate)
+                                   activeCalories: activeCalories)
         
         return modelWorkout
     }

@@ -23,7 +23,8 @@ struct Home {
                             viewModel.handleWorkoutTapped(for: workout)
                         } label: {
                             WorkoutCardView(workout: workout)
-                        }.buttonStyle(.plain)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding()
