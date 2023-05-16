@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct Workout: Identifiable {
+struct Workout: Identifiable, Codable {
     
     let id: UUID
-    let title: String //TODO: change type from string to workout type
+    let title: String 
     let workoutTemplate: WorkoutTemplate
     let performedExercises: [PerformedExercise]
     let averageHeartRate: Int //TODO: show all heart rate intervals

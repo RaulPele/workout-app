@@ -76,15 +76,15 @@ struct WorkoutDetails {
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
                     Text(performedExercise.exercise.name)
-                    Text("\(performedExercise.numberOfSets) x \(performedExercise.setData.reps) x \(performedExercise.setData.weight.formatted()) kg")
+                    Text("\(performedExercise.sets.count) x \(performedExercise.sets[0].reps) x \(performedExercise.sets[0].weight.formatted()) kg")
                     
                 }
                 
                 Group {
-                    Text("Sets: \(performedExercise.numberOfSets ) / \(performedExercise.exercise.numberOfSets) ")
-                    Text("Repetitions: \(performedExercise.setData.reps ) / \(performedExercise.exercise.setData.reps)")
-                    Text("Weight: \(performedExercise.setData.weight.formatted(.number.precision(.fractionLength(2)))) kg")
-                    Text("Set rest time: \(performedExercise.setData.restTime.formatted()) mins")
+                    Text("Sets: \(performedExercise.sets.count ) / \(performedExercise.exercise.numberOfSets) ")
+                    Text("Repetitions: \(performedExercise.sets[0].reps ) / \(performedExercise.exercise.setData.reps)")
+                    Text("Weight: \(performedExercise.sets[0].weight.formatted(.number.precision(.fractionLength(2)))) kg")
+                    Text("Set rest time: \(performedExercise.sets[0].restTime.formatted()) mins")
                 }.padding(.leading, 12)
             }
             .foregroundColor(.mint)

@@ -17,6 +17,7 @@ extension Home {
         
         private let workoutRepository: any WorkoutRepository
         private let healthKitManager: HealthKitManager
+        let watchCommunicator = WatchCommunicator()
         
         var onWorkoutTapped: ((_ for: Workout) -> Void)?
         
@@ -24,14 +25,14 @@ extension Home {
              healthKitManager: HealthKitManager) {
             self.workoutRepository = workoutRepository
             self.healthKitManager = healthKitManager
-//            requestHealthKitPermissions() //TODO: find a better place to request permissions
-//            loadWorkouts()
+            requestHealthKitPermissions() //TODO: find a better place to request permissions
+            loadWorkouts()
         }
         
         func handleOnAppear() {
-            requestHealthKitPermissions() //TODO: find a better place to request permissions
-            
-            loadWorkouts()
+//            requestHealthKitPermissions() //TODO: find a better place to request permissions
+//            
+//            loadWorkouts()
         }
         
         private func requestHealthKitPermissions() {

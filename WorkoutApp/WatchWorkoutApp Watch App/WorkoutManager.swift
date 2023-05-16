@@ -29,7 +29,10 @@ class WorkoutManager: NSObject, ObservableObject {
     var session: HKWorkoutSession?
     var builder: HKLiveWorkoutBuilder?
     
+    private let phoneCommunicator = PhoneCommunicator()
+    
     @Published var running = false
+    @Published var workoutTemplates = [WorkoutTemplate]()
     
     // MARK: - Workout metrics
     @Published var workout: HKWorkout?
@@ -130,6 +133,18 @@ class WorkoutManager: NSObject, ObservableObject {
         session?.end()
         showingSummaryView = true
     }
+    
+    func loadWorkoutTemplates() {
+        do {
+            try phoneCommunicator.requestWorkoutTemplates { [weak self] templates in
+                DispatchQueue.main.async {
+                    self?.workoutTemplates = templates
+                }
+            }
+        } catch {
+            print("ERROR WHILE LOADING WORKOUTS ON WATCH: \(error.localizedDescription)")
+        }
+    }
 }
 
 //MARK: - HKWorkoutSessionDelegate
@@ -145,6 +160,7 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
                 self.builder?.finishWorkout { workout, error in
                     DispatchQueue.main.async {
                         self.workout = workout
+//                        self.phoneCommunicator.sendWorkoutSession(
                     }
                 }
             }

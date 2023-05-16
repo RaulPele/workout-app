@@ -9,7 +9,8 @@ import Foundation
 
 protocol Repository {
     
-    associatedtype T
+    associatedtype T: Identifiable
     
-    func getAll() async throws -> [T] 
+    func getAll() async throws -> [T]
+    @discardableResult func save(entity: T) async throws -> T
 }

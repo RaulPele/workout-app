@@ -51,26 +51,27 @@ class HealthKitManager {
     }
     
     private func loadWorkouts(completion: @escaping ([HKWorkout]?, Error?) -> Void) {
-            let workoutPredicate = HKQuery.predicateForWorkouts(with: .traditionalStrengthTraining)
-            //TODO: add source predicate
-            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
-            let query = HKSampleQuery(sampleType: .workoutType(),
-                                      predicate: workoutPredicate,
-                                      limit: 0,
-                                      sortDescriptors: [sortDescriptor]) { (query, samples, error) in
-                DispatchQueue.main.async {
-                    guard let samples = samples as? [HKWorkout], error == nil else {
-                        completion(nil, error)
-//                        continuation.resume(throwing: error!)
-                        return
-                        
-                    }
-//                    continuation.resume(returning: samples)
-                    completion(samples, nil)
+        let workoutPredicate = HKQuery.predicateForWorkouts(with: .traditionalStrengthTraining)
+        
+        let sourcePredicate = HKQuery.predicateForObjects(from: .default())
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [workoutPredicate, sourcePredicate])
+        
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+        let query = HKSampleQuery(sampleType: .workoutType(),
+                                  predicate: compoundPredicate,
+                                  limit: 0,
+                                  sortDescriptors: [sortDescriptor]) { (query, samples, error) in
+            DispatchQueue.main.async {
+                guard let samples = samples as? [HKWorkout], error == nil else {
+                    completion(nil, error)
+                    return
+                    
                 }
+                completion(samples, nil)
             }
-            
-            healthStore.execute(query)
+        }
+        
+        healthStore.execute(query)
     }
     
     func loadWorkouts() async throws -> [HKWorkout] {
@@ -107,7 +108,7 @@ class HealthKitManager {
     }
     
     func getAverageHeartRate(for workout: HKWorkout) async throws -> Double {
-        return try await withCheckedThrowingContinuation{ continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             getAverageHeartRate(for: workout) { averageHeartRate, error in
                 guard let averageHeartRate, error == nil else {
                     continuation.resume(throwing: error!)
