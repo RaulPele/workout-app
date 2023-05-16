@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct Workout: Identifiable {
+struct Workout: Identifiable, Codable {
     
-    let id: UUID
-    let title: String //TODO: change type from string to workout type
+    var id: UUID
+    var title: String?
     let workoutTemplate: WorkoutTemplate
-    let performedExercises: [PerformedExercise]
-    let averageHeartRate: Int //TODO: show all heart rate intervals
-    let duration: TimeInterval //TODO: workout start time workout end time
-    let startDate: Date //TODO: remove duration field or convert to computed property
-    let endDate: Date
-    let totalCalories: Int
-    let activeCalories: Int
+    var performedExercises: [PerformedExercise]
+    var averageHeartRate: Int? //TODO: show all heart rate intervals
+    var duration: TimeInterval? //TODO: workout start time workout end time
+    var startDate: Date? //TODO: remove duration field or convert to computed property
+    var endDate: Date?
+    var totalCalories: Int?
+    var activeCalories: Int?
 }

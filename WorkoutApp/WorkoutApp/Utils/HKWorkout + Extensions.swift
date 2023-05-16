@@ -10,16 +10,20 @@ import HealthKit
 
 extension HKWorkout {
     
-    var basalEnergyBurned: Double? {
-        return statistics(for: .init(.basalEnergyBurned))?.sumQuantity()?.doubleValue(for: .largeCalorie())
+    var basalEnergyBurned: Int? {
+        return Int(ceil(statistics(for: .init(.basalEnergyBurned))?.sumQuantity()?.doubleValue(for: .largeCalorie()) ?? 0))
     }
     
-    var activeEnergyBurned: Double? {
-        return statistics(for: .init(.activeEnergyBurned))?.sumQuantity()?.doubleValue(for: .largeCalorie())
+    var activeEnergyBurned: Int? {
+        return Int(ceil(statistics(for: .init(.activeEnergyBurned))?.sumQuantity()?.doubleValue(for: .largeCalorie()) ?? 0))
     }
     
-    var totalCalories: Double? {
+    var totalCalories: Int? {
         guard let basalEnergyBurned, let activeEnergyBurned else { return nil }
         return basalEnergyBurned + activeEnergyBurned
+    }
+    
+    var averageHeartRate: Int? { //TODO: test if this works
+        return Int(ceil(statistics(for: .init(.heartRate))?.averageQuantity()?.doubleValue(for: HKUnit.count().unitDivided(by: .minute())) ?? 0))
     }
 }

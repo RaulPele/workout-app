@@ -12,15 +12,19 @@ class DependencyContainer {
     let workoutRepository: any WorkoutRepository
     let workoutService: WorkoutService
     let healthKitManager: HealthKitManager
+//    let watchCommunicator: WatchCommunicator
     
     init(authenticationService: AuthenticationServiceProtocol,
          workoutService: WorkoutService,
          workoutRepository: any WorkoutRepository,
-         healthKitManager: HealthKitManager) {
+         healthKitManager: HealthKitManager
+//         watchCommunicator: WatchCommunicator
+    ) {
         self.authenticationService = authenticationService
         self.workoutService = workoutService
         self.workoutRepository = workoutRepository
         self.healthKitManager = healthKitManager
+//        self.watchCommunicator = watchCommunicator
         
     }
 }

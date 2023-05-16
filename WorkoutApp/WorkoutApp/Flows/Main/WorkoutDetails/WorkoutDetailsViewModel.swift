@@ -80,10 +80,10 @@ extension WorkoutDetails {
         
         //MARK: - Compute data for display
         private func computeWorkoutDetailsData() {
-            let avgHeartRate = WorkoutCharacteristic(key: .avgHeartRate, value: "\(workout.averageHeartRate)")
-            let totalCalories = WorkoutCharacteristic(key: .totalCalories, value: "\(workout.totalCalories)")
-            let activecalories = WorkoutCharacteristic(key: .activeCalories, value: "\(workout.activeCalories)")
-            let duration = WorkoutCharacteristic(key: .duration, value: workout.duration.formatted())
+            let avgHeartRate = WorkoutCharacteristic(key: .avgHeartRate, value: "\(workout.averageHeartRate ?? 0)")
+            let totalCalories = WorkoutCharacteristic(key: .totalCalories, value: "\(workout.totalCalories ?? 0)")
+            let activecalories = WorkoutCharacteristic(key: .activeCalories, value: "\(workout.activeCalories ?? 0)")
+            let duration = WorkoutCharacteristic(key: .duration, value: workout.duration?.formatted() ?? "0:00:00")
             
             self.workoutDetailsData = [
                 .init(first: duration, second: avgHeartRate),

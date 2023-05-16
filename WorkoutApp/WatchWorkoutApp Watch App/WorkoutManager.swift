@@ -10,10 +10,10 @@ import HealthKit
 
 class WorkoutManager: NSObject, ObservableObject {
     
-    var selectedWorkout: HKWorkoutActivityType? {
+    var selectedWorkoutTemplate: WorkoutTemplate? {
         didSet {
-            guard let selectedWorkout else { return }
-            startWorkout(workoutType: selectedWorkout)
+            guard let selectedWorkoutTemplate else { return }
+            startWorkout(workoutType: .traditionalStrengthTraining)
         }
     }
     
@@ -29,7 +29,13 @@ class WorkoutManager: NSObject, ObservableObject {
     var session: HKWorkoutSession?
     var builder: HKLiveWorkoutBuilder?
     
+    private let phoneCommunicator = PhoneCommunicator()
+    
     @Published var running = false
+    
+    // MARK: - Workout exercises
+    @Published var workoutTemplates = [WorkoutTemplate]()
+    var workoutSession: Workout?
     
     // MARK: - Workout metrics
     @Published var workout: HKWorkout?
@@ -45,6 +51,7 @@ class WorkoutManager: NSObject, ObservableObject {
         let typesToRead: Set = [
             HKQuantityType.quantityType(forIdentifier: .heartRate)!,
             HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!,
+            HKQuantityType.quantityType(forIdentifier: .basalEnergyBurned)!,
             HKObjectType.activitySummaryType()
         ]
 
@@ -75,18 +82,28 @@ class WorkoutManager: NSObject, ObservableObject {
         
         builder?.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: configuration)
         
+        workoutSession = .mocked1 //TODO: change
+        
         let startDate = Date()
         session?.startActivity(with: startDate)
-        builder?.beginCollection(withStart: startDate) { success, error in
+        builder?.beginCollection(withStart: startDate) { [weak self] success, error in
             //Workout has started
             if let error = error {
                 print("Error in builder's beginCollection method: \(error.localizedDescription)")
+            } else if success {
+                self?.workoutSession = Workout(
+                    id: UUID(),
+                    workoutTemplate: self?.selectedWorkoutTemplate ?? .mockedWorkoutTemplate,
+                    performedExercises: []
+                )
             }
+            
         }
     }
     
     func updateMetrics(for statistics: HKStatistics?) {
         guard let statistics = statistics else { return }
+        
         DispatchQueue.main.async {
             switch statistics.quantityType {
             case HKQuantityType(.heartRate):
@@ -95,8 +112,8 @@ class WorkoutManager: NSObject, ObservableObject {
                 self.averageHeartRate = statistics.averageQuantity()?.doubleValue(for: heartRateUnit) ?? 0
                 
             case HKQuantityType(.activeEnergyBurned):
-                self.activeEnergyBurned = statistics.mostRecentQuantity()?.doubleValue(for: .kilocalorie()) ?? 0
-                
+                self.activeEnergyBurned = statistics.sumQuantity()?.doubleValue(for: .kilocalorie()) ?? 0
+                print(self.activeEnergyBurned)
             default:
                 return
             }
@@ -104,10 +121,11 @@ class WorkoutManager: NSObject, ObservableObject {
     }
     
     func resetWorkout() {
-        selectedWorkout = nil
+        selectedWorkoutTemplate = nil
         builder = nil
         session = nil
         workout = nil
+        workoutSession = nil
         
         activeEnergyBurned = 0
         averageHeartRate = 0
@@ -130,6 +148,18 @@ class WorkoutManager: NSObject, ObservableObject {
         session?.end()
         showingSummaryView = true
     }
+    
+    func loadWorkoutTemplates() {
+        do {
+            try phoneCommunicator.requestWorkoutTemplates { [weak self] templates in
+                DispatchQueue.main.async {
+                    self?.workoutTemplates = templates
+                }
+            }
+        } catch {
+            print("ERROR WHILE LOADING WORKOUTS ON WATCH: \(error.localizedDescription)")
+        }
+    }
 }
 
 //MARK: - HKWorkoutSessionDelegate
@@ -145,6 +175,19 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
                 self.builder?.finishWorkout { workout, error in
                     DispatchQueue.main.async {
                         self.workout = workout
+                        
+                        self.workoutSession?.id = workout?.uuid ?? .init()
+                        self.workoutSession?.activeCalories = workout?.activeEnergyBurned
+                        self.workoutSession?.averageHeartRate = workout?.averageHeartRate
+                        self.workoutSession?.totalCalories = workout?.totalCalories
+                        self.workoutSession?.duration = workout?.duration
+                        self.workoutSession?.performedExercises = [.mockedBBSquats]
+                        self.workoutSession?.endDate = date
+                        self.workoutSession?.title = "My mocked session"
+                        
+                        guard let wkSession = self.workoutSession else { return }
+                        print("Sent workout session with id: \(wkSession.id) to PHONE")
+                        try? self.phoneCommunicator.send(workoutSession: wkSession)
                     }
                 }
             }

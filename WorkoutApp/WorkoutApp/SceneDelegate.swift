@@ -26,6 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         self.window = window
         rootCoordinator.start(options: connectionOptions)
+//        AppTester().createWorkoutTemplatesFiles()
         
     }
 

@@ -26,12 +26,14 @@ class RootCoordinator: Coordinator {
         let workoutService = MockedWorkoutService()
         let healthKitManager = HealthKitManager()
         let workoutRepository = WorkoutAPIRepository(workoutService: workoutService, healthKitManager: healthKitManager)
+//        let watchCommunicator = WatchCommunicator()
         
         dependencyContainer = DependencyContainer(
             authenticationService: authService,
             workoutService: workoutService,
             workoutRepository: workoutRepository,
             healthKitManager: healthKitManager
+//            watchCommunicator: watchCommunicator
         )
     }
     

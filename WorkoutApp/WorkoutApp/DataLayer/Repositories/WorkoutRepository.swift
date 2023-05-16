@@ -23,36 +23,54 @@ class WorkoutAPIRepository: WorkoutRepository {
     
     private let workoutService: WorkoutService
     private let healthKitManager: HealthKitManager
-    private let workoutParser: WorkoutParser
     
     init(workoutService: WorkoutService,
          healthKitManager: HealthKitManager) {
         self.workoutService = workoutService
         self.healthKitManager = healthKitManager
-        self.workoutParser = WorkoutParser(healthKitManager: healthKitManager)
     }
     
     func getAll() async throws -> [Workout] {
         let hkWorkouts = try await healthKitManager.loadWorkouts() //TODO: use higher order functions
-//        let workouts = hkWorkouts.map {
-//            let averageHeartRate = try await healthKitManager.getAverageHeartRate(for: $0)
-//            Workout(
-//                id: $0.uuid,
-//                title: "Strength workout",
-//                workoutTemplate: .mockedWorkoutTemplate,
-//                performedExercises: [.mockedBBBenchPress],
-//                averageHeartRate: , duration: <#T##TimeInterval#>, startDate: <#T##Date#>, endDate: <#T##Date#>, totalCalories: <#T##Int#>, activeCalories: <#T##Int#>)
-//        }
-        return try await workoutParser.toModelWorkouts(hkWorkouts)
+        
+        let workouts = try hkWorkouts.compactMap { hkWorkout in
+            let workout: Workout? = try FileIOManager.read(forId: hkWorkout.uuid, fromDirectory: .workoutSessions)
+            return workout
+        }
+        
+        return workouts
     }
+    
+    func save(entity: Workout) async throws -> Workout {
+        try FileIOManager.write(entity: entity, toDirectory: .workoutSessions)
+        return entity
+    }
+    
+    //TODO: implement delete
 }
 
 
 class MockedWorkoutRepository: WorkoutRepository {
     
+    func save(entity: Workout) async throws -> Workout {
+        
+        return entity
+    }
+    
+    
     private let workoutService: WorkoutService = MockedWorkoutService()
     
     func getAll() async throws -> [Workout] {
         return try await workoutService.getAll()
+    }
+}
+
+class MockedWorkoutEmptyRepository: WorkoutRepository {
+    func save(entity: Workout) async throws -> Workout {
+        return entity
+    }
+    
+    func getAll() async throws -> [Workout] {
+        return []
     }
 }
