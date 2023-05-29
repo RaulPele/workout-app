@@ -12,7 +12,7 @@ struct SessionPagingView: View {
     @Environment(\.isLuminanceReduced) var isLuminaceReduced
     @EnvironmentObject var workoutManager: WorkoutManager
     @State private var selection: Tab = .metrics
-    
+    @State private var selection2: Tab = .metrics
     enum Tab {
         case metrics
         case nowPlaying
@@ -22,7 +22,11 @@ struct SessionPagingView: View {
     var body: some View {
         TabView(selection: $selection) {
             ControlsView().tag(Tab.controls)
-            MetricsView().tag(Tab.metrics)
+            
+//            MetricsView()
+            MetricsAndExercisesView()
+                .tag(Tab.metrics)
+            
             NowPlayingView().tag(Tab.nowPlaying)
         }
         .navigationTitle(workoutManager.selectedWorkoutTemplate?.name ?? "")
