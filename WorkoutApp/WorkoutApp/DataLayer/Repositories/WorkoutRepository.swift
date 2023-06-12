@@ -12,13 +12,6 @@ protocol WorkoutRepository: Repository where T == Workout {
     
 }
 
-//extension HKWorkout {
-//    func toModelWorkout() -> Workout {
-//        return Workout(
-//            id: hkW, title: <#T##String#>, workoutTemplate: <#T##WorkoutTemplate#>, performedExercises: <#T##[PerformedExercise]#>, averageHeartRate: <#T##Int#>, duration: <#T##TimeInterval#>, startDate: <#T##Date#>, endDate: <#T##Date#>, totalCalories: <#T##Int#>, activeCalories: <#T##Int#>)
-//    }
-//}
-
 class WorkoutAPIRepository: WorkoutRepository {
     
     private let workoutService: WorkoutService

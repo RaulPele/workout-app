@@ -24,7 +24,7 @@ struct WorkoutDetails {
                         viewModel.onBack?()
                     }
                 )
-                .foregroundColor(.white)
+                
                 ScrollView {
                     
                     VStack(spacing: 20) {
@@ -40,7 +40,7 @@ struct WorkoutDetails {
         
         private var titleView: some View {
             Text(viewModel.workout.title ?? "No title")
-                .foregroundColor(Color.white)
+                .foregroundColor(Color.onBackground)
                 .font(.heading1)
         }
         
@@ -48,10 +48,10 @@ struct WorkoutDetails {
             VStack(alignment: .leading) {
                 
                 Text("Workout details")
-                    .foregroundColor(.white)
+                    .foregroundColor(.onBackground)
                     .font(.heading2)
                 
-                ListView(items: viewModel.workoutDetailsData) { rowData in
+                ListView(items: viewModel.workoutDetailsData, backgroundColor: .surface2) { rowData in
                     rowView(for: rowData)
                 }
                 
@@ -62,10 +62,10 @@ struct WorkoutDetails {
         private var exercisesView: some View {
             VStack(alignment: .leading) {
                 Text("Performed exercises")
-                    .foregroundColor(.white)
+                    .foregroundColor(.onBackground)
                     .font(.heading2)
                 
-                ListView(items: viewModel.workout.performedExercises) { performedExercise in
+                ListView(items: viewModel.workout.performedExercises, backgroundColor: .surface2) { performedExercise in
                     exerciseListItemView(for: performedExercise)
                 }
                 
@@ -87,7 +87,7 @@ struct WorkoutDetails {
                     Text("Set rest time: \(performedExercise.sets[0].restTime.formatted()) mins")
                 }.padding(.leading, 12)
             }
-            .foregroundColor(.mint)
+            .foregroundColor(.primaryColor)
         }
         
         private var divider: some View {
@@ -118,7 +118,7 @@ struct WorkoutDetails {
         private func foregroundColor(for characteristic: WorkoutCharacteristic) -> Color {
             switch characteristic.key {
             case .totalCalories, .activeCalories:
-                return .mint
+                return .primaryColor
             case .duration:
                 return .green
             

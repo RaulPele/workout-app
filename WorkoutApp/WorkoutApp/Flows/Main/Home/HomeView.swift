@@ -20,7 +20,7 @@ struct Home {
                 Text("You don't have any workouts tracked. Open the watch application and get started!")
                     .multilineTextAlignment(.center)
                     .font(.heading1)
-                    .foregroundColor(.white)
+                    .foregroundColor(.onBackground)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.background)
                     .onAppear {

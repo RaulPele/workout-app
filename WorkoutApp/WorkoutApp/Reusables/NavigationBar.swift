@@ -37,10 +37,11 @@ struct NavigationBar<RightView: View>: View {
             
             titleView
             Spacer()
-            rightView()
         }
+        .overlay(rightView(), alignment: .trailing)
         .padding(.horizontal, 24)
         .padding(.vertical, 10)
+        .foregroundColor(.onBackground)
     }
     
     private var backButtonView: some View {
@@ -61,10 +62,13 @@ struct NavigationBar<RightView: View>: View {
 
 struct NavigationBar_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
+        ZStack {
+            Color.background
+                .ignoresSafeArea()
             NavigationBar(title: "Morning session", backButtonAction:  {
                 
             })
         }
+        
     }
 }

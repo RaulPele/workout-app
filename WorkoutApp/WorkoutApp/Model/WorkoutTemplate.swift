@@ -21,4 +21,13 @@ extension WorkoutTemplate {
         name: "My strength workout",
         exercises: [.mockedBBSquats, .mockedBBBenchPress]
     )
+    
+    static func mockedWorkoutTemplate2() -> WorkoutTemplate {
+        return WorkoutTemplate(
+            id: .init(),
+            name: "My strength workout",
+            exercises: [.mockedBBSquats, .mockedBBBenchPress]
+        )
+    }
 }
+
