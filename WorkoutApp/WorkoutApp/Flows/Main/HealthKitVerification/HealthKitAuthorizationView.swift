@@ -35,7 +35,7 @@ struct HealthKitAuthorization {
                 Text("Please give permission in order to keep using the app.")
                 
             }
-            .foregroundColor(.white)
+            .foregroundColor(.onBackground)
             .font(.heading3)
             .multilineTextAlignment(.center)
             

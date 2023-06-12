@@ -22,20 +22,19 @@ struct WorkoutCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
                 Text(workout.title ?? "No title")
-                    .foregroundColor(.white)
+                    .foregroundColor(.onSurface)
                     .font(.heading3)
                 Text(workout.duration?.formatted() ?? "0:00:00")
-                    .foregroundColor(.white)
+                    .foregroundColor(.onSurface)
                     .bold()
                 Text("\(workout.activeCalories ?? 0) KCAL")
-                    .foregroundColor(.white)
-                //                .font(<#T##font: Font?##Font?#>)
+                    .foregroundColor(.onSurface)
                 
             }
         .frame(maxWidth: .infinity, alignment: .leading)
         .overlay(dateView, alignment: .bottomTrailing)
         .padding()
-        .background(Color.background)
+        .background(Color.surface)
         .cornerRadius(15)
     }
 }
@@ -44,7 +43,7 @@ private extension WorkoutCardView {
     
     var dateView: some View {
         Text(workout.endDate ?? .now, style: .date)
-            .foregroundColor(.white)
+            .foregroundColor(.onSurface)
     }
 }
 

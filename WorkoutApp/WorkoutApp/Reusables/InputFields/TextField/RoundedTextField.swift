@@ -49,9 +49,6 @@ struct RoundedTextField: View {
             .textInputAutocapitalization(.never)
             .textContentType(textContentType)
             .keyboardType(keyboardType)
-//            .introspectTextField { textField in
-//                textField.tintColor = .gray
-//            }
             
             
     }
