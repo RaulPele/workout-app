@@ -24,3 +24,17 @@ class WorkoutTemplateLocalRepository: WorkoutTemplateRepository {
     
     
 }
+
+class MockedWorkoutTemplateRepository: WorkoutTemplateRepository {
+    
+    private var templates = [WorkoutTemplate]()
+    
+    func getAll() async throws -> [WorkoutTemplate] {
+        return templates
+    }
+    
+    func save(entity: WorkoutTemplate) async throws -> WorkoutTemplate {
+        templates.append(entity)
+        return entity
+    }
+}

@@ -8,9 +8,5 @@
 	<array>
 		<string>workout-processing</string>
 	</array>
-	<key>NSHealthShareUsageDescription</key>
-	<string>WorkoutApp needs to access your workout data in order to display it.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>WorkoutApp needs to save your workout data to HealthKit.</string>
 </dict>
 </plist>

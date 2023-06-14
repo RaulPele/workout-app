@@ -35,6 +35,11 @@ class HealthKitManager {
           }
       }
     
+    func isAuthorizedToShare() -> Bool {
+        return healthStore.authorizationStatus(for: .workoutType()) == .sharingAuthorized
+        
+    }
+    
     func requestPermissions(fromWatch: Bool = false) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             requestPermissions(fromWatch: fromWatch) { error in

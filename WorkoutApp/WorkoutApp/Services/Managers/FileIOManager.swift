@@ -10,6 +10,7 @@ import Foundation
 enum Directory: String {
     case workoutSessions = "WorkoutSessions"
     case workoutTemplates = "WorkoutTemplates"
+    case exercises = "Exercises"
 }
 
 
@@ -59,6 +60,7 @@ struct FileIOManager {
         let entities = try fileURLs.compactMap {
             print("FILE URL FROM DIRECTORY: \($0)")
             let data = try Data(contentsOf: $0)
+            print("DATA: \(String(data: data, encoding: .utf8))")
             return try? decoder.decode(T.self, from: data)
         }
         
@@ -75,6 +77,8 @@ struct FileIOManager {
         
         let fileURL = entityDirectory.appendingPathComponent("\(id).json", conformingTo: .fileURL)
         let decoder = JSONDecoder()
+        
+        print("DATA: \(String(data: (try? Data(contentsOf: fileURL)) ?? Data(), encoding: .utf8))")
         return try decoder.decode(T.self, from: Data(contentsOf: fileURL))
     }
 }

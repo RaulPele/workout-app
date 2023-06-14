@@ -12,7 +12,7 @@ struct PerformedExercise: Identifiable, Codable {
     let id: UUID
     let exercise: Exercise
 //    let numberOfSets: Int
-    let sets: [PerformedSet] // TODO: change to an array of performed sets
+    var sets: [PerformedSet] // TODO: change to an array of performed sets
     //TODO: add data health metrics
 }
 

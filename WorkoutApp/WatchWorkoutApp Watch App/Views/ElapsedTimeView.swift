@@ -12,7 +12,13 @@ struct ElapsedTimeView: View {
     var elapsedTime: TimeInterval = 0
     var showSubseconds: Bool = true
     
-    @State private var timeFormatter = ElapsedTimeFormatter()
+    @State private var timeFormatter: ElapsedTimeFormatter
+    
+    init(elapsedTime: TimeInterval = 0, showSubseconds: Bool = true) {
+        self.elapsedTime = elapsedTime
+        self.showSubseconds = showSubseconds
+        _timeFormatter = State(wrappedValue: ElapsedTimeFormatter(showSubseconds: showSubseconds))
+    }
 
     var body: some View {
         Text(NSNumber(value: elapsedTime), formatter: timeFormatter)
@@ -33,7 +39,16 @@ class ElapsedTimeFormatter: Formatter {
     }()
     
     var showSubseconds = true
-
+    
+    init(showSubseconds: Bool = true) {
+        super.init()
+        self.showSubseconds = showSubseconds
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func string(for value: Any?) -> String? {
         guard let time = value as? TimeInterval else {
             return nil

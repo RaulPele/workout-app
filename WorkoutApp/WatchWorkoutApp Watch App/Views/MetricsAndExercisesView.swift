@@ -13,23 +13,31 @@ struct MetricsAndExercisesView: View {
         case metrics
         case exercise1
         case exercise2
-        
-//        static func ==(lhs: Tab, rhs: Tab) -> Bool {
-//            return lhs.id == rhs.id
-//        }
     }
     
-    @State var selection: Tab = .metrics
+    @State var selection: Int = 0
+    @State var availableExercises = [Exercise]()
+    @EnvironmentObject var workoutManager: WorkoutManager
+    
     
     var body: some View {
         TabView(selection: $selection) {
             MetricsView()
-                .tag(Tab.metrics)
-            CurrentExerciseView(currentExercise: .mockedBBBenchPress)
-                .tag(Tab.exercise1)
-            CurrentExerciseView(currentExercise: .mockedBBSquats)
-                .tag(Tab.exercise2)
+                .tag(0)
+
+//            if let exercises = workoutManager.remainingExercises {
+            ForEach(workoutManager.remainingExercises.indices, id: \.self) { index in
+                    CurrentExerciseView(currentExercise: PerformedExercise(
+                        id: .init(),
+                        exercise: workoutManager.remainingExercises[index],
+                        sets: []))
+                        .tag(index + 1 )
+                        .id(workoutManager.remainingExercises.indices)
+                }
+//            }
         }
         .tabViewStyle(.carousel)
+//        .navigationTitle("qweqwe")
+//        .navigationBarHidden(false)
     }
 }

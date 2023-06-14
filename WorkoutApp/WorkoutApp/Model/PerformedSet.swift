@@ -13,7 +13,7 @@ struct PerformedSet: Identifiable, Codable {
     let set: ExerciseSet
     let reps: Int
     let weight: Double
-    let restTime: TimeInterval
+    var restTime: TimeInterval
 }
 
 extension PerformedSet {

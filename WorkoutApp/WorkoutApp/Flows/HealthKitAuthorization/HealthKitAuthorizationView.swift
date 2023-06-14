@@ -26,6 +26,18 @@ struct HealthKitAuthorization {
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .background(Color.background)
+            .onAppear {
+                viewModel.handleOnAppear()
+            }
+            .onChange(of: viewModel.appCameInForeground) { newValue in
+                if newValue == true {
+                    if viewModel.healthKitManager.isAuthorizedToShare() {
+                        viewModel.onFinished?()
+                    }
+                    
+                }
+                print("NEW VALUE: \(newValue)")
+            }
         }
         
         private var messageView: some View {
@@ -42,16 +54,15 @@ struct HealthKitAuthorization {
         }
         
         private var authorizationButtonView: some View {
-            Button {
-                viewModel.authorize()
-            } label: {
-                Text("Authorize")
-                    .foregroundColor(.red)
-            }
-            .buttonStyle(ButtonStyles.Filled(
-                foregroundColor: .red,
+            Buttons.Filled(
+                title: "Authorize",
                 backgroundColor: .white,
-                fontSize: 15))
+                foregroundColor: .red,
+                fontSize: 15,
+                isLoading: viewModel.isLoading
+            ) {
+                viewModel.authorize()
+            }
             .frame(maxWidth: 300)
         }
     }

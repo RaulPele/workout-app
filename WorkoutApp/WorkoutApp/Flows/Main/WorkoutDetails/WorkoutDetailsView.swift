@@ -66,28 +66,10 @@ struct WorkoutDetails {
                     .font(.heading2)
                 
                 ListView(items: viewModel.workout.performedExercises, backgroundColor: .surface2) { performedExercise in
-                    exerciseListItemView(for: performedExercise)
+                    ExerciseListItemView(for: performedExercise)
                 }
                 
             }
-        }
-        
-        private func exerciseListItemView(for performedExercise: PerformedExercise) -> some View {
-            VStack(alignment: .leading, spacing: 5) {
-                HStack {
-                    Text(performedExercise.exercise.name)
-                    Text("\(performedExercise.sets.count) x \(performedExercise.sets[0].reps) x \(performedExercise.sets[0].weight.formatted()) kg")
-                    
-                }
-                
-                Group {
-                    Text("Sets: \(performedExercise.sets.count ) / \(performedExercise.exercise.numberOfSets) ")
-                    Text("Repetitions: \(performedExercise.sets[0].reps ) / \(performedExercise.exercise.setData.reps)")
-                    Text("Weight: \(performedExercise.sets[0].weight.formatted(.number.precision(.fractionLength(2)))) kg")
-                    Text("Set rest time: \(performedExercise.sets[0].restTime.formatted()) mins")
-                }.padding(.leading, 12)
-            }
-            .foregroundColor(.primaryColor)
         }
         
         private var divider: some View {
@@ -130,6 +112,71 @@ struct WorkoutDetails {
             }
         }
         
+        struct ExerciseListItemView: View {
+            
+            @State private var performedExercise: PerformedExercise
+            @State private var isExpanded = false
+            init(for exercise: PerformedExercise) {
+                self._performedExercise = State(initialValue: exercise)
+            }
+            
+            var body: some View {
+                VStack(alignment: .leading, spacing: 5) {
+                    exercisePreview
+                    
+                    if isExpanded {
+                        Group {
+                            Text("Sets: \(performedExercise.sets.count ) / \(performedExercise.exercise.numberOfSets) ")
+                            Text("Reps target: \(performedExercise.exercise.setData.reps)")
+                            Text("Set rest time: \(performedExercise.exercise.restBetweenSets.formatted())")
+                            VStack(spacing: 15) {
+                                ForEach(performedExercise.sets) { performedSet in
+                                    setView(for: performedSet)
+                                }
+                            }
+                            .padding(.vertical, 10)
+                            
+                        }.padding(.leading, 12)
+                    }
+                }
+                .foregroundColor(.primaryColor)
+            }
+            
+            private var exercisePreview: some View {
+                Button {
+                    withAnimation {
+                        isExpanded.toggle()
+                    }
+                } label: {
+                    HStack {
+                        Text(performedExercise.exercise.name)
+//                        Text("\(performedExercise.sets.count) x \(performedExercise.sets[0].reps) x \(performedExercise.sets[0].weight.formatted(.number)) kg")
+                        Spacer()
+                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    }
+                    .padding(.vertical, 10)
+                }
+            }
+            
+            @ViewBuilder
+            private func setView(for performedSet: PerformedSet) -> some View {
+                VStack {
+                    let index = performedExercise.sets.firstIndex { $0.id == performedSet.id} ?? -1
+                    VStack(alignment: .leading) {
+                        Text("Set \(index + 1)")
+                        VStack(alignment: .leading) {
+                            Text("Reps: \(performedSet.reps) x \(performedSet.weight.formatted(.number)) kg")
+                            if index != performedExercise.sets.count - 1 {
+                                Text("Rest: \(performedSet.restTime.formatted())")
+                            }
+                        }
+                    }
+                        
+                    
+                        
+                }
+            }
+        }
     }
     
     

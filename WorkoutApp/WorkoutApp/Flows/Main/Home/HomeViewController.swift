@@ -20,10 +20,18 @@ extension Home {
              healthKitManager: HealthKitManager) {
             viewModel = ViewModel(workoutRepository: workoutRepository, healthKitManager: healthKitManager)
             super.init(rootView: .init(viewModel: viewModel))
+            setupNavigation()
         }
         
         @objc required dynamic init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        private func setupNavigation() {
+            viewModel.onWorkoutTapped = { [weak self] selectedWorkout in
+                let vc = WorkoutDetails.ViewController(workout: selectedWorkout)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
         }
         
     }

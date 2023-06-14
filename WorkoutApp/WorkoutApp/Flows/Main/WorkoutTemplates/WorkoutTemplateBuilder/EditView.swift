@@ -77,7 +77,6 @@ struct EditView: View {
             .padding(.horizontal)
         }
         .transition(.opacity.animation(.easeInOut))
-        
     }
     
     private func numbersInputField(title: String, text: Binding<String>) -> some View {

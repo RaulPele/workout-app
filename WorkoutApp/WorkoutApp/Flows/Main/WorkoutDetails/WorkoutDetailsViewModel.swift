@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import SwiftUI
 
 struct WorkoutCharacteristic: Identifiable {
     
@@ -48,6 +48,8 @@ struct WorkoutCharacteristic: Identifiable {
         case .activeCalories, .totalCalories:
             return "\(value) KCAL"
             
+//        case .duration:
+//            return value
         default:
             return value
         }

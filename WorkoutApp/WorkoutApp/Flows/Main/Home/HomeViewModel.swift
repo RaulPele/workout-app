@@ -17,7 +17,6 @@ extension Home {
         
         private let workoutRepository: any WorkoutRepository
         private let healthKitManager: HealthKitManager
-        let watchCommunicator = WatchCommunicator()
         
         var onWorkoutTapped: ((_ for: Workout) -> Void)?
         
@@ -25,23 +24,11 @@ extension Home {
              healthKitManager: HealthKitManager) {
             self.workoutRepository = workoutRepository
             self.healthKitManager = healthKitManager
-            requestHealthKitPermissions() //TODO: find a better place to request permissions
             loadWorkouts()
         }
         
         func handleOnAppear() {
-//            requestHealthKitPermissions() //TODO: find a better place to request permissions
-//            
             loadWorkouts()
-        }
-        
-        private func requestHealthKitPermissions() {
-            Task(priority: .high) {
-                try await healthKitManager.requestPermissions(fromWatch: false)
-            }
-//            healthKitManager.requestPermissions { error in
-//                print("ERROR: \(error?.localizedDescription)")
-//            }
         }
         
         func loadWorkouts() {
@@ -54,7 +41,7 @@ extension Home {
                     self.workouts = workouts
                 } catch {
                     print("Error while loading workouts: \(error.localizedDescription)")
-                    self.workouts = Workout.mockedSet
+//                    self.workouts = Workout.mockedSet
                 }
                 
                 isLoading = false

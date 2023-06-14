@@ -12,15 +12,22 @@ extension HealthKitAuthorization {
     
     class ViewController: UIHostingController<ContentView> {
         
-        let viewModel: ContentView.ViewModel
+        private let viewModel: ContentView.ViewModel
+        private let onFinished: () -> Void
         
-        init(healthKitManager: HealthKitManager) {
+        init(healthKitManager: HealthKitManager, onFinished: @escaping () -> Void) {
             viewModel = .init(healthKitManager: healthKitManager)
+            self.onFinished = onFinished
             super.init(rootView: HealthKitAuthorization.ContentView(viewModel: viewModel))
+            setupNavigation()
         }
         
         @MainActor required dynamic init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        private func setupNavigation() {
+            viewModel.onFinished = onFinished
         }
     }
 }
