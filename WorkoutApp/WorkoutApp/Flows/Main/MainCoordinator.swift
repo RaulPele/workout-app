@@ -14,16 +14,22 @@ class MainCoordinator: Coordinator {
     let navigationController: UINavigationController
     let workoutRepository: any WorkoutRepository
     let healthKitManager: HealthKitManager
+    private let exerciseService: any ExerciseServiceProtocol
+    private let workoutTemplateService: any WorkoutTemplateServiceProtocol
     
     let tabBarController: UITabBarController
     
     init(navigationController: UINavigationController,
          workoutRepository: any WorkoutRepository,
-         healthKitManager: HealthKitManager) {
+         healthKitManager: HealthKitManager,
+         exerciseService: any ExerciseServiceProtocol,
+         workoutTemplateService: any WorkoutTemplateServiceProtocol) {
         
         self.navigationController = navigationController
         self.workoutRepository = workoutRepository
         self.healthKitManager = healthKitManager
+        self.exerciseService = exerciseService
+        self.workoutTemplateService = workoutTemplateService
         
         tabBarController = .init()
     }
@@ -67,19 +73,8 @@ class MainCoordinator: Coordinator {
         
         tabBarController.viewControllers = controllers
         tabBarController.selectedIndex = 0
-//        tabBarController.tabBar.isTranslucent = true
-//        tabBarController.tabBar.backgroundColor = .red
         
         tabBarController.tabBar.isMultipleTouchEnabled = false
-//        tabBarController.tabBar.isTranslucent = true
-//        tabBarController.tabBar.layer.masksToBounds = false
-        
-//        tabBarController.tabBar.layer.cornerRadius = 6
-        
-//        tabBarController.tabBar.layer.shadowColor = UIColor.lightGray.cgColor
-//        tabBarController.tabBar.layer.shadowOffset = CGSize(width: 0, height: -4.0)
-//        tabBarController.tabBar.layer.shadowRadius = 4
-//        tabBarController.tabBar.layer.shadowOpacity = 0.3
         
         let tabBarItemAppearance = UITabBarItemAppearance()
         let tabBarAppearance = UITabBarAppearance()
@@ -106,7 +101,7 @@ class MainCoordinator: Coordinator {
         case .workoutSessions:
             vc = Home.ViewController(workoutRepository: workoutRepository, healthKitManager: healthKitManager)
         case .workoutTemplates:
-            vc = WorkoutTemplatesList.ViewController()
+            vc = WorkoutTemplatesList.ViewController(exerciseService: exerciseService, workoutTemplateService: workoutTemplateService)
         }
         
         vc.tabBarItem.image = tab.icon(isSelected: false)

@@ -25,26 +25,24 @@ struct WorkoutTemplateBuilder {
                             .foregroundColor(.primaryColor)
                     }
                     .buttonStyle(.plain)
+                    .disabled(viewModel.title.isEmpty)
                 }
-                
                 mainContentView
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(editView)
             .overlay(addExerciseView)
             .background(Color.background)
-
         }
         
         private var mainContentView: some View{
             VStack(alignment: .leading, spacing: 20) {
                 FloatingTextField(title: "Workout title", text: $viewModel.title)
-                
                 exercisesView
                     .padding(.top, 10)
+                    .animation(.default, value: viewModel.exercises)
             }
             .padding()
-//            .frame(maxHeight: 900)
         }
         
         private var exercisesView: some View {
@@ -57,7 +55,6 @@ struct WorkoutTemplateBuilder {
                     Spacer()
                     
                     Button {
-                        //TODO: navigate to template builder screen
                         viewModel.handleAddExerciseButtonTapped()
                     } label: {
                         Image(systemName: "plus")
@@ -69,13 +66,11 @@ struct WorkoutTemplateBuilder {
                     .buttonStyle(.plain)
                 }
                 
-                ForEach(viewModel.exercises) { exercise in
-                    ExerciseView(exercise: exercise) {
-                        let index = viewModel.exercises.firstIndex(of: exercise)!
+                ForEach(viewModel.exercises.indices, id: \.self) { index in
+                    ExerciseView(exercise: viewModel.exercises[index]) {
                         viewModel.selectedExercise = $viewModel.exercises[index]
                     }
                 }
-                
             }
         }
         
@@ -84,10 +79,8 @@ struct WorkoutTemplateBuilder {
             if let selectedExercise = viewModel.selectedExercise, viewModel.showEditingView {
                 EditView(exercise: selectedExercise) {
                     viewModel.showEditingView = false
-                    print(viewModel.exercises[viewModel.exercises.firstIndex(of: viewModel.selectedExercise!.wrappedValue)!])
                 }
             }
-
         }
         
         @ViewBuilder
@@ -99,11 +92,16 @@ struct WorkoutTemplateBuilder {
                         .onTapGesture {
                             viewModel.showAddExerciseView = false
                         }
-                    AddExerciseView()
+                    AddExerciseView(
+                        exerciseService: viewModel.exerciseService,
+                        into: $viewModel.exercises
+                    )
+                    .onChange(of: viewModel.exercises.count, perform: { newValue in
+                        viewModel.showAddExerciseView = false
+                    })
                         .padding()
                 }
                 .transition(.opacity.animation(.easeInOut))
-
             }
         }
     }
@@ -113,7 +111,7 @@ struct WorkoutTemplateBuilder {
 struct WorkoutTemplateBuilderView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(previewDevices) { device in
-            WorkoutTemplateBuilder.ContentView(viewModel: .init())
+            WorkoutTemplateBuilder.ContentView(viewModel: .init(exerciseService: MockedExerciseService(), workoutTemplateService: MockedWorkoutTemplateService()))
                 .preview(device)
         }
     }

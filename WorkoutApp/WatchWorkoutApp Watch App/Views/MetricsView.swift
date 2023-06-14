@@ -40,8 +40,6 @@ struct MetricsView: View {
                         )
                     )
                     Text(workoutManager.heartRate.formatted(.number.precision(.fractionLength(0))) + " bpm")
-                    //                Text(Measurement(value: workoutManager.distance, unit: UnitLength.meters).formatted(.measurement(width: .abbreviated, usage: .road)))
-                    
                 }
                 .font(
                     .system(
@@ -49,17 +47,12 @@ struct MetricsView: View {
                         design: .rounded
                     ).monospacedDigit().lowercaseSmallCaps())
                 
-//                Spacer()
-                
-//                Buttons.Filled(title: "End set") {
-//
-//                }
-                
             }
             
             .frame(maxWidth: .infinity, alignment: .leading)
-            .ignoresSafeArea(edges: .bottom)
+//            .ignoresSafeArea(edges: .bottom)
             .scenePadding()
+//            .navigationTitle("www")
         }
     }
 }

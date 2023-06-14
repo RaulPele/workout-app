@@ -32,10 +32,12 @@ class WorkoutManager: NSObject, ObservableObject {
     private let phoneCommunicator = PhoneCommunicator()
     
     @Published var running = false
+    @Published var isLoading = false //TODO: move
     
     // MARK: - Workout exercises
     @Published var workoutTemplates = [WorkoutTemplate]()
     var workoutSession: Workout?
+    @Published var performedExercises: [PerformedExercise] = []
     
     // MARK: - Workout metrics
     @Published var workout: HKWorkout?
@@ -43,7 +45,12 @@ class WorkoutManager: NSObject, ObservableObject {
     @Published var activeEnergyBurned: Double = 0
     @Published var averageHeartRate: Double = 0
     
-    func requestAuthorization() {
+    var remainingExercises: [Exercise] {
+        guard let selectedWorkoutTemplate else { return []}
+        return selectedWorkoutTemplate.exercises.filter { ex in !performedExercises.contains { $0.exercise.id == ex.id}}
+    }
+    
+    func requestAuthorization(onFinished: @escaping () -> Void = { }) {
         let typesToShare: Set = [
             HKQuantityType.workoutType()
         ]
@@ -60,6 +67,10 @@ class WorkoutManager: NSObject, ObservableObject {
             // Handle error.
             if let error {
                 print("Error while requesting authorization: \(error.localizedDescription)")
+            } else {
+                DispatchQueue.main.async {
+                    onFinished()
+                }
             }
         }
     }
@@ -130,6 +141,7 @@ class WorkoutManager: NSObject, ObservableObject {
         activeEnergyBurned = 0
         averageHeartRate = 0
         heartRate = 0
+        performedExercises = []
     }
     
     func togglePauseWorkout() {
@@ -150,14 +162,17 @@ class WorkoutManager: NSObject, ObservableObject {
     }
     
     func loadWorkoutTemplates() {
+        isLoading = true
         do {
             try phoneCommunicator.requestWorkoutTemplates { [weak self] templates in
                 DispatchQueue.main.async {
                     self?.workoutTemplates = templates
+                    self?.isLoading = false
                 }
             }
         } catch {
             print("ERROR WHILE LOADING WORKOUTS ON WATCH: \(error.localizedDescription)")
+            isLoading = false
         }
     }
 }
@@ -181,9 +196,10 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
                         self.workoutSession?.averageHeartRate = workout?.averageHeartRate
                         self.workoutSession?.totalCalories = workout?.totalCalories
                         self.workoutSession?.duration = workout?.duration
-                        self.workoutSession?.performedExercises = [.mockedBBSquats]
+                        self.workoutSession?.performedExercises = self.performedExercises
                         self.workoutSession?.endDate = date
-                        self.workoutSession?.title = "My mocked session"
+                        self.workoutSession?.startDate = workout?.startDate
+                        self.workoutSession?.title = workout?.startDate.toMMMdd()
                         
                         guard let wkSession = self.workoutSession else { return }
                         print("Sent workout session with id: \(wkSession.id) to PHONE")
@@ -197,6 +213,14 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
     
     func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
         
+    }
+}
+
+extension Date {
+    func toMMMdd() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM dd, HH:mm"
+        return dateFormatter.string(from: self)
     }
 }
 

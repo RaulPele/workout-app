@@ -22,12 +22,16 @@ struct WorkoutTemplatesList {
                     ForEach(viewModel.workoutTemplates) { template in
                         WorkoutTemplateCardView(workoutTemplate: template)
                     }
+                    .animation(.default, value: viewModel.workoutTemplates)
 
                 }
                 .padding()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.background)
+            .onAppear {
+                viewModel.handleOnAppear()
+            }
             
         }
         
@@ -60,7 +64,7 @@ struct WorkoutTemplatesListView_Previews: PreviewProvider {
     
     static var previews: some View {
         ForEach(previewDevices) { device in
-            WorkoutTemplatesList.ContentView(viewModel: .init())
+            WorkoutTemplatesList.ContentView(viewModel: .init(workoutTemplateService: MockedWorkoutTemplateService()))
                 .preview(device)
         }
     }

@@ -12,19 +12,25 @@ class DependencyContainer {
     let workoutRepository: any WorkoutRepository
     let workoutService: WorkoutService
     let healthKitManager: HealthKitManager
-//    let watchCommunicator: WatchCommunicator
+    let watchCommunicator: WatchCommunicator
+    let exerciseService: any ExerciseServiceProtocol
+    let workoutTemplateService: any WorkoutTemplateServiceProtocol
     
     init(authenticationService: AuthenticationServiceProtocol,
          workoutService: WorkoutService,
          workoutRepository: any WorkoutRepository,
-         healthKitManager: HealthKitManager
-//         watchCommunicator: WatchCommunicator
+         healthKitManager: HealthKitManager,
+         exerciseService: any ExerciseServiceProtocol,
+         workoutTemplateService: any WorkoutTemplateServiceProtocol,
+         watchCommunicator: WatchCommunicator
     ) {
         self.authenticationService = authenticationService
         self.workoutService = workoutService
         self.workoutRepository = workoutRepository
         self.healthKitManager = healthKitManager
-//        self.watchCommunicator = watchCommunicator
+        self.exerciseService = exerciseService
+        self.workoutTemplateService = workoutTemplateService
+        self.watchCommunicator = watchCommunicator
         
     }
 }
@@ -34,7 +40,10 @@ class MockedDependencyContainer: DependencyContainer {
         super.init(authenticationService: MockedAuthenticationService(),
                    workoutService: MockedWorkoutService(),
                    workoutRepository: MockedWorkoutRepository(),
-                   healthKitManager: HealthKitManager()
+                   healthKitManager: HealthKitManager(),
+                   exerciseService: MockedExerciseService(),
+                   workoutTemplateService: MockedWorkoutTemplateService(),
+                   watchCommunicator: WatchCommunicator()
         )
     }
 }

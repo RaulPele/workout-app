@@ -12,9 +12,11 @@ extension WorkoutTemplateBuilder {
     
     class ViewController: UIHostingController<ContentView> {
         
-        let viewModel = ViewModel()
+        let viewModel: ViewModel
         
-        init() {
+        init(exerciseService: any ExerciseServiceProtocol,
+             workoutTemplateService: any WorkoutTemplateServiceProtocol) {
+            viewModel = ViewModel(exerciseService: exerciseService, workoutTemplateService: workoutTemplateService)
             super.init(rootView: ContentView(viewModel: viewModel))
             setupNavigation()
         }

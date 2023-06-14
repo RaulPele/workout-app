@@ -24,7 +24,12 @@ extension WorkoutTemplateBuilder {
         
         @Published var exercises = [Exercise]()
         
+        let exerciseService: any ExerciseServiceProtocol
+        let workoutTemplateService: any WorkoutTemplateServiceProtocol
+        
         var onBack: (() -> Void)? = nil
+        
+        private var saveTemplateTask: Task<Void, Never>?
         
         var selectedExercise: Binding<Exercise>? {
             didSet {
@@ -34,11 +39,18 @@ extension WorkoutTemplateBuilder {
             }
         }
         
-        init() {
-            exercises = [.mockedBBBenchPress, .mockedBBSquats]
+        init(exerciseService: any ExerciseServiceProtocol,
+             workoutTemplateService: any WorkoutTemplateServiceProtocol) {
+            exercises = []
+            self.exerciseService = exerciseService
+            self.workoutTemplateService = workoutTemplateService
         }
         
-        //MARK: - public handlers
+        var fieldsAreValid: Bool {
+            return !(title.isEmpty || reps.isEmpty || sets.isEmpty || restTime.isEmpty || seconds.isEmpty || minutes.isEmpty)
+        }
+        
+        //MARK: - Public Handlers
         func handleOnSaveTapped() {
             saveWorkoutTemplate()
         }
@@ -51,16 +63,22 @@ extension WorkoutTemplateBuilder {
             showAddExerciseView = true
         }
         
-        //MARK: - private methods
+        //MARK: - Private Methods
         private func saveWorkoutTemplate() {
             //TODO: field validations
+            saveTemplateTask?.cancel()
             
-            let newTemplate = WorkoutTemplate(id: .init(), name: title, exercises: exercises)
-            
-            do {
-                try FileIOManager.write(entity: newTemplate, toDirectory: .workoutTemplates)
-            } catch {
-                print(error.localizedDescription)
+            saveTemplateTask = Task(priority: .userInitiated) { [weak self] in
+                guard let self = self else { return }
+                let newTemplate = WorkoutTemplate(id: .init(), name: title, exercises: exercises)
+                do {
+                    try await self.workoutTemplateService.save(entity: newTemplate)
+                    await MainActor.run {
+                        self.onBack?()
+                    }
+                } catch {
+                    print("Error while saving template: \(error.localizedDescription)")
+                }
             }
         }
         

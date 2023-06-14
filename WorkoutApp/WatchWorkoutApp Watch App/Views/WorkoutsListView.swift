@@ -38,13 +38,9 @@ import OSLog
 struct WorkoutsListView: View {
     
     @EnvironmentObject private var workoutManager: WorkoutManager
-//    @StateObject private var viewModel = WorkoutsListViewModel()
-    
-//    init() {
-//        self._viewModel = .init(wrappedValue: WorkoutsListViewModel(workoutManager: WorkoutManager()))
-//    }
     
     let workoutType: HKWorkoutActivityType = .traditionalStrengthTraining
+    @State private var isLoading = false //TODO: create viewmodel
     
     var body: some View {
         List {
@@ -57,28 +53,22 @@ struct WorkoutsListView: View {
                 )
             }
             .padding(EdgeInsets(top: 15, leading: 5, bottom: 15, trailing: 5))
-            
-            Button("Request templates") {
-                workoutManager.loadWorkoutTemplates()
-            }
         }
         .listStyle(.carousel)
         .navigationTitle("Workouts")
+        .overlay {
+            if workoutManager.isLoading {
+                ZStack {
+                    Color.black.ignoresSafeArea()
+                    ActivityIndicator(color: .primaryColor)
+                }
+            }
+        }
         .onAppear {
-            workoutManager.requestAuthorization() //TODO: create a separate authorization screen
+            workoutManager.isLoading = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 workoutManager.loadWorkoutTemplates()
             }
-            
-//            let logger = Logger()
-//            print("TEST SENDING MESSAGE")
-//            logger.log("TEST SENDING MESSAGE")
-//
-//            let session = WCSession.default
-//            let message = try JSONEncoder().encode("This is a message")
-//            session.sendMessageData(message) { response in
-//                print("RESPONSE: response")
-//            }
         }
     }
 }

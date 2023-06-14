@@ -24,16 +24,19 @@ struct Home {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.background)
                     .onAppear {
-                        do {
-                            try viewModel.watchCommunicator.send("Hello, this is phone!")
-                        
-                        } catch  {
-                            print("Error while sending string message: \(error.localizedDescription)")
-                        }
+                        viewModel.handleOnAppear()
+                    }
+                    .overlay {
+                        loadingView
                     }
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 5) {
+                    LazyVStack(alignment:.leading, spacing: 10) {
+                        
+                        Text("Workout sessions")
+                            .foregroundColor(.onBackground)
+                            .font(.heading1)
+                            .padding(.bottom, 10)
                         ForEach(viewModel.workouts) { workout in
                             Button {
                                 viewModel.handleWorkoutTapped(for: workout)

@@ -11,6 +11,8 @@ extension TimeInterval {
     
     func formatted() -> String {
         let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.minute, .second]
+        formatter.unitsStyle = .abbreviated
         return formatter.string(from: self) ?? "cannot format date"
     }
 }

@@ -13,8 +13,8 @@ struct Buttons {
     struct Filled: View {
         
         let title: String
-        var backgroundColor: Color = .blue
-        var foregroundColor: Color = .white
+        var backgroundColor: Color = .primaryColor
+        var foregroundColor: Color = .onPrimary
         var fontSize: CGFloat = 15
         var isLoading: Bool = false
         var onAction: () -> Void
@@ -28,7 +28,7 @@ struct Buttons {
                     .opacity(isLoading ? 0 : 1)
                     
             }
-            .buttonStyle(ButtonStyles.Filled(foregroundColor: foregroundColor, backgroundColor: backgroundColor, fontSize: 15))
+            .buttonStyle(ButtonStyles.Filled(foregroundColor: foregroundColor, backgroundColor: backgroundColor, fontSize: fontSize))
             .disabled(isLoading)
             .overlay(loadingView, alignment: .center)
         }

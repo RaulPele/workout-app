@@ -23,6 +23,7 @@ struct SummaryView: View {
         if workoutManager.workout == nil {
             ProgressView("Saving Workout")
                 .navigationBarHidden(true)
+                .tint(.primaryColor)
         } else {
             ScrollView {
                 VStack(alignment: .leading) {

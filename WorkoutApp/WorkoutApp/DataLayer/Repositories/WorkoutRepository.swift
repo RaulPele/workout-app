@@ -24,10 +24,10 @@ class WorkoutAPIRepository: WorkoutRepository {
     }
     
     func getAll() async throws -> [Workout] {
-        let hkWorkouts = try await healthKitManager.loadWorkouts() //TODO: use higher order functions
+        let hkWorkouts = try await healthKitManager.loadWorkouts()
         
-        let workouts = try hkWorkouts.compactMap { hkWorkout in
-            let workout: Workout? = try FileIOManager.read(forId: hkWorkout.uuid, fromDirectory: .workoutSessions)
+        let workouts = hkWorkouts.compactMap { hkWorkout in
+            let workout: Workout? = try? FileIOManager.read(forId: hkWorkout.uuid, fromDirectory: .workoutSessions)
             return workout
         }
         

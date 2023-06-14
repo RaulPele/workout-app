@@ -66,10 +66,7 @@ class WatchCommunicator: NSObject, WCSessionDelegate {
             case .workoutSession:
                 let workoutSession = try decoder.decode(Workout.self, from: message.data)
                 logger.info("Received workout session from Watch: \(workoutSession.id)")
-
                 print("Received workout session from Watch: \(workoutSession)")
-                print("Average heart rate: \(workoutSession.averageHeartRate)")
-                
                 try FileIOManager.write(entity: workoutSession, toDirectory: .workoutSessions)
                 
             default: break
@@ -80,21 +77,23 @@ class WatchCommunicator: NSObject, WCSessionDelegate {
     }
     
     func session(_ session: WCSession, didReceiveMessageData messageData: Data, replyHandler: @escaping (Data) -> Void) {
+        var replyData: Data = .init()
         do {
             let message = try decoder.decode(Message.self, from: messageData)
             switch message.contentType {
             case .workoutTemplates:
                 let templates: [WorkoutTemplate] = try FileIOManager.readAll(from: .workoutTemplates)
                 logger.info("Read workout templates from file: \(templates)")
-                let templatesData = try encoder.encode(templates)
-                replyHandler(templatesData)
+                replyData = try encoder.encode(templates)
                 
             case .workoutSession:
                 break
             }
         } catch {
-            print(error.localizedDescription)
+            print("Error in watchc communicator while reading templates: \(error.localizedDescription)")
         }
+        replyHandler(replyData)
+
     }
     
 }

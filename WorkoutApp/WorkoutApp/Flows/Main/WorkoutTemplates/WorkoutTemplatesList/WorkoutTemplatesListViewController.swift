@@ -12,9 +12,15 @@ extension WorkoutTemplatesList {
     
     class ViewController: UIHostingController<ContentView> {
         
-        let viewModel = ViewModel()
+        private let viewModel: ViewModel
+        private let exerciseService: any ExerciseServiceProtocol
+        private let workoutTemplateService: any WorkoutTemplateServiceProtocol
         
-        init() {
+        init(exerciseService: any ExerciseServiceProtocol,
+             workoutTemplateService: any WorkoutTemplateServiceProtocol) {
+            self.exerciseService = exerciseService
+            self.workoutTemplateService = workoutTemplateService
+            self.viewModel = ViewModel(workoutTemplateService: workoutTemplateService)
             super.init(rootView: ContentView(viewModel: viewModel))
             setupNavigation()
         }
@@ -26,7 +32,10 @@ extension WorkoutTemplatesList {
         }
         
         private func navigateToTemplateBuilder() {
-            let vc = WorkoutTemplateBuilder.ViewController()
+            let vc = WorkoutTemplateBuilder.ViewController(
+                exerciseService: exerciseService,
+                workoutTemplateService: workoutTemplateService
+            )
             navigationController?.pushViewController(vc, animated: true)
         }
         
