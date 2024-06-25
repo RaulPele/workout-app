@@ -17,7 +17,7 @@ extension Color {
     
 //    static let background: Color = .black.opacity(0.8)
     static let background: Color = Color("DarkGrey")
-    static let surface: Color = .white.opacity(0.09)
+    static let surface: Color = .white.opacity(0.13)
     static let surface2: Color = Color("DarkGrey25")
     static let buttonBackground: Color = .blue
     static let buttonForeground: Color = .white

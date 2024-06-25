@@ -9,35 +9,35 @@ import SwiftUI
 import WatchKit
 
 struct SessionPagingView: View {
+    
     @Environment(\.isLuminanceReduced) var isLuminaceReduced
     @EnvironmentObject var workoutManager: WorkoutManager
     @State private var selection: Tab = .metrics
-    @State private var selection2: Tab = .metrics
-    enum Tab {
-        case metrics
-        case nowPlaying
-        case controls
-    }
     
     var body: some View {
         TabView(selection: $selection) {
-            ControlsView().tag(Tab.controls)
+            ControlsView()
+                .tag(Tab.controls)
             
-//            MetricsView()
-            MetricsAndExercisesView()
-                .tag(Tab.metrics)
+//            VStack {
+//                Color.blue
+                MetricsAndExercisesView()
+//                    .layoutPriority(1)
+//            }
+            .tag(Tab.metrics)
             
-            NowPlayingView().tag(Tab.nowPlaying)
-        }
-        .navigationTitle(workoutManager.selectedWorkoutTemplate?.name ?? "")
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(selection == .nowPlaying)
-//        .navigationBarHidden(true)
-        .onChange(of: workoutManager.running) { _ in
-            displayMetricsView()
+            NowPlayingView()
+                .tag(Tab.nowPlaying)
+                .toolbar(.hidden)
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: isLuminaceReduced ? .never : .automatic))
-        .onChange(of: isLuminaceReduced) { newValue in
+        .navigationTitle(workoutManager.selectedWorkoutTemplate?.name ?? "")
+        .navigationBarBackButtonHidden(true)
+        //        .navigationBarHidden(selection == .nowPlaying)
+        .onChange(of: workoutManager.running) { _, _ in
+            displayMetricsView()
+        }
+        .onChange(of: isLuminaceReduced) { _, _ in
             displayMetricsView()
         }
     }
@@ -46,6 +46,12 @@ struct SessionPagingView: View {
         withAnimation {
             selection = .metrics
         }
+    }
+    
+    enum Tab {
+        case metrics
+        case nowPlaying
+        case controls
     }
 }
 

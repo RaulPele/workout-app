@@ -23,7 +23,7 @@ struct WorkoutCardView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-                Text(workout.title ?? "No title")
+                Text(workout.title ?? " No title")
                     .foregroundColor(.onSurface)
                     .font(.heading3)
                 Text(workout.duration?.formatted() ?? "0:00:00")
