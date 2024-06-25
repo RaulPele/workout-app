@@ -14,48 +14,80 @@ struct AppCoordinator: View {
         case main
     }
     
-    @State private var selection: Flow?
+    @State private var selection: [Flow] = []
+    @State private var path = NavigationPath()
     @EnvironmentObject private var workoutManager: WorkoutManager
     
     var body: some View {
-        NavigationView {
-            VStack {
-                NavigationLink(
-                    tag: Flow.authorization,
-                    selection: $selection
-                ) {
-                    HealthKitAuthorizationView() {
-                        selection = .main
-                    }
-                    .navigationBarBackButtonHidden()
-                } label: {
-                    Text("Authorization")
+        NavigationStack(path: $path) {
+            List {
+                
+                NavigationLink(value: Flow.authorization) {
+                   Text("Authorization Flow")
                 }
                 
-                NavigationLink(
-                    tag: Flow.main,
-                    selection: $selection
-                ) {
+                NavigationLink(value: Flow.main) {
+                    Text("Main Flow")
+                }
+
+            }
+            .navigationDestination(for: Flow.self) { flow in
+                switch flow {
+                case .authorization:
+                    HealthKitAuthorizationView() {
+                        selection = [.main]
+                    }
+                    .navigationBarBackButtonHidden()
+                    
+                case .main:
                     WorkoutsListView()
                         .navigationBarBackButtonHidden()
-
-                } label: {
-                    Text("Main")
                 }
             }
+//            .navigationDestination(for: WorkoutTemplate.self) { template in
+//                SessionPagingView()
+//            }
         }
         .onAppear {
             handleOnAppear()
         }
+//        NavigationStack(path: $path) {
+//            NavigationLink {
+//                SessionPagingView()
+//                    .navigationTitle("QWEQWE")
+//
+//            } label: {
+//                Text("2")
+//            }
+
+//            SessionPagingView()
+//            VStack {
+//                NavigationLink(value: Flow.main) {
+//                    Text("1")
+//                }
+//                Text("2")
+//                    .onTapGesture {
+//                        path.append(Flow.main)
+//                    }
+
+//            }
+//            .navigationDestination(for: Flow.self) { flow in
+//                SessionPagingView()
+//            }
+        
+//        }
     }
     
     func handleOnAppear() {
         let status = workoutManager.healthStore.authorizationStatus(for: .workoutType())
         switch status {
         case  .notDetermined, .sharingDenied:
-            selection = .authorization
+//            selection = [.authorization]
+            path.append(Flow.authorization)
         case .sharingAuthorized:
-            selection = .main
+//            selection = [.main]
+            path.append(Flow.main)
+            
         @unknown default:
             break
         }

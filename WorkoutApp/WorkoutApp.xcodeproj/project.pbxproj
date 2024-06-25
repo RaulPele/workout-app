@@ -27,7 +27,6 @@
 		DE1052472A0655B500399C2B /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052462A0655B500399C2B /* NavigationBar.swift */; };
 		DE1052492A06AF9800399C2B /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052482A06AF9800399C2B /* HealthKitManager.swift */; };
 		DE25C5732A38B88C0062FE1F /* HealthKitVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25C5722A38B88C0062FE1F /* HealthKitVerificationCoordinator.swift */; };
-		DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = DE3353E429E1DCF6002D4891 /* Introspect */; };
 		DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */; };
 		DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E929E97FBF002D4891 /* AuthenticationService.swift */; };
 		DE3353ED29ED8AAD002D4891 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */; };
@@ -269,7 +268,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,7 +701,6 @@
 			);
 			name = WorkoutApp;
 			packageProductDependencies = (
-				DE3353E429E1DCF6002D4891 /* Introspect */,
 			);
 			productName = WorkoutApp;
 			productReference = DEDA4AA529CF2125000AFBBF /* WorkoutApp.app */;
@@ -737,7 +734,6 @@
 			);
 			mainGroup = DEDA4A9C29CF2125000AFBBF;
 			packageReferences = (
-				DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = DEDA4AA629CF2125000AFBBF /* Products */;
 			projectDirPath = "";
@@ -1204,25 +1200,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.3;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		DE3353E429E1DCF6002D4891 /* Introspect */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = Introspect;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DEDA4A9D29CF2125000AFBBF /* Project object */;
 }

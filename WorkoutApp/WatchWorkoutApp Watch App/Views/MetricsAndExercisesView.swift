@@ -21,22 +21,30 @@ struct MetricsAndExercisesView: View {
     
     
     var body: some View {
-        TabView(selection: $selection) {
-            MetricsView()
-                .tag(0)
-
-//            if let exercises = workoutManager.remainingExercises {
-            ForEach(workoutManager.remainingExercises.indices, id: \.self) { index in
+        VStack(spacing: 1) {
+            Color.blue
+            TabView(selection: $selection) {
+                MetricsView()
+                    .tag(0)
+                
+                //            if let exercises = workoutManager.remainingExercises {
+                
+                ForEach(workoutManager.remainingExercises.indices, id: \.self) { index in
                     CurrentExerciseView(currentExercise: PerformedExercise(
                         id: .init(),
                         exercise: workoutManager.remainingExercises[index],
                         sets: []))
-                        .tag(index + 1 )
-                        .id(workoutManager.remainingExercises.indices)
+                    //                    Color.red
+                    .tag(index + 1 )
+                    //                        .id(workoutManager.remainingExercises.indices)
                 }
-//            }
+                //            }
+            }
+            .tabViewStyle(.carousel)
+            .layoutPriority(1)
         }
-        .tabViewStyle(.carousel)
+
+//        .scenePadding()
 //        .navigationTitle("qweqwe")
 //        .navigationBarHidden(false)
     }

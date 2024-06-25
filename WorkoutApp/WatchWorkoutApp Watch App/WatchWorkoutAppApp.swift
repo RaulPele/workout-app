@@ -14,16 +14,11 @@ struct WatchWorkoutApp_Watch_AppApp: App {
     
     var body: some Scene {
         WindowGroup {
-//            NavigationView {
-                AppCoordinator()
-//                WorkoutsListView()
-//                MetricsView()
-//                SessionPagingView()
-//            }
-            .sheet(isPresented: $workoutManager.showingSummaryView) {
-                SummaryView()
-            }
-            .environmentObject(workoutManager)
+            AppCoordinator()
+                .sheet(isPresented: $workoutManager.showingSummaryView) {
+                    SummaryView()
+                }
+                .environmentObject(workoutManager)
         }
     }
 }
