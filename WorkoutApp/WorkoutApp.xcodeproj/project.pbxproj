@@ -27,6 +27,8 @@
 		DE1052472A0655B500399C2B /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052462A0655B500399C2B /* NavigationBar.swift */; };
 		DE1052492A06AF9800399C2B /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1052482A06AF9800399C2B /* HealthKitManager.swift */; };
 		DE25C5732A38B88C0062FE1F /* HealthKitVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25C5722A38B88C0062FE1F /* HealthKitVerificationCoordinator.swift */; };
+		DE3252AB2C482D3800B3B6F0 /* CustomLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */; };
+		DE3252AC2C482D5000B3B6F0 /* CustomLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */; };
 		DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = DE3353E429E1DCF6002D4891 /* Introspect */; };
 		DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */; };
 		DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E929E97FBF002D4891 /* AuthenticationService.swift */; };
@@ -171,6 +173,7 @@
 		DE1052482A06AF9800399C2B /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		DE10524A2A06B34200399C2B /* WorkoutApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WorkoutApp.entitlements; sourceTree = "<group>"; };
 		DE25C5722A38B88C0062FE1F /* HealthKitVerificationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitVerificationCoordinator.swift; sourceTree = "<group>"; };
+		DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLogger.swift; sourceTree = "<group>"; };
 		DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationCoordinator.swift; sourceTree = "<group>"; };
 		DE3353E929E97FBF002D4891 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
@@ -330,6 +333,14 @@
 				DE1052442A0428C300399C2B /* WorkoutDetailsViewController.swift */,
 			);
 			path = WorkoutDetails;
+			sourceTree = "<group>";
+		};
+		DE3252A92C482D2B00B3B6F0 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */,
+			);
+			path = Logging;
 			sourceTree = "<group>";
 		};
 		DE3353E829E97F8D002D4891 /* Login */ = {
@@ -543,6 +554,7 @@
 		DEDA4AC029CF612B000AFBBF /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				DE3252A92C482D2B00B3B6F0 /* Logging */,
 				DEDA4ABC29CF5E2A000AFBBF /* Coordinator.swift */,
 				DEC29D6829E19B220039B2C8 /* Previews + Extensions.swift */,
 				DE33540029F08420002D4891 /* DependencyContainer.swift */,
@@ -789,6 +801,7 @@
 				DE3D0A4C2A0D511400EF23CB /* WorkoutManager.swift in Sources */,
 				DE5042032A21055D00B7D498 /* Workout + Mocked.swift in Sources */,
 				DEAF7F3A2A0D353200682ACD /* WatchWorkoutAppApp.swift in Sources */,
+				DE3252AC2C482D5000B3B6F0 /* CustomLogger.swift in Sources */,
 				DE3D0A4E2A0D66BC00EF23CB /* ControlsView.swift in Sources */,
 				DED4576F2A1E70B900066DAE /* Message.swift in Sources */,
 				DE3D0A552A0D797900EF23CB /* ActivityRingsView.swift in Sources */,
@@ -823,6 +836,7 @@
 				DEE2FBEC2A1A2B850062437A /* ExerciseSet.swift in Sources */,
 				DE012DEF2A02CB0D0071601B /* Repository.swift in Sources */,
 				DEA0BAB12A07D8E200F9BBBA /* ListView.swift in Sources */,
+				DE3252AB2C482D3800B3B6F0 /* CustomLogger.swift in Sources */,
 				DEDFC2FC2A0B88BB00E736E0 /* HealthKitAuthorizationViewController.swift in Sources */,
 				DEDFC2F12A0AC6B300E736E0 /* HKWorkout + Extensions.swift in Sources */,
 				DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */,
