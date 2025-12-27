@@ -6,63 +6,111 @@
 //
 
 import Foundation
-import UIKit
-import Combine
+import SwiftUI
 
-class AuthenticationCoordinator: Coordinator {
+enum AuthenticationFlow {
+    case accountVerification
+    case login(email: String)
+    case register
+}
+
+struct AuthenticationCoordinatorView: View {
     
-    private let navigationController: UINavigationController
+    let dependencyContainer: DependencyContainer
+    let onAuthenticationCompleted: () -> Void
     
-    private let authenticationService: AuthenticationServiceProtocol
+    @StateObject private var navigationManager = AuthenticationNavigationManager()
+    @State private var currentFlow: AuthenticationFlow = .accountVerification
+    @State private var loginEmail: String = ""
     
-    private let onAuthenticationCompleted: () -> Void
-    
-    init(navigationController: UINavigationController,
-         authenticationService: AuthenticationServiceProtocol,
-         onAuthenticationCompleted: @escaping () -> Void) {
-        self.navigationController = navigationController
-        self.authenticationService = authenticationService
-        self.onAuthenticationCompleted = onAuthenticationCompleted
-    }
-    
-    var rootViewController: UIViewController? {
-        return navigationController
-    }
-    
-    func start(options connectionOptions: UIScene.ConnectionOptions?) {
-        showAccountVerificationScreen()
-        
-    }
-    
-    private func showAccountVerificationScreen() {
-        let viewController = AccountVerification.ViewController(authenticationService: authenticationService)
-        viewController.viewModel.onAccountChecked = { [weak self] accountStatus, email in
-            self?.handleAccountChecked(status: accountStatus, email: email)
+    var body: some View {
+        NavigationStack(path: $navigationManager.path) {
+            Group {
+                switch currentFlow {
+                case .accountVerification:
+                    AccountVerificationWrapper(
+                        authenticationService: dependencyContainer.authenticationService,
+                        onAccountChecked: { status, email in
+                            handleAccountChecked(status: status, email: email)
+                        }
+                    )
+                case .login(let email):
+                    LoginWrapper(
+                        authenticationService: dependencyContainer.authenticationService,
+                        email: email,
+                        onLoginCompleted: {
+                            onAuthenticationCompleted()
+                        }
+                    )
+                case .register:
+                    // TODO: Implement register screen
+                    Text("Register screen - TODO")
+                }
+            }
         }
-        navigationController.pushViewController(viewController, animated: true)
-    }
-    
-    private func showLoginScreen(email: String) {
-        let viewController = Login.ViewController(authenticationService: authenticationService)
-        viewController.viewModel.email = email
-        viewController.viewModel.onLoginCompleted = { [weak self] in
-            self?.onAuthenticationCompleted()
-        }
-        //TODO: inject viewmodel??
-        navigationController.pushViewController(viewController, animated: true)
-    }
-    
-    private func showRegisterScreen() {
-        
     }
     
     private func handleAccountChecked(status: AccountStatus, email: String) {
         switch status {
         case .inactive:
-            //TODO: redirect to register flow
-            showRegisterScreen()
+            // TODO: redirect to register flow
+            currentFlow = .register
         case .active:
-            showLoginScreen(email: email)
+            loginEmail = email
+            currentFlow = .login(email: email)
         }
+    }
+}
+
+private struct AccountVerificationWrapper: View {
+    let authenticationService: AuthenticationServiceProtocol
+    let onAccountChecked: (AccountStatus, String) -> Void
+    @StateObject private var viewModel: AccountVerification.ViewModel
+    
+    init(authenticationService: AuthenticationServiceProtocol, onAccountChecked: @escaping (AccountStatus, String) -> Void) {
+        self.authenticationService = authenticationService
+        self.onAccountChecked = onAccountChecked
+        self._viewModel = StateObject(wrappedValue: AccountVerification.ViewModel(authenticationService: authenticationService))
+    }
+    
+    var body: some View {
+        AccountVerification.ContentView(viewModel: viewModel)
+            .onAppear {
+                viewModel.onAccountChecked = onAccountChecked
+            }
+    }
+}
+
+private struct LoginWrapper: View {
+    let authenticationService: AuthenticationServiceProtocol
+    let email: String
+    let onLoginCompleted: () -> Void
+    @StateObject private var viewModel: Login.ViewModel
+    
+    init(authenticationService: AuthenticationServiceProtocol, email: String, onLoginCompleted: @escaping () -> Void) {
+        self.authenticationService = authenticationService
+        self.email = email
+        self.onLoginCompleted = onLoginCompleted
+        self._viewModel = StateObject(wrappedValue: Login.ViewModel(authenticationService: authenticationService))
+    }
+    
+    var body: some View {
+        Login.ContentView(viewModel: viewModel)
+            .onAppear {
+                viewModel.email = email
+                viewModel.onLoginCompleted = onLoginCompleted
+            }
+    }
+}
+
+// Legacy Coordinator class kept for reference but not used
+class AuthenticationCoordinator: Coordinator {
+    
+    var rootViewController: UIViewController? {
+        return nil
+    }
+    
+    func start(options connectionOptions: UIScene.ConnectionOptions?) {
+        // No longer used - replaced by AuthenticationCoordinatorView
     }
 }

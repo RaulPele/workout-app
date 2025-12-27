@@ -27,7 +27,7 @@ extension WorkoutTemplateBuilder {
         let exerciseService: any ExerciseServiceProtocol
         let workoutTemplateService: any WorkoutTemplateServiceProtocol
         
-        var onBack: (() -> Void)? = nil
+        weak var navigationManager: WorkoutTemplatesNavigationManager?
         
         private var saveTemplateTask: Task<Void, Never>?
         
@@ -56,7 +56,7 @@ extension WorkoutTemplateBuilder {
         }
         
         func handleBackAction() {
-            onBack?()
+            navigationManager?.pop()
         }
         
         func handleAddExerciseButtonTapped() {
@@ -74,7 +74,7 @@ extension WorkoutTemplateBuilder {
                 do {
                     try await self.workoutTemplateService.save(entity: newTemplate)
                     await MainActor.run {
-                        self.onBack?()
+                        self.navigationManager?.pop()
                     }
                 } catch {
                     print("Error while saving template: \(error.localizedDescription)")

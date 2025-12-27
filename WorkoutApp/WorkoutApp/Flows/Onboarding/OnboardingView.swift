@@ -7,18 +7,6 @@
 
 import SwiftUI
 
-extension OnboardingView {
-    
-    class ViewModel: ObservableObject {
-        
-        var onFinishedOnboarding: (() -> Void)?
-        
-        func handleFinishButtonTapped() {
-            onFinishedOnboarding?()
-        }
-    }
-}
-
 struct OnboardingView: View {
     
     enum Tab {
@@ -28,9 +16,12 @@ struct OnboardingView: View {
         case buildTemplatesView
     }
     
-    @ObservedObject var viewModel: ViewModel
-    
     @State private var selection: Tab = .welcomeView
+    private let onFinishedOnboarding: () -> Void
+    
+    init(onFinishedOnboarding: @escaping () -> Void) {
+        self.onFinishedOnboarding = onFinishedOnboarding
+    }
     
     var body: some View {
         TabView(selection: $selection) {
@@ -53,6 +44,7 @@ struct OnboardingView: View {
         }
         .tabViewStyle(.page)
         .background(Color.background)
+        .background(Color.red)
     }
     
     private var finishButtonView: some View {
@@ -61,19 +53,12 @@ struct OnboardingView: View {
             backgroundColor: .primaryColor,
             foregroundColor: .onPrimary
         ) {
-            viewModel.handleFinishButtonTapped()
+            onFinishedOnboarding()
         }
         .frame(maxWidth: 200)
     }
 }
 
-#if DEBUG
-struct OnboardingCoordinator_Previews: PreviewProvider {
-    static var previews: some View {
-        ForEach(previewDevices) { device in
-            OnboardingView(viewModel: .init())
-                .preview(device)
-        }
-    }
+#Preview {
+    OnboardingView(onFinishedOnboarding: {})
 }
-#endif

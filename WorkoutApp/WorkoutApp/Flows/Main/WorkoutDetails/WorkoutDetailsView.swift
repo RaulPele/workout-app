@@ -16,12 +16,14 @@ struct WorkoutDetails {
         
         private let detailsColumns = [GridItem(.flexible()), GridItem(.flexible())]
         
+        @Environment(\.dismiss) private var dismiss
+        
         var body: some View {
             VStack {
                 NavigationBar(
                     title: viewModel.workout.title ?? "No title",
                     backButtonAction: {
-                        viewModel.onBack?()
+                        dismiss()
                     }
                 )
                 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Workout: Identifiable, Codable {
+struct Workout: Identifiable, Codable, Hashable {
     
     var id: UUID
     var title: String?
