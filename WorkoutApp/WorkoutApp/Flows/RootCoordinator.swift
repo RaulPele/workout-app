@@ -6,24 +6,19 @@
 //
 
 import Foundation
-import UIKit
-import Combine
+import SwiftUI
 
-class RootCoordinator: Coordinator {
+enum RootFlow {
+    case onboarding
+    case healthKitAuthorization
+    case authentication
+    case main
+}
+
+struct RootCoordinatorView: View {
     
-    //MARK: - Properties
-    
-    private let navigationController: UINavigationController = .init()
-    private var authenticationCoordinator: AuthenticationCoordinator?
-    private var mainCoordinator: MainCoordinator?
-    private var onboardingCoordinator: OnboardingCoordinator?
-    private var healthKitAuthorizationCoordinator: HealthKitAuthorizationCoordinator?
-    
-    private let dependencyContainer: DependencyContainer
-    
-    init() {
-        navigationController.navigationBar.isHidden = true
-        
+    @State private var currentFlow: RootFlow = .onboarding
+    @State private var dependencyContainer: DependencyContainer = {
         let authService = MockedAuthenticationService()
         let workoutService = MockedWorkoutService()
         let healthKitManager = HealthKitManager()
@@ -35,7 +30,7 @@ class RootCoordinator: Coordinator {
 
         let workoutTemplateService = WorkoutTemplateService(repository: workoutTemplateRepository, watchCommunicator: watchCommunicator)
         
-        dependencyContainer = DependencyContainer(
+        return DependencyContainer(
             authenticationService: authService,
             workoutService: workoutService,
             workoutRepository: workoutRepository,
@@ -44,59 +39,59 @@ class RootCoordinator: Coordinator {
             workoutTemplateService: workoutTemplateService,
             watchCommunicator: watchCommunicator
         )
-    }
+    }()
     
-    var rootViewController: UIViewController? {
-       return  navigationController
-    }
-    
-    //MARK: - Methods
-    
-    func start(options connectionOptions: UIScene.ConnectionOptions?) {
-        showOnboardingCoordinator()
-    }
-    
-    private func showOnboardingCoordinator() {
-        onboardingCoordinator = OnboardingCoordinator(navigationController: navigationController, onFinishedOnboarding: { [weak self] in
-            guard let self else { return }
-            
-            if self.dependencyContainer.healthKitManager.isAuthorizedToShare() {
-                self.showMainCoordinator();
-            } else {
-                self.showHealthKitAuthorizationCoordinator()
+    var body: some View {
+        Group {
+            switch currentFlow {
+            case .onboarding:
+                OnboardingView(
+                    onFinishedOnboarding: {
+                        if dependencyContainer.healthKitManager.isAuthorizedToShare() {
+                            currentFlow = .main
+                        } else {
+                            currentFlow = .healthKitAuthorization
+                        }
+                    }
+                )
+            case .healthKitAuthorization:
+                HealthKitAuthorizationWrapper(
+                    healthKitManager: dependencyContainer.healthKitManager,
+                    onFinished: {
+                        currentFlow = .main
+                    }
+                )
+            case .authentication:
+                AuthenticationCoordinatorView(
+                    dependencyContainer: dependencyContainer,
+                    onAuthenticationCompleted: {
+                        currentFlow = .main
+                    }
+                )
+            case .main:
+                MainCoordinatorView(
+                    dependencyContainer: dependencyContainer
+                )
             }
-        })
-        onboardingCoordinator?.start(options: nil)
-    }
-    
-    private func showHealthKitAuthorizationCoordinator() {
-        healthKitAuthorizationCoordinator = HealthKitAuthorizationCoordinator(
-            navigationController: navigationController,
-            healthKitManager: dependencyContainer.healthKitManager,
-            onFinished: { [weak self] in
-            self?.showMainCoordinator()
-        })
-        
-        healthKitAuthorizationCoordinator?.start(options: nil)
-    }
-    
-    private func showAuthenticationCoordinator() {
-        authenticationCoordinator = .init(navigationController: navigationController,
-                                          authenticationService: dependencyContainer.authenticationService) { [unowned self] in
-            self.showMainCoordinator()
         }
-        
-        authenticationCoordinator?.start(options: nil)
+    }
+}
+
+private struct HealthKitAuthorizationWrapper: View {
+    let healthKitManager: HealthKitManager
+    let onFinished: () -> Void
+    @StateObject private var viewModel: HealthKitAuthorization.ContentView.ViewModel
+    
+    init(healthKitManager: HealthKitManager, onFinished: @escaping () -> Void) {
+        self.healthKitManager = healthKitManager
+        self.onFinished = onFinished
+        self._viewModel = StateObject(wrappedValue: HealthKitAuthorization.ContentView.ViewModel(healthKitManager: healthKitManager))
     }
     
-    private func showMainCoordinator() {
-        mainCoordinator = .init(navigationController: navigationController,
-                                workoutRepository: dependencyContainer.workoutRepository,
-                                healthKitManager: dependencyContainer.healthKitManager,
-                                exerciseService: dependencyContainer.exerciseService,
-                                workoutTemplateService: dependencyContainer.workoutTemplateService)
-        
-        mainCoordinator?.start(options: nil)
+    var body: some View {
+        HealthKitAuthorization.ContentView(viewModel: viewModel)
+            .onAppear {
+                viewModel.onFinished = onFinished
+            }
     }
-    
 }

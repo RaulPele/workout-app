@@ -8,24 +8,18 @@
 import Foundation
 import SwiftUI
 
+// HealthKitAuthorizationCoordinator is no longer needed as a separate coordinator
+// HealthKitAuthorization.ContentView is used directly in RootCoordinatorView
+// This file is kept for reference but the class is deprecated
+
+// Legacy Coordinator class kept for reference but not used
 class HealthKitAuthorizationCoordinator: Coordinator {
     
     var rootViewController: UIViewController? {
-        return navigationController
-    }
-    
-    private let navigationController: UINavigationController
-    private let healthKitManager: HealthKitManager
-    private let onFinished: () -> Void
-    
-    init(navigationController: UINavigationController, healthKitManager: HealthKitManager, onFinished: @escaping () -> Void) {
-        self.navigationController = navigationController
-        self.onFinished = onFinished
-        self.healthKitManager = healthKitManager
+        return nil
     }
     
     func start(options connectionOptions: UIScene.ConnectionOptions?) {
-        let vc = HealthKitAuthorization.ViewController(healthKitManager: healthKitManager, onFinished: onFinished)
-        navigationController.pushViewController(vc, animated: true)
+        // No longer used - HealthKitAuthorization.ContentView is used directly in RootCoordinatorView
     }
 }

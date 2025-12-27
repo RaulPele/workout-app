@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PerformedSet: Identifiable, Codable {
+struct PerformedSet: Identifiable, Codable, Hashable {
     
     let id: UUID
     let set: ExerciseSet

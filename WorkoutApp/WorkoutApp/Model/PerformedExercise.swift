@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PerformedExercise: Identifiable, Codable {
+struct PerformedExercise: Identifiable, Codable, Hashable {
     
     let id: UUID
     let exercise: Exercise

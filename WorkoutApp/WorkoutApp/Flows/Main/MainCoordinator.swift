@@ -6,114 +6,122 @@
 //
 
 import Foundation
-import UIKit
 import SwiftUI
 
-class MainCoordinator: Coordinator {
+struct MainCoordinatorView: View {
     
-    let navigationController: UINavigationController
-    let workoutRepository: any WorkoutRepository
-    let healthKitManager: HealthKitManager
-    private let exerciseService: any ExerciseServiceProtocol
-    private let workoutTemplateService: any WorkoutTemplateServiceProtocol
+    let dependencyContainer: DependencyContainer
     
-    let tabBarController: UITabBarController
+    @State private var selectedTab: TabBarItem = .workoutSessions
+    @StateObject private var workoutSessionsNavigationManager = WorkoutSessionsNavigationManager()
+    @StateObject private var workoutTemplatesNavigationManager = WorkoutTemplatesNavigationManager()
     
-    init(navigationController: UINavigationController,
-         workoutRepository: any WorkoutRepository,
-         healthKitManager: HealthKitManager,
-         exerciseService: any ExerciseServiceProtocol,
-         workoutTemplateService: any WorkoutTemplateServiceProtocol) {
-        
-        self.navigationController = navigationController
-        self.workoutRepository = workoutRepository
-        self.healthKitManager = healthKitManager
-        self.exerciseService = exerciseService
-        self.workoutTemplateService = workoutTemplateService
-        
-        tabBarController = .init()
-    }
-    
-    var rootViewController: UIViewController? {
-        return navigationController
-    }
-    
-    func start(options connectionOptions: UIScene.ConnectionOptions?) {
-//        showHomeScreen()
-        configureTabBarController()
-        navigationController.setViewControllers([tabBarController], animated: true)
-    }
-    
-    func showHomeScreen() {
-        let vc = Home.ViewController(workoutRepository: workoutRepository, healthKitManager: healthKitManager)
-        vc.viewModel.onWorkoutTapped = showWorkoutDetailsScreen
-        navigationController.pushViewController(vc, animated: true)
-    }
-    
-    func showWorkoutDetailsScreen(for workout: Workout) {
-        let vc = WorkoutDetails.ViewController(workout: workout)
-        vc.viewModel.onBack = { [unowned self] in
-            navigationController.popViewController(animated: true)
-            
-        }
-        navigationController.pushViewController(vc, animated: true)
-    }
-    
-    //MARK: - Tab bar controller
-    private func configureTabBarController() {
-        let tabs: [TabBarItem] = [.workoutSessions, .workoutTemplates]
-        let controllers: [UINavigationController] = tabs
-            .map { getViewController(for: $0) }
-            .map {
-                let navController = UINavigationController(rootViewController: $0)
-                navController.isNavigationBarHidden = true
-                
-                return navController
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            // Workout Sessions Tab
+            NavigationStack(path: $workoutSessionsNavigationManager.path) {
+                HomeWrapper(
+                    workoutRepository: dependencyContainer.workoutRepository,
+                    healthKitManager: dependencyContainer.healthKitManager,
+                    navigationManager: workoutSessionsNavigationManager
+                )
             }
-        
-        tabBarController.viewControllers = controllers
-        tabBarController.selectedIndex = 0
-        
-        tabBarController.tabBar.isMultipleTouchEnabled = false
-        
-        let tabBarItemAppearance = UITabBarItemAppearance()
-        let tabBarAppearance = UITabBarAppearance()
-        
-        tabBarAppearance.stackedLayoutAppearance = tabBarItemAppearance
-        tabBarAppearance.configureWithOpaqueBackground()
-
-        tabBarAppearance.backgroundColor = UIColor(Color.surface2)
-        
-        tabBarController.tabBar.standardAppearance = tabBarAppearance
-        if #available(iOS 15.0, *) {
-            tabBarController.tabBar.scrollEdgeAppearance = tabBarAppearance
+            .tag(TabBarItem.workoutSessions)
+            .tabItem {
+                Label(TabBarItem.workoutSessions.title, systemImage: "dumbbell")
+            }
+            
+            // Workout Templates Tab
+            NavigationStack(path: $workoutTemplatesNavigationManager.path) {
+                WorkoutTemplatesListWrapper(
+                    exerciseService: dependencyContainer.exerciseService,
+                    workoutTemplateService: dependencyContainer.workoutTemplateService,
+                    navigationManager: workoutTemplatesNavigationManager
+                )
+            }
+            .tag(TabBarItem.workoutTemplates)
+            .tabItem {
+                Label(TabBarItem.workoutTemplates.title, systemImage: "list.bullet.clipboard")
+            }
         }
-        tabBarController.tabBar.unselectedItemTintColor = UIColor(Color.onSurface)
-        tabBarController.tabBar.tintColor = UIColor(Color.primaryColor)
-
-        
+        .tint(Color.primaryColor)
     }
-    
-    private func getViewController(for tab: TabBarItem) -> UIViewController {
-        var vc: UIViewController
-        
-        switch tab {
-        case .workoutSessions:
-            vc = Home.ViewController(workoutRepository: workoutRepository, healthKitManager: healthKitManager)
-        case .workoutTemplates:
-            vc = WorkoutTemplatesList.ViewController(exerciseService: exerciseService, workoutTemplateService: workoutTemplateService)
-        }
-        
-        vc.tabBarItem.image = tab.icon(isSelected: false)
-        vc.tabBarItem.selectedImage = tab.icon(isSelected: true)
-        vc.tabBarItem.title = tab.title
-        return vc
-    }
-    
 }
 
-enum TabBarItem {
+private struct HomeWrapper: View {
+    let workoutRepository: any WorkoutRepository
+    let healthKitManager: HealthKitManager
+    let navigationManager: WorkoutSessionsNavigationManager
+    @StateObject private var viewModel: Home.ViewModel
     
+    init(workoutRepository: any WorkoutRepository, healthKitManager: HealthKitManager, navigationManager: WorkoutSessionsNavigationManager) {
+        self.workoutRepository = workoutRepository
+        self.healthKitManager = healthKitManager
+        self.navigationManager = navigationManager
+        self._viewModel = StateObject(wrappedValue: Home.ViewModel(workoutRepository: workoutRepository, healthKitManager: healthKitManager))
+    }
+    
+    var body: some View {
+        Home.ContentView(viewModel: viewModel)
+            .navigationDestination(for: WorkoutRoute.self) { route in
+                WorkoutDetails.ContentView(viewModel: WorkoutDetails.ViewModel(workout: route.workout))
+            }
+            .onAppear {
+                viewModel.navigationManager = navigationManager
+            }
+    }
+}
+
+private struct WorkoutTemplatesListWrapper: View {
+    let exerciseService: any ExerciseServiceProtocol
+    let workoutTemplateService: any WorkoutTemplateServiceProtocol
+    let navigationManager: WorkoutTemplatesNavigationManager
+    @StateObject private var viewModel: WorkoutTemplatesList.ViewModel
+    
+    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
+        self.exerciseService = exerciseService
+        self.workoutTemplateService = workoutTemplateService
+        self.navigationManager = navigationManager
+        self._viewModel = StateObject(wrappedValue: WorkoutTemplatesList.ViewModel(workoutTemplateService: workoutTemplateService))
+    }
+    
+    var body: some View {
+        WorkoutTemplatesList.ContentView(viewModel: viewModel)
+            .navigationDestination(for: WorkoutTemplateBuilderRoute.self) { _ in
+                WorkoutTemplateBuilderWrapper(
+                    exerciseService: exerciseService,
+                    workoutTemplateService: workoutTemplateService,
+                    navigationManager: navigationManager
+                )
+            }
+            .onAppear {
+                viewModel.navigationManager = navigationManager
+            }
+    }
+}
+
+private struct WorkoutTemplateBuilderWrapper: View {
+    let exerciseService: any ExerciseServiceProtocol
+    let workoutTemplateService: any WorkoutTemplateServiceProtocol
+    let navigationManager: WorkoutTemplatesNavigationManager
+    @StateObject private var viewModel: WorkoutTemplateBuilder.ViewModel
+    
+    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
+        self.exerciseService = exerciseService
+        self.workoutTemplateService = workoutTemplateService
+        self.navigationManager = navigationManager
+        self._viewModel = StateObject(wrappedValue: WorkoutTemplateBuilder.ViewModel(exerciseService: exerciseService, workoutTemplateService: workoutTemplateService))
+    }
+    
+    var body: some View {
+        WorkoutTemplateBuilder.ContentView(viewModel: viewModel)
+            .onAppear {
+                viewModel.navigationManager = navigationManager
+            }
+    }
+}
+
+enum TabBarItem: String, CaseIterable {
     case workoutSessions
     case workoutTemplates
     
@@ -125,21 +133,16 @@ enum TabBarItem {
             return "Templates"
         }
     }
+}
+
+// Legacy Coordinator class kept for reference but not used
+class MainCoordinator: Coordinator {
     
-    func icon(isSelected: Bool) -> UIImage? {
-        var image: UIImage?
-        
-        switch self {
-        case .workoutSessions:
-            image = UIImage(systemName: "dumbbell")
-        case .workoutTemplates:
-            image = UIImage(systemName: "list.bullet.clipboard")
-        }
-        
-        if isSelected {
-            return image?.withTintColor(UIColor(Color.primaryColor), renderingMode: .alwaysOriginal)
-        }
-        return image?.withTintColor(.white.withAlphaComponent(0.9), renderingMode: .alwaysOriginal)
+    var rootViewController: UIViewController? {
+        return nil
     }
     
+    func start(options connectionOptions: UIScene.ConnectionOptions?) {
+        // No longer used - replaced by MainCoordinatorView
+    }
 }

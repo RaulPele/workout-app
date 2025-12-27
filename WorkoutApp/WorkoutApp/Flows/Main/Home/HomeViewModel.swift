@@ -18,7 +18,7 @@ extension Home {
         private let workoutRepository: any WorkoutRepository
         private let healthKitManager: HealthKitManager
         
-        var onWorkoutTapped: ((_ for: Workout) -> Void)?
+        weak var navigationManager: WorkoutSessionsNavigationManager?
         
         init(workoutRepository: any WorkoutRepository,
              healthKitManager: HealthKitManager) {
@@ -49,7 +49,7 @@ extension Home {
         }
         
         func handleWorkoutTapped(for workout: Workout) {
-            onWorkoutTapped?(workout)
+            navigationManager?.push(WorkoutRoute(workout: workout))
         }
         
     }

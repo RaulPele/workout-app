@@ -8,8 +8,12 @@
 import UIKit
 import Combine
 
+// Legacy Coordinator protocol - kept for backward compatibility
+// All coordinators have been migrated to SwiftUI views
+// This protocol is deprecated and no longer used in new code
+@available(*, deprecated, message: "Use SwiftUI views instead. Coordinator pattern has been migrated to SwiftUI.")
 protocol Coordinator: AnyObject {
     
-    var rootViewController: UIViewController? { get } //TODO: do we need navigation controller here?
-    func start(options connectionOptions: UIScene.ConnectionOptions?) //TODO: add combine
+    var rootViewController: UIViewController? { get }
+    func start(options connectionOptions: UIScene.ConnectionOptions?)
 }

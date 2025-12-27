@@ -72,8 +72,6 @@ extension WorkoutDetails {
         var workoutDetailsData = [RowData]()
 //        var exercisesData = [PerformedExercise]()
         
-        var onBack: (() -> Void)?
-        
         init(workout: Workout) {
             self.workout = workout
             computeWorkoutDetailsData()

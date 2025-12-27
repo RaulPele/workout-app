@@ -12,11 +12,12 @@ struct WorkoutTemplateBuilder {
     struct ContentView: View {
         
         @ObservedObject var viewModel: ViewModel
+        @Environment(\.dismiss) private var dismiss
         
         var body: some View {
             ScrollView {
                 NavigationBar(title: "Build your workout", backButtonAction:  {
-                    viewModel.handleBackAction()
+                    dismiss()
                 }) {
                     Button {
                         viewModel.handleOnSaveTapped()

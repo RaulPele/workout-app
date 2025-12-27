@@ -15,7 +15,7 @@ extension WorkoutTemplatesList {
         @Published var workoutTemplates = [WorkoutTemplate]()
         private let workoutTemplateService: any WorkoutTemplateServiceProtocol
         
-        var navigateToTemplateBuilder: (() -> Void)? = nil
+        weak var navigationManager: WorkoutTemplatesNavigationManager?
         
         var loadTask: Task<Void, Never>?
         
@@ -39,7 +39,7 @@ extension WorkoutTemplatesList {
         
         //MARK: - Event handlers
         func handleAddButtonTapped() {
-            navigateToTemplateBuilder?()
+            navigationManager?.push(WorkoutTemplateBuilderRoute())
         }
         
         func handleOnAppear() {

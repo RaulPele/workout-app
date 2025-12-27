@@ -8,45 +8,17 @@
 import Foundation
 import SwiftUI
 
-class OnboardingViewController: UIHostingController<OnboardingView> {
-    
-    private let viewModel: OnboardingView.ViewModel
-    private let onFinishedOnboarding: () -> Void
-    
-    init(onFinishedOnboarding: @escaping () -> Void) {
-        viewModel = OnboardingView.ViewModel()
-        self.onFinishedOnboarding = onFinishedOnboarding
-        super.init(rootView: OnboardingView(viewModel: viewModel))
-        setupNavigation()
-    }
-    
-    private func setupNavigation() {
-        viewModel.onFinishedOnboarding = onFinishedOnboarding
-    }
-    
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
+// OnboardingCoordinator is no longer needed as a separate coordinator
+// OnboardingView is used directly in RootCoordinatorView
+// This file is kept for reference but the classes are deprecated
 
+// Legacy Coordinator class kept for reference but not used
 class OnboardingCoordinator: Coordinator {
     var rootViewController: UIViewController? {
-        return navigationController
-    }
-    
-    private let navigationController: UINavigationController
-    private let onFinishedOnboarding: () -> Void
-    
-    
-    init(navigationController: UINavigationController,
-         onFinishedOnboarding: @escaping () -> Void) {
-        
-        self.onFinishedOnboarding = onFinishedOnboarding
-        self.navigationController = navigationController
+        return nil
     }
     
     func start(options connectionOptions: UIScene.ConnectionOptions?) {
-        let vc = OnboardingViewController(onFinishedOnboarding: onFinishedOnboarding)
-        navigationController.pushViewController(vc, animated: true)
+        // No longer used - OnboardingView is used directly in RootCoordinatorView
     }
 }
