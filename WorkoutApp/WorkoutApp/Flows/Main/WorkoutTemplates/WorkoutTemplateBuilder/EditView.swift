@@ -46,53 +46,125 @@ struct EditView: View {
     
     @StateObject private var viewModel: ViewModel
     private let onFinishedEditing: () -> Void
-    
+    @FocusState private var focusedField: Field?
     
     init(exercise: Binding<Exercise>, onFinishedEditing: @escaping () -> Void) {
         self.onFinishedEditing = onFinishedEditing
         _viewModel = .init(wrappedValue: ViewModel(exercise: exercise))
     }
     
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.5)
-            VStack(spacing: 40) {
-                HStack(alignment: .center, spacing: 30) {
-                    numbersInputField(title: "Sets", text: $viewModel.newSets)
-                    numbersInputField(title: "Reps", text: $viewModel.newReps)
-                    numbersInputField(title: "Mins", text: $viewModel.newMinutes)
-                    numbersInputField(title: "Secs", text: $viewModel.newSeconds)
-                }
-                
-                Buttons.Filled(title: "Done") {
-                    viewModel.handleFinishedEditing()
-                    onFinishedEditing()
-                }
-                .frame(maxWidth: 120)
-                
-            }
-            .padding(30)
-            .background(Color.surface2)
-            .cornerRadius(15)
-            .padding(.horizontal)
-        }
-        .transition(.opacity.animation(.easeInOut))
-    }
+    @Environment(\.dismiss) private var dismiss
     
-    private func numbersInputField(title: String, text: Binding<String>) -> some View {
-        FloatingTextField(
-            title: title,
-            text: text,
-            keyboardType: .numberPad
-        )
-        .frame(width: 50)
-        .onChange(of: text.wrappedValue) { newValue in
-            let filtered = newValue.filter { "0123456789".contains($0) }
-            if filtered != newValue {
-                text.wrappedValue = filtered
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Exercise Details") {
+                    HStack {
+                        Text("Sets")
+                        Spacer()
+                        TextField("Sets", text: $viewModel.newSets)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 80)
+                            .onChange(of: viewModel.newSets) { _, newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if filtered != newValue {
+                                    viewModel.newSets = filtered
+                                }
+                            }
+                    }
+                    .onTapGesture {
+                        focusedField = .sets
+                    }
+                    
+                    
+                    HStack {
+                        Text("Reps")
+                        Spacer()
+                        TextField("Reps", text: $viewModel.newReps)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 80)
+                            .onChange(of: viewModel.newReps) { _, newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if filtered != newValue {
+                                    viewModel.newReps = filtered
+                                }
+                            }
+                    }
+                    .onTapGesture {
+                        focusedField = .reps
+                    }
+                }
+                
+                Section("Rest Time") {
+                    HStack {
+                        Text("Minutes")
+                        Spacer()
+                        TextField("Minutes", text: $viewModel.newMinutes)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 80)
+                            .onChange(of: viewModel.newMinutes) { _, newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if filtered != newValue {
+                                    viewModel.newMinutes = filtered
+                                }
+                            }
+                    }
+                    .onTapGesture {
+                        focusedField = .minutes
+                    }
+                    
+                    HStack {
+                        Text("Seconds")
+                        Spacer()
+                        TextField("Seconds", text: $viewModel.newSeconds)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 80)
+                            .onChange(of: viewModel.newSeconds) { _, newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if filtered != newValue {
+                                    viewModel.newSeconds = filtered
+                                }
+                            }
+                            
+                    }
+//                    .background(Color.red)
+                    .contentShape(.rect)
+                    .onTapGesture {
+                        focusedField = .seconds
+                    }
+                }
+            }
+            .navigationTitle("Edit Exercise")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(role: .confirm) {
+                        viewModel.handleFinishedEditing()
+                        onFinishedEditing()
+                        dismiss()
+                    }
+                    .bold()
+                }
             }
         }
     }
+}
+
+enum Field {
+    case sets
+    case reps
+    case minutes
+    case seconds
 }
 
 struct EditView_Previews: PreviewProvider {

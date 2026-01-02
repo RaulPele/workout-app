@@ -44,3 +44,4 @@ class MockedWorkoutTemplateService: WorkoutTemplateServiceProtocol {
         return try await repository.save(entity: entity)
     }
 }
+

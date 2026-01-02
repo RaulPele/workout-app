@@ -30,7 +30,6 @@
 		DE25C5732A38B88C0062FE1F /* HealthKitVerificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE25C5722A38B88C0062FE1F /* HealthKitVerificationCoordinator.swift */; };
 		DE3252AB2C482D3800B3B6F0 /* CustomLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */; };
 		DE3252AC2C482D5000B3B6F0 /* CustomLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */; };
-		DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = DE3353E429E1DCF6002D4891 /* Introspect */; };
 		DE3353E729E1E316002D4891 /* AuthenticationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E629E1E316002D4891 /* AuthenticationCoordinator.swift */; };
 		DE3353EA29E97FBF002D4891 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353E929E97FBF002D4891 /* AuthenticationService.swift */; };
 		DE3353ED29ED8AAD002D4891 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353EC29ED8AAD002D4891 /* HTTPRequest.swift */; };
@@ -115,7 +114,7 @@
 		DEF951A52A27304F00D80381 /* WorkoutTemplateBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951A42A27304F00D80381 /* WorkoutTemplateBuilderView.swift */; };
 		DEF951A72A27377700D80381 /* FloatingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951A62A27377700D80381 /* FloatingTextField.swift */; };
 		DEF951A92A27887800D80381 /* WorkoutTemplateBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951A82A27887800D80381 /* WorkoutTemplateBuilderViewModel.swift */; };
-		DEF951AB2A27E0C800D80381 /* ExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951AA2A27E0C800D80381 /* ExerciseView.swift */; };
+		DEF951AB2A27E0C800D80381 /* ExerciseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951AA2A27E0C800D80381 /* ExerciseCardView.swift */; };
 		DEF951AD2A27E12300D80381 /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951AC2A27E12300D80381 /* EditView.swift */; };
 /* End PBXBuildFile section */
 
@@ -240,7 +239,7 @@
 		DEF951A42A27304F00D80381 /* WorkoutTemplateBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTemplateBuilderView.swift; sourceTree = "<group>"; };
 		DEF951A62A27377700D80381 /* FloatingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingTextField.swift; sourceTree = "<group>"; };
 		DEF951A82A27887800D80381 /* WorkoutTemplateBuilderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTemplateBuilderViewModel.swift; sourceTree = "<group>"; };
-		DEF951AA2A27E0C800D80381 /* ExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseView.swift; sourceTree = "<group>"; };
+		DEF951AA2A27E0C800D80381 /* ExerciseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseCardView.swift; sourceTree = "<group>"; };
 		DEF951AC2A27E12300D80381 /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -256,7 +255,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE3353E529E1DCF6002D4891 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,7 +654,7 @@
 			children = (
 				DEF951A42A27304F00D80381 /* WorkoutTemplateBuilderView.swift */,
 				DEF951A82A27887800D80381 /* WorkoutTemplateBuilderViewModel.swift */,
-				DEF951AA2A27E0C800D80381 /* ExerciseView.swift */,
+				DEF951AA2A27E0C800D80381 /* ExerciseCardView.swift */,
 				DEF951AC2A27E12300D80381 /* EditView.swift */,
 				DE63022A2A2B32DC00BA5E54 /* AddExerciseView.swift */,
 			);
@@ -699,7 +697,6 @@
 			);
 			name = WorkoutApp;
 			packageProductDependencies = (
-				DE3353E429E1DCF6002D4891 /* Introspect */,
 			);
 			productName = WorkoutApp;
 			productReference = DEDA4AA529CF2125000AFBBF /* WorkoutApp.app */;
@@ -733,7 +730,6 @@
 			);
 			mainGroup = DEDA4A9C29CF2125000AFBBF;
 			packageReferences = (
-				DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = DEDA4AA629CF2125000AFBBF /* Products */;
 			projectDirPath = "";
@@ -809,7 +805,7 @@
 			files = (
 				DEDA4ABD29CF5E2A000AFBBF /* Coordinator.swift in Sources */,
 				DEC29D6929E19B220039B2C8 /* Previews + Extensions.swift in Sources */,
-				DEF951AB2A27E0C800D80381 /* ExerciseView.swift in Sources */,
+				DEF951AB2A27E0C800D80381 /* ExerciseCardView.swift in Sources */,
 				DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */,
 				DE012DF12A02CBD10071601B /* WorkoutRepository.swift in Sources */,
 				DEF951A12A26187F00D80381 /* WorkoutTemplateCardView.swift in Sources */,
@@ -1106,8 +1102,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1139,8 +1134,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1185,25 +1179,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.3;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		DE3353E429E1DCF6002D4891 /* Introspect */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = DE3353E329E1DCF6002D4891 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = Introspect;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DEDA4A9D29CF2125000AFBBF /* Project object */;
 }

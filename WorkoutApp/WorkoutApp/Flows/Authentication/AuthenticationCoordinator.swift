@@ -19,7 +19,7 @@ struct AuthenticationCoordinatorView: View {
     let dependencyContainer: DependencyContainer
     let onAuthenticationCompleted: () -> Void
     
-    @StateObject private var navigationManager = AuthenticationNavigationManager()
+    @State private var navigationManager = AuthenticationNavigationManager()
     @State private var currentFlow: AuthenticationFlow = .accountVerification
     @State private var loginEmail: String = ""
     
