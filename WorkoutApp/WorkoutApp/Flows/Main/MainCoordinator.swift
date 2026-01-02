@@ -13,34 +13,33 @@ struct MainCoordinatorView: View {
     let dependencyContainer: DependencyContainer
     
     @State private var selectedTab: TabBarItem = .workoutSessions
-    @StateObject private var workoutSessionsNavigationManager = WorkoutSessionsNavigationManager()
-    @StateObject private var workoutTemplatesNavigationManager = WorkoutTemplatesNavigationManager()
+    @State private var workoutSessionsNavigationManager = WorkoutSessionsNavigationManager()
+    @State private var workoutTemplatesNavigationManager = WorkoutTemplatesNavigationManager()
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            // Workout Sessions Tab
-            NavigationStack(path: $workoutSessionsNavigationManager.path) {
-                HomeWrapper(
-                    workoutRepository: dependencyContainer.workoutRepository,
-                    healthKitManager: dependencyContainer.healthKitManager,
-                    navigationManager: workoutSessionsNavigationManager
-                )
-            }
-            .tag(TabBarItem.workoutSessions)
-            .tabItem {
+            
+            Tab(value: TabBarItem.workoutSessions) {
+                NavigationStack(path: $workoutSessionsNavigationManager.path) {
+                    HomeWrapper(
+                        workoutRepository: dependencyContainer.workoutRepository,
+                        healthKitManager: dependencyContainer.healthKitManager,
+                        navigationManager: workoutSessionsNavigationManager
+                    )
+                }
+            } label: {
                 Label(TabBarItem.workoutSessions.title, systemImage: "dumbbell")
             }
             
-            // Workout Templates Tab
-            NavigationStack(path: $workoutTemplatesNavigationManager.path) {
-                WorkoutTemplatesListWrapper(
-                    exerciseService: dependencyContainer.exerciseService,
-                    workoutTemplateService: dependencyContainer.workoutTemplateService,
-                    navigationManager: workoutTemplatesNavigationManager
-                )
-            }
-            .tag(TabBarItem.workoutTemplates)
-            .tabItem {
+            Tab(value: TabBarItem.workoutTemplates) {
+                NavigationStack(path: $workoutTemplatesNavigationManager.path) {
+                    WorkoutTemplatesListWrapper(
+                        exerciseService: dependencyContainer.exerciseService,
+                        workoutTemplateService: dependencyContainer.workoutTemplateService,
+                        navigationManager: workoutTemplatesNavigationManager
+                    )
+                }
+            } label: {
                 Label(TabBarItem.workoutTemplates.title, systemImage: "list.bullet.clipboard")
             }
         }
@@ -76,13 +75,13 @@ private struct WorkoutTemplatesListWrapper: View {
     let exerciseService: any ExerciseServiceProtocol
     let workoutTemplateService: any WorkoutTemplateServiceProtocol
     let navigationManager: WorkoutTemplatesNavigationManager
-    @StateObject private var viewModel: WorkoutTemplatesList.ViewModel
+    @State private var viewModel: WorkoutTemplatesList.ViewModel
     
     init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
         self.exerciseService = exerciseService
         self.workoutTemplateService = workoutTemplateService
         self.navigationManager = navigationManager
-        self._viewModel = StateObject(wrappedValue: WorkoutTemplatesList.ViewModel(workoutTemplateService: workoutTemplateService))
+        self._viewModel = State(wrappedValue: WorkoutTemplatesList.ViewModel(workoutTemplateService: workoutTemplateService))
     }
     
     var body: some View {
@@ -95,7 +94,7 @@ private struct WorkoutTemplatesListWrapper: View {
                 )
             }
             .onAppear {
-                viewModel.navigationManager = navigationManager
+                viewModel.navigationManager = navigationManager //TODO: refactor this
             }
     }
 }
@@ -104,13 +103,13 @@ private struct WorkoutTemplateBuilderWrapper: View {
     let exerciseService: any ExerciseServiceProtocol
     let workoutTemplateService: any WorkoutTemplateServiceProtocol
     let navigationManager: WorkoutTemplatesNavigationManager
-    @StateObject private var viewModel: WorkoutTemplateBuilder.ViewModel
+    private var viewModel: WorkoutTemplateBuilder.ViewModel
     
     init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
         self.exerciseService = exerciseService
         self.workoutTemplateService = workoutTemplateService
         self.navigationManager = navigationManager
-        self._viewModel = StateObject(wrappedValue: WorkoutTemplateBuilder.ViewModel(exerciseService: exerciseService, workoutTemplateService: workoutTemplateService))
+        self.viewModel = WorkoutTemplateBuilder.ViewModel(exerciseService: exerciseService, workoutTemplateService: workoutTemplateService)
     }
     
     var body: some View {
@@ -121,7 +120,7 @@ private struct WorkoutTemplateBuilderWrapper: View {
     }
 }
 
-enum TabBarItem: String, CaseIterable {
+enum TabBarItem: String, CaseIterable, Hashable {
     case workoutSessions
     case workoutTemplates
     
@@ -132,17 +131,5 @@ enum TabBarItem: String, CaseIterable {
         case .workoutTemplates:
             return "Templates"
         }
-    }
-}
-
-// Legacy Coordinator class kept for reference but not used
-class MainCoordinator: Coordinator {
-    
-    var rootViewController: UIViewController? {
-        return nil
-    }
-    
-    func start(options connectionOptions: UIScene.ConnectionOptions?) {
-        // No longer used - replaced by MainCoordinatorView
     }
 }

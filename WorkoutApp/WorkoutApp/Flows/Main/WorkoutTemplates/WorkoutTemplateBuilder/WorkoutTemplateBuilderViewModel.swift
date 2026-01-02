@@ -5,31 +5,31 @@
 //  Created by Raul Pele on 31.05.2023.
 //
 
-import Foundation
+import Observation
 import SwiftUI
 
 extension WorkoutTemplateBuilder {
     
-    class ViewModel: ObservableObject {
+    @Observable class ViewModel {
         
-        @Published var title: String = ""
-        @Published var reps: String = ""
-        @Published var sets: String = ""
-        @Published var restTime: String = ""
-        @Published var seconds: String = ""
-        @Published var minutes: String = ""
+        var title: String = "New Workout" //TODO: fix
+        var reps: String = ""
+        var sets: String = ""
+        var restTime: String = ""
+        var seconds: String = ""
+        var minutes: String = ""
         
-        @Published var showEditingView: Bool = false
-        @Published var showAddExerciseView: Bool = false
+        var showEditingView: Bool = false
+        var showAddExerciseView: Bool = false
         
-        @Published var exercises = [Exercise]()
+        var exercises = [Exercise]()
         
         let exerciseService: any ExerciseServiceProtocol
         let workoutTemplateService: any WorkoutTemplateServiceProtocol
         
-        weak var navigationManager: WorkoutTemplatesNavigationManager?
+        @ObservationIgnored weak var navigationManager: WorkoutTemplatesNavigationManager?
         
-        private var saveTemplateTask: Task<Void, Never>?
+        @ObservationIgnored private var saveTemplateTask: Task<Void, Never>?
         
         var selectedExercise: Binding<Exercise>? {
             didSet {

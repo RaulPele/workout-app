@@ -8,7 +8,7 @@
 import Foundation
 
 class MockedExerciseService: ExerciseServiceProtocol {
-    let exerciseRepository = MockedExerciseRepository()
+    var exerciseRepository = MockedExerciseRepository()
     
     func getAll() async throws -> [Exercise] {
         return try await exerciseRepository.getAll()

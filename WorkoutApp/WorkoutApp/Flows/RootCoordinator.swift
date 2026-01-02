@@ -17,7 +17,7 @@ enum RootFlow {
 
 struct RootCoordinatorView: View {
     
-    @State private var currentFlow: RootFlow = .onboarding
+    @State private var currentFlow: RootFlow = .main //todo: OPTIMIZE 
     @State private var dependencyContainer: DependencyContainer = {
         let authService = MockedAuthenticationService()
         let workoutService = MockedWorkoutService()

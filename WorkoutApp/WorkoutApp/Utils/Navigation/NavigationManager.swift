@@ -5,11 +5,10 @@
 //  Created by Raul Pele on [Date]
 //
 
-import Foundation
 import SwiftUI
 
 /// Protocol defining navigation operations for managing navigation paths
-protocol NavigationManagerProtocol: ObservableObject {
+protocol NavigationManagerProtocol {
     var path: NavigationPath { get set }
     
     func push<Route: Hashable>(_ route: Route)
@@ -18,8 +17,9 @@ protocol NavigationManagerProtocol: ObservableObject {
 }
 
 /// Base navigation manager class that holds NavigationPath state
+@Observable
 class NavigationManager: NavigationManagerProtocol {
-    @Published var path = NavigationPath()
+    var path = NavigationPath()
     
     func push<Route: Hashable>(_ route: Route) {
         path.append(route)
@@ -37,11 +37,14 @@ class NavigationManager: NavigationManagerProtocol {
 }
 
 /// Navigation manager for Workout Sessions tab
+@Observable
 class WorkoutSessionsNavigationManager: NavigationManager {}
 
 /// Navigation manager for Workout Templates tab
+@Observable
 class WorkoutTemplatesNavigationManager: NavigationManager {}
 
 /// Navigation manager for Authentication flow
+@Observable
 class AuthenticationNavigationManager: NavigationManager {}
 

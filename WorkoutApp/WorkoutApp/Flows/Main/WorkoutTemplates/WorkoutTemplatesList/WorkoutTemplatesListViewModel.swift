@@ -9,15 +9,16 @@ import SwiftUI
 
 extension WorkoutTemplatesList {
    
-    class ViewModel: ObservableObject {
+    @Observable class ViewModel {
         
         //MARK: - Properties
-        @Published var workoutTemplates = [WorkoutTemplate]()
+        var workoutTemplates = [WorkoutTemplate]()
+        var isLoading = false
         private let workoutTemplateService: any WorkoutTemplateServiceProtocol
         
-        weak var navigationManager: WorkoutTemplatesNavigationManager?
+        @ObservationIgnored weak var navigationManager: WorkoutTemplatesNavigationManager?
         
-        var loadTask: Task<Void, Never>?
+        private var loadTask: Task<Void, Never>?
         
         init(workoutTemplateService: any WorkoutTemplateServiceProtocol) {
             self.workoutTemplateService = workoutTemplateService
@@ -27,6 +28,7 @@ extension WorkoutTemplatesList {
         //MARK: - Private Methods
         private func loadTemplates() {
             loadTask?.cancel()
+            isLoading = true
             loadTask = Task { @MainActor [weak self] in
                 guard let self = self else { return }
                 do {
@@ -34,6 +36,7 @@ extension WorkoutTemplatesList {
                 } catch {
                     print("Error while loading templates: \(error.localizedDescription)")
                 }
+                self.isLoading = false
             }
         }
         
@@ -42,11 +45,26 @@ extension WorkoutTemplatesList {
             navigationManager?.push(WorkoutTemplateBuilderRoute())
         }
         
+        func handleTemplateTapped(_ template: WorkoutTemplate) {
+            // For now, navigate to builder. Later we might want a detail/edit view
+            navigationManager?.push(WorkoutTemplateBuilderRoute())
+        }
+        
         func handleOnAppear() {
             loadTemplates()
         }
         
-        
+        @MainActor
+        func refreshTemplates() async {
+            loadTask?.cancel()
+            isLoading = true
+            do {
+                workoutTemplates = try await workoutTemplateService.getAll()
+            } catch {
+                print("Error while refreshing templates: \(error.localizedDescription)")
+            }
+            isLoading = false
+        }
     }
 }
 
