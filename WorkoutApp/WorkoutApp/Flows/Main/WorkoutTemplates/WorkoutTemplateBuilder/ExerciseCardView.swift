@@ -16,6 +16,8 @@ struct ExerciseCardView: View {
     let onDeleteAction: (() -> Void)?
     let onTapAction: (() -> Void)?
     
+    @State private var glowOpacity: CGFloat = 0.6
+    
     //MARK: - Initializers
     init(
         exercise: Exercise,
@@ -70,10 +72,30 @@ struct ExerciseCardView: View {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color.surface)
             }
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+            .overlay {
+                if isEditMode {
+                    glowingBorder
+                }
+            }
+            .shadow(color: isEditMode ? Color.primaryColor.opacity(0.3) : .black.opacity(0.05), 
+                   radius: isEditMode ? 12 : 8, 
+                   x: 0, 
+                   y: 2)
             .onTapGesture {
                 if isEditMode {
                     onTapAction?()
+                }
+            }
+            .onAppear {
+                if isEditMode {
+                    startGlowAnimation()
+                }
+            }
+            .onChange(of: isEditMode) { _, newValue in
+                if newValue {
+                    startGlowAnimation()
+                } else {
+                    glowOpacity = 0.6
                 }
             }
 //        .disabled(!isEditMode)
@@ -129,6 +151,31 @@ struct ExerciseCardView: View {
             return "\(minutes)m \(seconds)s"
         } else {
             return "\(seconds)s"
+        }
+    }
+    
+    private var glowingBorder: some View {
+        RoundedRectangle(cornerRadius: 16, style: .continuous)
+            .stroke(
+                Color.primaryColor.opacity(glowOpacity),
+                lineWidth: 2.5
+            )
+            .shadow(
+                color: Color.primaryColor.opacity(glowOpacity * 0.6),
+                radius: 8
+            )
+    }
+    
+    private func startGlowAnimation() {
+        glowOpacity = 0.6
+        Task {
+            try? await Task.sleep(for: .milliseconds(50))
+            withAnimation(
+                .easeInOut(duration: 1.5)
+                .repeatForever(autoreverses: true)
+            ) {
+                glowOpacity = 1.0
+            }
         }
     }
 }

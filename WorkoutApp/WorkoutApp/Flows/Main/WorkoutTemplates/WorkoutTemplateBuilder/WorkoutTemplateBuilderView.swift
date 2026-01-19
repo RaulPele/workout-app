@@ -7,20 +7,13 @@
 
 import SwiftUI
 
-private struct ExerciseIndex: Identifiable {
-    let id: Int
-}
-
 struct WorkoutTemplateBuilder {
         
     struct ContentView: View {
         
         @Bindable var viewModel: ViewModel
         @Environment(\.dismiss) private var dismiss
-        @State private var isEditing = false
-        @State private var deletingExerciseId: UUID?
-        @State private var editingExerciseIndex: ExerciseIndex?
-        
+
         var body: some View {
             ScrollView {
                 mainContentView
@@ -30,12 +23,11 @@ struct WorkoutTemplateBuilder {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if !viewModel.exercises.isEmpty {
-                    if isEditing {
+                    if viewModel.isEditing {
                         ToolbarItem(placement: .primaryAction) {
                             Button(role: .confirm) {
-                                viewModel.handleOnSaveTapped()
                                 withAnimation {
-                                    isEditing = false
+                                    viewModel.handleOnSaveTapped()
                                 }
                             }
                         }
@@ -43,7 +35,7 @@ struct WorkoutTemplateBuilder {
                         ToolbarItem(placement: .primaryAction) {
                             Button {
                                 withAnimation {
-                                    isEditing = true
+                                    viewModel.handleOnEditTapped()
                                 }
                             } label: {
                                 Image(systemName: "square.and.pencil")
@@ -55,10 +47,12 @@ struct WorkoutTemplateBuilder {
             .sheet(isPresented: $viewModel.showAddExerciseView) {
                 AddExerciseView(
                     exerciseService: viewModel.exerciseService,
-                    into: $viewModel.exercises
+                    onExerciseSelected: { exercise in
+                        viewModel.exercises.append(exercise)
+                    }
                 )
             }
-            .sheet(item: $editingExerciseIndex) { indexWrapper in
+            .sheet(item: $viewModel.editingExerciseIndex) { indexWrapper in
                 let index = indexWrapper.id
                 if index < viewModel.exercises.count {
                     EditView(
@@ -67,7 +61,7 @@ struct WorkoutTemplateBuilder {
                             set: { viewModel.exercises[index] = $0 }
                         ),
                         onFinishedEditing: {
-                            editingExerciseIndex = nil
+                            viewModel.editingExerciseIndex = nil
                         }
                     )
                 }
@@ -105,7 +99,7 @@ struct WorkoutTemplateBuilder {
                         
                         Spacer()
                         
-                        if isEditing {
+                        if viewModel.isEditing {
                             Button {
                                 viewModel.handleAddExerciseButtonTapped()
                             } label: {
@@ -121,34 +115,34 @@ struct WorkoutTemplateBuilder {
                         }
                         
                     }
-                    .animation(.spring(duration: 0.3), value: isEditing)
+                    .animation(.spring(duration: 0.3), value: viewModel.isEditing)
                     .padding(.bottom)
                     
                     ForEach(viewModel.exercises.enumerated(), id: \.element.id) { offset, exercise in
                         ExerciseCardView(
                             exercise: exercise,
-                            isEditMode: isEditing,
+                            isEditMode: viewModel.isEditing,
                             onDeleteAction: {
                                 let exerciseId = exercise.id
                                 withAnimation(.easeInOut(duration: 0.3)) {
-                                    deletingExerciseId = exerciseId
+                                    viewModel.deletingExerciseId = exerciseId
                                 }
                                 Task {
                                     try? await Task.sleep(for: .milliseconds(300))
                                     withAnimation {
                                         viewModel.exercises.removeAll(where: { $0.id == exerciseId })
-                                        deletingExerciseId = nil
+                                        viewModel.deletingExerciseId = nil
                                     }
                                 }
                             },
                             onTapAction: {
                                 if let currentIndex = viewModel.exercises.firstIndex(where: { $0.id == exercise.id }) {
-                                    editingExerciseIndex = ExerciseIndex(id: currentIndex)
+                                    viewModel.editingExerciseIndex = ExerciseIndex(id: currentIndex)
                                 }
                             }
                         )
-                        .offset(x: deletingExerciseId == exercise.id ? 2000 : 0)
-                        .opacity(deletingExerciseId == exercise.id ? 0 : 1)
+                        .offset(x: viewModel.deletingExerciseId == exercise.id ? 2000 : 0)
+                        .opacity(viewModel.deletingExerciseId == exercise.id ? 0 : 1)
                         .padding(.bottom, 8)
                     }
                 }

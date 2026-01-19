@@ -5,34 +5,35 @@
 //  Created by Raul Pele on 03.06.2023.
 //
 
+import Observation
 import SwiftUI
 
 extension AddExerciseView {
     
-    class ViewModel: ObservableObject {
+    @MainActor
+    @Observable class ViewModel {
         
-        @Published var existentExercises = [Exercise]()
-        @Published var newExerciseName = ""
-        @Published var isAddingExercise = false
-        @Published var selectedExercise: Exercise?
-        @Published var showEditView = false
-        
-        private var exercisesList: Binding<[Exercise]>
+        var existentExercises = [Exercise]()
+        var newExerciseName = ""
+        var isAddingExercise = false
+        var selectedExercise: Exercise?
+        var showEditView = false
         
         private let exerciseService: any ExerciseServiceProtocol
+        private let onExerciseSelected: (Exercise) -> Void
         
-        private var loadingTask: Task<Void, Never>?
+        @ObservationIgnored private var loadingTask: Task<Void, Never>?
         
-        init(exerciseService: any ExerciseServiceProtocol, exercisesList: Binding<[Exercise]>) {
+        init(exerciseService: any ExerciseServiceProtocol, onExerciseSelected: @escaping (Exercise) -> Void) {
             self.exerciseService = exerciseService
-            self.exercisesList = exercisesList
+            self.onExerciseSelected = onExerciseSelected
             loadExercises()
         }
         
         //MARK: - Private Methods
         private func loadExercises() {
             loadingTask?.cancel()
-            loadingTask = Task(priority: .background) { @MainActor [weak self] in
+            loadingTask = Task(priority: .background) { [weak self] in
                 guard let self = self else { return }
                 do {
                     self.existentExercises = try await exerciseService.getAll()
@@ -49,12 +50,11 @@ extension AddExerciseView {
                 do {
                     let exercise = Exercise(id: .init(), name: self.newExerciseName, numberOfSets: 0, setData: .init(id: .init(), reps: 0), restBetweenSets: 0)
                     try await self.exerciseService.save(exercise: exercise)
-                    await MainActor.run(body: {
+                    await MainActor.run {
                         self.existentExercises.append(exercise)
-                        self.exercisesList.wrappedValue.append(exercise)
                         self.newExerciseName = ""
                         self.isAddingExercise = false
-                    })
+                    }
                     print("Successfully added exercise: \(exercise.name)")
                 } catch {
                     print("Error while saving exercise: \(error.localizedDescription)")
@@ -83,20 +83,19 @@ extension AddExerciseView {
         }
         
         func handleExerciseEdited(_ exercise: Exercise) {
-            exercisesList.wrappedValue.append(exercise)
+            onExerciseSelected(exercise)
         }
     }
 }
 
 struct AddExerciseView: View {
     
-    @StateObject private var viewModel: ViewModel
+    @State private var viewModel: ViewModel
     @State private var searchText = ""
     @Environment(\.dismiss) private var dismiss
     
-    init(exerciseService: any ExerciseServiceProtocol, into exercises: Binding<[Exercise]>) {
-        let viewModel = ViewModel(exerciseService: exerciseService, exercisesList: exercises)
-        self._viewModel = .init(wrappedValue: viewModel)
+    init(exerciseService: any ExerciseServiceProtocol, onExerciseSelected: @escaping (Exercise) -> Void) {
+        self._viewModel = .init(wrappedValue: ViewModel(exerciseService: exerciseService, onExerciseSelected: onExerciseSelected))
     }
     
     var filteredExercises: [Exercise] {
@@ -191,7 +190,7 @@ struct AddExerciseView: View {
 }
 
 private struct AddNewExerciseSheet: View {
-    @ObservedObject var viewModel: AddExerciseView.ViewModel
+    @Bindable var viewModel: AddExerciseView.ViewModel
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -245,6 +244,6 @@ private struct EditExerciseSheetWrapper: View {
 
 struct AddExerciseView_Previews: PreviewProvider {
     static var previews: some View {
-        AddExerciseView(exerciseService: MockedExerciseService(), into: .constant([]))
+        AddExerciseView(exerciseService: MockedExerciseService(), onExerciseSelected: { _ in })
     }
 }
