@@ -29,8 +29,11 @@ extension WorkoutTemplateBuilder {
         let exerciseService: any ExerciseServiceProtocol
         let workoutTemplateService: any WorkoutTemplateServiceProtocol
         
+        var templateId: UUID?
+        
         @ObservationIgnored weak var navigationManager: WorkoutTemplatesNavigationManager?
         @ObservationIgnored private var saveTemplateTask: Task<Void, Never>?
+        @ObservationIgnored private var loadTemplateTask: Task<Void, Never>?
         
         private let logger = CustomLogger(subsystem: "WorkoutBuilder", category: String(describing: ViewModel.self))
         
@@ -44,14 +47,22 @@ extension WorkoutTemplateBuilder {
         }
         
         init(exerciseService: any ExerciseServiceProtocol,
-             workoutTemplateService: any WorkoutTemplateServiceProtocol) {
+             workoutTemplateService: any WorkoutTemplateServiceProtocol,
+             templateId: UUID? = nil) {
             exercises = []
             self.exerciseService = exerciseService
             self.workoutTemplateService = workoutTemplateService
-            logger.debug("WorkoutTemplateBuilder ViewModel initialized")
+            self.templateId = templateId
+            logger.debug("WorkoutTemplateBuilder ViewModel initialized with templateId: \(templateId?.uuidString ?? "nil")")
+            
+            if let templateId {
+                loadTemplate(templateId: templateId)
+
+            }
         }
         
         //MARK: - Public Handlers
+        @MainActor
         func handleOnSaveTapped() {
             logger.info("Save button tapped")
             saveWorkoutTemplate()
@@ -77,6 +88,26 @@ extension WorkoutTemplateBuilder {
         }
         
         //MARK: - Private Methods
+        private func loadTemplate(templateId: UUID) {
+            loadTemplateTask?.cancel()
+            loadTemplateTask = Task { @MainActor [weak self] in
+                guard let self else { return } //TODO: this creates a strong reference
+                do {
+                    let allTemplates = try await self.workoutTemplateService.getAll()
+                    if let template = allTemplates.first(where: { $0.id == templateId }) {
+                        self.title = template.name
+                        self.exercises = template.exercises
+                        self.isEditing = true
+                        self.logger.info("Loaded template: \(template.name) with \(template.exercises.count) exercises")
+                    } else {
+                        self.logger.error("Template with id \(templateId) not found")
+                    }
+                } catch {
+                    self.logger.error("Error while loading template: \(error.localizedDescription)")
+                }
+            }
+        }
+        
         private func saveWorkoutTemplate() {
             //TODO: field validations
             logger.info("Starting to save workout template: \(self.title)")
@@ -84,10 +115,11 @@ extension WorkoutTemplateBuilder {
             
             saveTemplateTask = Task(priority: .userInitiated) { [weak self] in
                 guard let self = self else { return }
-                let newTemplate = WorkoutTemplate(id: .init(), name: title, exercises: exercises)
-                logger.debug("Created template with \(exercises.count) exercises")
+                let templateId = self.templateId ?? UUID()
+                let template = WorkoutTemplate(id: templateId, name: title, exercises: exercises)
+                logger.debug("\(self.templateId != nil ? "Updating" : "Creating") template with \(exercises.count) exercises")
                 do {
-                    try await self.workoutTemplateService.save(entity: newTemplate)
+                    try await self.workoutTemplateService.save(entity: template)
                     logger.info("Successfully saved workout template: \(self.title)")
                 } catch {
                     logger.error("Error while saving template: \(error.localizedDescription)")

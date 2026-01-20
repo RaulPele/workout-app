@@ -18,7 +18,6 @@ struct MainCoordinatorView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            
             Tab(value: TabBarItem.workoutSessions) {
                 NavigationStack(path: $workoutSessionsNavigationManager.path) {
                     HomeWrapper(
@@ -30,7 +29,6 @@ struct MainCoordinatorView: View {
             } label: {
                 Label(TabBarItem.workoutSessions.title, systemImage: "dumbbell")
             }
-            
             Tab(value: TabBarItem.workoutTemplates) {
                 NavigationStack(path: $workoutTemplatesNavigationManager.path) {
                     WorkoutTemplatesListWrapper(
@@ -72,6 +70,7 @@ private struct HomeWrapper: View {
 }
 
 private struct WorkoutTemplatesListWrapper: View {
+    
     let exerciseService: any ExerciseServiceProtocol
     let workoutTemplateService: any WorkoutTemplateServiceProtocol
     let navigationManager: WorkoutTemplatesNavigationManager
@@ -86,15 +85,16 @@ private struct WorkoutTemplatesListWrapper: View {
     
     var body: some View {
         WorkoutTemplatesList.ContentView(viewModel: viewModel)
-            .navigationDestination(for: WorkoutTemplateBuilderRoute.self) { _ in
+            .navigationDestination(for: WorkoutTemplateBuilderRoute.self) { route in
                 WorkoutTemplateBuilderWrapper(
                     exerciseService: exerciseService,
                     workoutTemplateService: workoutTemplateService,
-                    navigationManager: navigationManager
+                    navigationManager: navigationManager,
+                    route: route
                 )
             }
             .onAppear {
-                viewModel.navigationManager = navigationManager //TODO: refactor this
+                viewModel.navigationManager = navigationManager //TODO: refactor this; could be sent through environment
             }
     }
 }
@@ -103,13 +103,17 @@ private struct WorkoutTemplateBuilderWrapper: View {
     let exerciseService: any ExerciseServiceProtocol
     let workoutTemplateService: any WorkoutTemplateServiceProtocol
     let navigationManager: WorkoutTemplatesNavigationManager
-    private var viewModel: WorkoutTemplateBuilder.ViewModel
+    @State private var viewModel: WorkoutTemplateBuilder.ViewModel
     
-    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
+    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
         self.exerciseService = exerciseService
         self.workoutTemplateService = workoutTemplateService
         self.navigationManager = navigationManager
-        self.viewModel = WorkoutTemplateBuilder.ViewModel(exerciseService: exerciseService, workoutTemplateService: workoutTemplateService)
+        self._viewModel = State(wrappedValue: WorkoutTemplateBuilder.ViewModel(
+            exerciseService: exerciseService,
+            workoutTemplateService: workoutTemplateService,
+            templateId: route.templateId
+        ))
     }
     
     var body: some View {
@@ -129,7 +133,7 @@ enum TabBarItem: String, CaseIterable, Hashable {
         case .workoutSessions:
             return "Sessions"
         case .workoutTemplates:
-            return "Templates"
+            return "Workouts"
         }
     }
 }

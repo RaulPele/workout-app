@@ -46,8 +46,7 @@ extension WorkoutTemplatesList {
         }
         
         func handleTemplateTapped(_ template: WorkoutTemplate) {
-            // For now, navigate to builder. Later we might want a detail/edit view
-            navigationManager?.push(WorkoutTemplateBuilderRoute())
+            navigationManager?.push(WorkoutTemplateBuilderRoute(templateId: template.id))
         }
         
         func handleOnAppear() {
