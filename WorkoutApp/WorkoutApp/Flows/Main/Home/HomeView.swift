@@ -70,55 +70,55 @@ struct Home {
     }
 }
 
-#if DEBUG
-struct Home_Preview: PreviewProvider {
-    
-    struct HomeNoWorkoutsTestView: View {
-        
-        @StateObject private var viewModel: Home.ViewModel = .init(
-            workoutRepository: MockedWorkoutSessionEmptyRepository(),
-            healthKitManager: HealthKitManager()
-        )
-        
-        init() {
-            viewModel.workouts = []
-        }
-        
-        var body: some View {
-            Home.ContentView(viewModel: viewModel)
-        }
-    }
-    
-    struct HomeTestView: View {
-        
-        @StateObject private var viewModel: Home.ViewModel
-        
-        init() {
-            self._viewModel = .init(wrappedValue: .init(
-                workoutRepository: MockedWorkoutSessionRepository(),
-                healthKitManager: HealthKitManager()))
-            viewModel.workouts = WorkoutSession.mockedSet
-        }
-        
-        var body: some View {
-            Home.ContentView(viewModel: viewModel)
-                .onAppear {
-                    viewModel.workouts = WorkoutSession.mockedSet
-                }
-        }
-    }
-    
-    static var previews: some View {
-        ForEach(previewDevices) { device in
-            HomeTestView()
-                .preview(device)
-                
-        }
-        
-        ForEach(previewDevices) { device in
-            HomeNoWorkoutsTestView()
-                .preview(device)
-        }
-    }
-}
-#endif
+//#if DEBUG
+//struct Home_Preview: PreviewProvider {
+//    
+//    struct HomeNoWorkoutsTestView: View {
+//        
+//        @StateObject private var viewModel: Home.ViewModel = .init(
+//            workoutRepository: MockedWorkoutSessionEmptyRepository(),
+//            healthKitManager: HealthKitManager()
+//        )
+//        
+//        init() {
+//            viewModel.workouts = []
+//        }
+//        
+//        var body: some View {
+//            Home.ContentView(viewModel: viewModel)
+//        }
+//    }
+//    
+//    struct HomeTestView: View {
+//        
+//        @StateObject private var viewModel: Home.ViewModel
+//        
+//        init() {
+//            self._viewModel = .init(wrappedValue: .init(
+//                workoutRepository: MockedWorkoutSessionRepository(),
+//                healthKitManager: HealthKitManager()))
+//            viewModel.workouts = WorkoutSession.mockedSet
+//        }
+//        
+//        var body: some View {
+//            Home.ContentView(viewModel: viewModel)
+//                .onAppear {
+//                    viewModel.workouts = WorkoutSession.mockedSet
+//                }
+//        }
+//    }
+//    
+//    static var previews: some View {
+//        ForEach(previewDevices) { device in
+//            HomeTestView()
+//                .preview(device)
+//                
+//        }
+//        
+//        ForEach(previewDevices) { device in
+//            HomeNoWorkoutsTestView()
+//                .preview(device)
+//        }
+//    }
+//}
+//#endif

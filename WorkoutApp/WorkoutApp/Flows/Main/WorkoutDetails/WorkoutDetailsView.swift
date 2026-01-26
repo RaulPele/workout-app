@@ -184,17 +184,17 @@ struct WorkoutDetails {
     
 }
 
-#if DEBUG
-struct WorkoutDetailsView_Previews: PreviewProvider {
-    
-    private static let viewModel = WorkoutDetails.ViewModel(workout: .mocked2)
-    
-    static var previews: some View {
-        
-        ForEach(previewDevices) { device in
-            WorkoutDetails.ContentView(viewModel: viewModel)
-                .preview(device)
-        }
-    }
-}
-#endif
+//#if DEBUG
+//struct WorkoutDetailsView_Previews: PreviewProvider {
+//    
+//    private static let viewModel = WorkoutDetails.ViewModel(workout: .mocked2)
+//    
+//    static var previews: some View {
+//        
+//        ForEach(previewDevices) { device in
+//            WorkoutDetails.ContentView(viewModel: viewModel)
+//                .preview(device)
+//        }
+//    }
+//}
+//#endif

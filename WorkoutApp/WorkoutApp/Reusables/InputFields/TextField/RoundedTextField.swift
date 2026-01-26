@@ -62,28 +62,28 @@ struct RoundedTextField: View {
     }
 }
 
-#if DEBUG
-struct RoundedTextField_Previews: PreviewProvider {
-    
-    struct TextFieldPreiews: View {
-        
-        @State var text: String = ""
-        @State var securedText: String = ""
-        
-        var body: some View {
-            VStack(spacing: 20) {
-                RoundedTextField(text: $text)
-                RoundedTextField(text: $securedText, isSecured: true)
-            }
-        }
-    }
-    
-    static var previews: some View {
-        ForEach(previewDevices) { device in
-            TextFieldPreiews()
-                .previewDevice(device)
-                .previewDisplayName(device.rawValue)
-        }
-    }
-}
-#endif
+//#if DEBUG
+//struct RoundedTextField_Previews: PreviewProvider {
+//    
+//    struct TextFieldPreiews: View {
+//        
+//        @State var text: String = ""
+//        @State var securedText: String = ""
+//        
+//        var body: some View {
+//            VStack(spacing: 20) {
+//                RoundedTextField(text: $text)
+//                RoundedTextField(text: $securedText, isSecured: true)
+//            }
+//        }
+//    }
+//    
+//    static var previews: some View {
+//        ForEach(previewDevices) { device in
+//            TextFieldPreiews()
+//                .previewDevice(device)
+//                .previewDisplayName(device.rawValue)
+//        }
+//    }
+//}
+//#endif

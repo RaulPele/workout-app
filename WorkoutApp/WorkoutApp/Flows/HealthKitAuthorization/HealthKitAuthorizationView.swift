@@ -65,16 +65,6 @@ struct HealthKitAuthorization {
     }
 }
 
-#if DEBUG
-struct HealthKitAuthorizationView_Previews: PreviewProvider {
-    
-    static let viewModel = HealthKitAuthorization.ContentView.ViewModel(healthKitManager: .init())
-    
-    static var previews: some View {
-        ForEach(previewDevices) { device in
-            HealthKitAuthorization.ContentView(viewModel: viewModel)
-                .preview(device)
-        }
-    }
+#Preview {
+    HealthKitAuthorization.ContentView(viewModel: .init(healthKitManager: .init()))
 }
-#endif
