@@ -11,44 +11,51 @@ import HealthKit
 class HealthKitManager {
     
     private let healthStore = HKHealthStore()
+    private let logger = CustomLogger(
+        subsystem: Bundle.main.bundleIdentifier ?? "WorkoutApp",
+        category: "HealthKitManager"
+    )
     
-    private func requestPermissions(fromWatch: Bool = false, completion: @escaping (Error?) -> ()) {
+    private func requestPermissions(fromWatch: Bool = false, completion: @escaping (Error?) -> Void) {
         let typesToShare: Set = [HKObjectType.workoutType()]
-          
-          let typesToRead: Set = [
-              HKObjectType.quantityType(forIdentifier: .heartRate)!,
-              HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!,
-              HKObjectType.quantityType(forIdentifier: .basalEnergyBurned)!,
-              HKObjectType.workoutType(),
-              HKObjectType.activitySummaryType()
-          ]
-          
-          healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
-              print("QWEQOPEQWE: \(error?.localizedDescription)")
-              print("SUCCESS \(success)")
+        
+        let typesToRead: Set = [
+            HKObjectType.quantityType(forIdentifier: .heartRate)!,
+            HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!,
+            HKObjectType.quantityType(forIdentifier: .basalEnergyBurned)!,
+            HKObjectType.workoutType(),
+            HKObjectType.activitySummaryType()
+        ]
+        
+        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
+            if let error {
+                self.logger.error("HealthKit authorization failed: \(error.localizedDescription)")
                 completion(error)
-//              if !fromWatch {
-//                  self.loadPreviousWorkouts { workouts in
-//                      self.previousWorkouts = workouts
-//                  }
-//              }
-          }
-      }
+            } else if !success {
+                let authError = NSError(
+                    domain: "HealthKitManager",
+                    code: -1,
+                    userInfo: [NSLocalizedDescriptionKey: "HealthKit authorization was not successful"]
+                )
+                self.logger.error("HealthKit authorization was not successful")
+                completion(authError)
+            } else {
+                self.logger.info("HealthKit authorization successful")
+                completion(nil)
+            }
+        }
+    }
     
     func isAuthorizedToShare() -> Bool {
         return healthStore.authorizationStatus(for: .workoutType()) == .sharingAuthorized
-        
     }
     
     func requestPermissions(fromWatch: Bool = false) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             requestPermissions(fromWatch: fromWatch) { error in
                 if let error {
-                    print("ERROR: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 } else {
-                    print("RESUME")
-
                     continuation.resume()
                 }
             }

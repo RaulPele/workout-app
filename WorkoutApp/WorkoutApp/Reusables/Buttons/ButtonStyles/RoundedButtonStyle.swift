@@ -18,12 +18,12 @@ struct ButtonStyles {
         
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .foregroundColor(foregroundColor)
+                .foregroundStyle(foregroundColor)
                 .font(.system(size: fontSize))
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(backgroundColor)
-                .cornerRadius(15)
+                .clipShape(.rect(cornerRadius: 15))
                 .opacity(configuration.isPressed ? 0.8 : 1)
         }
     }

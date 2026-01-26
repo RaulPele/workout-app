@@ -11,32 +11,31 @@ struct HealthKitAuthorization {
     
     struct ContentView: View {
         
-        @ObservedObject var viewModel: ViewModel
+        let viewModel: ViewModel
+        @Environment(\.scenePhase) private var scenePhase
+        
+        init(viewModel: ViewModel) {
+            self.viewModel = viewModel
+        }
         
         var body: some View {
-            VStack() {
+            VStack {
                 Spacer()
                 messageView
                 Spacer()
                 authorizationButtonView
                     .padding(.bottom, 40)
-//                Spacer()
-                
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .background(Color.background)
             .onAppear {
-                viewModel.handleOnAppear()
+                viewModel.checkAuthorizationStatus()
             }
-            .onChange(of: viewModel.appCameInForeground) { newValue in
-                if newValue == true {
-                    if viewModel.healthKitManager.isAuthorizedToShare() {
-                        viewModel.onFinished?()
-                    }
-                    
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active {
+                    viewModel.checkAuthorizationStatus()
                 }
-                print("NEW VALUE: \(newValue)")
             }
         }
         
@@ -45,12 +44,10 @@ struct HealthKitAuthorization {
                 Text("\(Constants.appName) doesn't have permission to access your workout data")
                 
                 Text("Please give permission in order to keep using the app.")
-                
             }
-            .foregroundColor(.onBackground)
+            .foregroundStyle(Color.onBackground)
             .font(.heading3)
             .multilineTextAlignment(.center)
-            
         }
         
         private var authorizationButtonView: some View {

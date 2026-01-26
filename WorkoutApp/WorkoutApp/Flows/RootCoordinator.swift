@@ -17,7 +17,7 @@ enum RootFlow {
 
 struct RootCoordinatorView: View {
     
-    @State private var currentFlow: RootFlow = .main //todo: OPTIMIZE 
+    @State private var currentFlow: RootFlow = .main
     @State private var dependencyContainer: DependencyContainer = {
         let authService = MockedAuthenticationService()
         let workoutService = MockedWorkoutSessionService()
@@ -47,11 +47,7 @@ struct RootCoordinatorView: View {
             case .onboarding:
                 OnboardingView(
                     onFinishedOnboarding: {
-                        if dependencyContainer.healthKitManager.isAuthorizedToShare() {
-                            currentFlow = .main
-                        } else {
-                            currentFlow = .healthKitAuthorization
-                        }
+                        determineNextFlow()
                     }
                 )
             case .healthKitAuthorization:
@@ -74,18 +70,29 @@ struct RootCoordinatorView: View {
                 )
             }
         }
+        .onAppear {
+            determineNextFlow()
+        }
+    }
+    
+    private func determineNextFlow() {
+        if dependencyContainer.healthKitManager.isAuthorizedToShare() {
+            currentFlow = .main
+        } else {
+            currentFlow = .healthKitAuthorization
+        }
     }
 }
 
 private struct HealthKitAuthorizationWrapper: View {
     let healthKitManager: HealthKitManager
     let onFinished: () -> Void
-    @StateObject private var viewModel: HealthKitAuthorization.ContentView.ViewModel
+    @State private var viewModel: HealthKitAuthorization.ContentView.ViewModel
     
     init(healthKitManager: HealthKitManager, onFinished: @escaping () -> Void) {
         self.healthKitManager = healthKitManager
         self.onFinished = onFinished
-        self._viewModel = StateObject(wrappedValue: HealthKitAuthorization.ContentView.ViewModel(healthKitManager: healthKitManager))
+        self._viewModel = State(initialValue: HealthKitAuthorization.ContentView.ViewModel(healthKitManager: healthKitManager))
     }
     
     var body: some View {
