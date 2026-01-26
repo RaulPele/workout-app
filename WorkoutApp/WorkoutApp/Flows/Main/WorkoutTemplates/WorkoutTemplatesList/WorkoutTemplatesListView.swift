@@ -72,7 +72,7 @@ struct WorkoutTemplatesList {
 // MARK: - Template Card Button
 
 private struct TemplateCardButton: View {
-    let template: WorkoutTemplate
+    let template: Workout
     let onTap: () -> Void
     @State private var tapCount = 0
     
@@ -81,7 +81,7 @@ private struct TemplateCardButton: View {
             tapCount += 1
             onTap()
         }) {
-            WorkoutTemplateCardView(workoutTemplate: template)
+            WorkoutTemplateCardView(Workout: template)
         }
         .buttonStyle(.plain)
         .sensoryFeedback(.impact(weight: .light), trigger: tapCount)
@@ -146,7 +146,7 @@ private extension CGFloat {
 
 #Preview {
     NavigationStack {
-        WorkoutTemplatesList.ContentView(viewModel: .init(workoutTemplateService: MockedWorkoutTemplateService()))
+        WorkoutTemplatesList.ContentView(viewModel: .init(workoutTemplateService: MockedWorkoutService()))
     }
 }
 

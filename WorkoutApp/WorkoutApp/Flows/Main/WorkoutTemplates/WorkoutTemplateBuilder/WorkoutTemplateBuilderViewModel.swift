@@ -27,7 +27,7 @@ extension WorkoutTemplateBuilder {
         var exercises = [Exercise]()
         
         let exerciseService: any ExerciseServiceProtocol
-        let workoutTemplateService: any WorkoutTemplateServiceProtocol
+        let workoutTemplateService: any WorkoutServiceProtocol
         
         var templateId: UUID?
         
@@ -47,7 +47,7 @@ extension WorkoutTemplateBuilder {
         }
         
         init(exerciseService: any ExerciseServiceProtocol,
-             workoutTemplateService: any WorkoutTemplateServiceProtocol,
+             workoutTemplateService: any WorkoutServiceProtocol,
              templateId: UUID? = nil) {
             exercises = []
             self.exerciseService = exerciseService
@@ -116,7 +116,7 @@ extension WorkoutTemplateBuilder {
             saveTemplateTask = Task(priority: .userInitiated) { [weak self] in
                 guard let self = self else { return }
                 let templateId = self.templateId ?? UUID()
-                let template = WorkoutTemplate(id: templateId, name: title, exercises: exercises)
+                let template = Workout(id: templateId, name: title, exercises: exercises)
                 logger.debug("\(self.templateId != nil ? "Updating" : "Creating") template with \(exercises.count) exercises")
                 do {
                     try await self.workoutTemplateService.save(entity: template)

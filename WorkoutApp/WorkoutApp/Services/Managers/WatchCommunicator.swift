@@ -36,7 +36,7 @@ class WatchCommunicator: NSObject, WCSessionDelegate {
         }
     }
     
-    func send(workoutTemplates: [WorkoutTemplate]) throws  {
+    func send(workoutTemplates: [Workout]) throws  {
         let data = try encoder.encode(workoutTemplates)
         try send(message: .init(contentType: .workoutTemplates, data: data))
     }
@@ -82,7 +82,7 @@ class WatchCommunicator: NSObject, WCSessionDelegate {
             let message = try decoder.decode(Message.self, from: messageData)
             switch message.contentType {
             case .workoutTemplates:
-                let templates: [WorkoutTemplate] = try FileIOManager.readAll(from: .workoutTemplates)
+                let templates: [Workout] = try FileIOManager.readAll(from: .workoutTemplates)
                 logger.info("Read workout templates from file: \(templates)")
                 replyData = try encoder.encode(templates)
                 

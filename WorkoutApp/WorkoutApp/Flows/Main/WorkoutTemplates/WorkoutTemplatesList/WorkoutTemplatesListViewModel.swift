@@ -12,15 +12,15 @@ extension WorkoutTemplatesList {
     @Observable class ViewModel {
         
         //MARK: - Properties
-        var workoutTemplates = [WorkoutTemplate]()
+        var workoutTemplates = [Workout]()
         var isLoading = false
-        private let workoutTemplateService: any WorkoutTemplateServiceProtocol
+        private let workoutTemplateService: any WorkoutServiceProtocol
         
         @ObservationIgnored weak var navigationManager: WorkoutTemplatesNavigationManager?
         
         private var loadTask: Task<Void, Never>?
         
-        init(workoutTemplateService: any WorkoutTemplateServiceProtocol) {
+        init(workoutTemplateService: any WorkoutServiceProtocol) {
             self.workoutTemplateService = workoutTemplateService
             loadTemplates()
         }
@@ -45,7 +45,7 @@ extension WorkoutTemplatesList {
             navigationManager?.push(WorkoutTemplateBuilderRoute())
         }
         
-        func handleTemplateTapped(_ template: WorkoutTemplate) {
+        func handleTemplateTapped(_ template: Workout) {
             navigationManager?.push(WorkoutTemplateBuilderRoute(templateId: template.id))
         }
         

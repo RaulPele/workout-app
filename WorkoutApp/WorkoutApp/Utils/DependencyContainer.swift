@@ -9,19 +9,19 @@ import Foundation
 
 class DependencyContainer {
     let authenticationService: AuthenticationServiceProtocol
-    let workoutRepository: any WorkoutRepository
-    let workoutService: WorkoutService
+    let workoutRepository: any WorkoutSessionRepository
+    let workoutService: WorkoutSessionService
     let healthKitManager: HealthKitManager
     let watchCommunicator: WatchCommunicator
     let exerciseService: any ExerciseServiceProtocol
-    let workoutTemplateService: any WorkoutTemplateServiceProtocol
+    let workoutTemplateService: any WorkoutServiceProtocol
     
     init(authenticationService: AuthenticationServiceProtocol,
-         workoutService: WorkoutService,
-         workoutRepository: any WorkoutRepository,
+         workoutService: WorkoutSessionService,
+         workoutRepository: any WorkoutSessionRepository,
          healthKitManager: HealthKitManager,
          exerciseService: any ExerciseServiceProtocol,
-         workoutTemplateService: any WorkoutTemplateServiceProtocol,
+         workoutTemplateService: any WorkoutServiceProtocol,
          watchCommunicator: WatchCommunicator
     ) {
         self.authenticationService = authenticationService
@@ -38,11 +38,11 @@ class DependencyContainer {
 class MockedDependencyContainer: DependencyContainer {
     init() {
         super.init(authenticationService: MockedAuthenticationService(),
-                   workoutService: MockedWorkoutService(),
-                   workoutRepository: MockedWorkoutRepository(),
+                   workoutService: MockedWorkoutSessionService(),
+                   workoutRepository: MockedWorkoutSessionRepository(),
                    healthKitManager: HealthKitManager(),
                    exerciseService: MockedExerciseService(),
-                   workoutTemplateService: MockedWorkoutTemplateService(),
+                   workoutTemplateService: MockedWorkoutService(),
                    watchCommunicator: WatchCommunicator()
         )
     }

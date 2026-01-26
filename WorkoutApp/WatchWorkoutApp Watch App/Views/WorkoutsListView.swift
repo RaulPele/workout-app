@@ -12,7 +12,7 @@ import OSLog
 
 //class WorkoutsListViewModel: ObservableObject {
 //    
-//    @Published var workoutTemplates = [WorkoutTemplate]()
+//    @Published var workoutTemplates = [Workout]()
 ////    @Published workoutManger
 ////    private var phoneCommunicator = PhoneCommunicator()
 //    

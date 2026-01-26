@@ -68,11 +68,11 @@ extension WorkoutDetails {
     class ViewModel: ObservableObject {
         
         @Published var isLoading: Bool = false
-        @Published var workout: Workout
+        @Published var workout: WorkoutSession
         var workoutDetailsData = [RowData]()
 //        var exercisesData = [PerformedExercise]()
         
-        init(workout: Workout) {
+        init(workout: WorkoutSession) {
             self.workout = workout
             computeWorkoutDetailsData()
 //            computeExercisesData()

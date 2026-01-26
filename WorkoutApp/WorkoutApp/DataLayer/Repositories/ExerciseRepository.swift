@@ -11,15 +11,37 @@ protocol ExerciseRepositoryProtocol: Repository where T == Exercise {
     
 }
 
+@MainActor
 class ExerciseRepository: ExerciseRepositoryProtocol {
     
+    private let localDataSource = SwiftDataDataSource<Exercise>()
+    private let logger = CustomLogger(
+        subsystem: Bundle.main.bundleIdentifier ?? "WorkoutApp",
+        category: "ExerciseRepository"
+    )
+    
     func getAll() async throws -> [Exercise] {
-        try FileIOManager.readAll(from: .exercises)
+        logger.debug("Fetching all exercises")
+        do {
+            let exercises = try await localDataSource.fetchAll()
+            logger.info("Successfully fetched \(exercises.count) exercises")
+            return exercises
+        } catch {
+            logger.error("Failed to fetch exercises: \(error.localizedDescription)")
+            throw error
+        }
     }
     
     func save(entity: Exercise) async throws -> Exercise {
-        try FileIOManager.write(entity: entity, toDirectory: .exercises)
-        return entity
+        logger.debug("Saving exercise: \(entity.name) (ID: \(entity.id))")
+        do {
+            try await localDataSource.save(entity: entity)
+            logger.info("Successfully saved exercise: \(entity.name) (ID: \(entity.id))")
+            return entity
+        } catch {
+            logger.error("Failed to save exercise: \(entity.name) (ID: \(entity.id)), error: \(error.localizedDescription)")
+            throw error
+        }
     }
 }
 
@@ -37,3 +59,10 @@ class MockedExerciseRepository: ExerciseRepositoryProtocol {
         return entity
     }
 }
+extension Exercise: SwiftDataConvertible {
+    
+    var dto: ExerciseDTO {
+        return ExerciseDTO(id: id, name: name, numberOfSets: numberOfSets, setData: setData, restBetweenSets: restBetweenSets)
+    }
+}
+

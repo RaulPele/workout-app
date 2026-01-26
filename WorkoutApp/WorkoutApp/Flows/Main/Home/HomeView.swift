@@ -76,7 +76,7 @@ struct Home_Preview: PreviewProvider {
     struct HomeNoWorkoutsTestView: View {
         
         @StateObject private var viewModel: Home.ViewModel = .init(
-            workoutRepository: MockedWorkoutEmptyRepository(),
+            workoutRepository: MockedWorkoutSessionEmptyRepository(),
             healthKitManager: HealthKitManager()
         )
         
@@ -95,15 +95,15 @@ struct Home_Preview: PreviewProvider {
         
         init() {
             self._viewModel = .init(wrappedValue: .init(
-                workoutRepository: MockedWorkoutRepository(),
+                workoutRepository: MockedWorkoutSessionRepository(),
                 healthKitManager: HealthKitManager()))
-            viewModel.workouts = Workout.mockedSet
+            viewModel.workouts = WorkoutSession.mockedSet
         }
         
         var body: some View {
             Home.ContentView(viewModel: viewModel)
                 .onAppear {
-                    viewModel.workouts = Workout.mockedSet
+                    viewModel.workouts = WorkoutSession.mockedSet
                 }
         }
     }

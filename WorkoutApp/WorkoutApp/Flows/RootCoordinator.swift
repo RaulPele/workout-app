@@ -20,15 +20,15 @@ struct RootCoordinatorView: View {
     @State private var currentFlow: RootFlow = .main //todo: OPTIMIZE 
     @State private var dependencyContainer: DependencyContainer = {
         let authService = MockedAuthenticationService()
-        let workoutService = MockedWorkoutService()
+        let workoutService = MockedWorkoutSessionService()
         let healthKitManager = HealthKitManager()
-        let workoutRepository = WorkoutAPIRepository(workoutService: workoutService, healthKitManager: healthKitManager)
+        let workoutRepository = WorkoutSessionAPIRepository(workoutService: workoutService, healthKitManager: healthKitManager)
         let exerciseRepository = ExerciseRepository()
         let exerciseService = ExerciseService(exerciseRepository: exerciseRepository)
-        let workoutTemplateRepository = WorkoutTemplateLocalRepository()
+        let workoutTemplateRepository = WorkoutLocalRepository()
         let watchCommunicator = WatchCommunicator()
 
-        let workoutTemplateService = WorkoutTemplateService(repository: workoutTemplateRepository, watchCommunicator: watchCommunicator)
+        let workoutTemplateService = WorkoutService(repository: workoutTemplateRepository, watchCommunicator: watchCommunicator)
         
         return DependencyContainer(
             authenticationService: authService,

@@ -13,14 +13,14 @@ extension Home {
     class ViewModel: ObservableObject {
         
         @Published var isLoading: Bool = false
-        @Published var workouts: [Workout] = []
+        @Published var workouts: [WorkoutSession] = []
         
-        private let workoutRepository: any WorkoutRepository
+        private let workoutRepository: any WorkoutSessionRepository
         private let healthKitManager: HealthKitManager
         
         weak var navigationManager: WorkoutSessionsNavigationManager?
         
-        init(workoutRepository: any WorkoutRepository,
+        init(workoutRepository: any WorkoutSessionRepository,
              healthKitManager: HealthKitManager) {
             self.workoutRepository = workoutRepository
             self.healthKitManager = healthKitManager
@@ -48,8 +48,8 @@ extension Home {
             }
         }
         
-        func handleWorkoutTapped(for workout: Workout) {
-            navigationManager?.push(WorkoutRoute(workout: workout))
+        func handleWorkoutTapped(for session: WorkoutSession) {
+            navigationManager?.push(WorkoutRoute(workout: session))
         }
         
     }

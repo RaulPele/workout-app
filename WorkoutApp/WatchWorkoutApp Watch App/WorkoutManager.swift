@@ -10,7 +10,7 @@ import HealthKit
 
 class WorkoutManager: NSObject, ObservableObject {
     
-    var selectedWorkoutTemplate: WorkoutTemplate? {
+    var selectedWorkoutTemplate: Workout? {
         didSet {
             guard let selectedWorkoutTemplate else { return }
             startWorkout(workoutType: .traditionalStrengthTraining)
@@ -35,8 +35,8 @@ class WorkoutManager: NSObject, ObservableObject {
     @Published var isLoading = false //TODO: move
     
     // MARK: - Workout exercises
-    @Published var workoutTemplates = [WorkoutTemplate]()
-    var workoutSession: Workout?
+    @Published var workoutTemplates = [Workout]()
+    var workoutSession: WorkoutSession?
     @Published var performedExercises: [PerformedExercise] = []
     
     // MARK: - Workout metrics
@@ -102,7 +102,7 @@ class WorkoutManager: NSObject, ObservableObject {
             if let error = error {
                 print("Error in builder's beginCollection method: \(error.localizedDescription)")
             } else if success {
-                self?.workoutSession = Workout(
+                self?.workoutSession = WorkoutSession(
                     id: UUID(),
                     workoutTemplate: self?.selectedWorkoutTemplate ?? .mockedWorkoutTemplate,
                     performedExercises: []

@@ -67,13 +67,14 @@ extension AddExerciseView {
         }
         
         func handleExerciseTapped(for exercise: Exercise) {
-            // Create a new exercise instance with default values for editing
+            // IMPORTANT: Reuse existing IDs to prevent duplicates in SwiftData
+            // SwiftData's @Attribute(.unique) will upsert based on these IDs
             let exerciseForWorkout = Exercise(
-                id: .init(),
+                id: exercise.id,
                 name: exercise.name,
                 numberOfSets: exercise.numberOfSets > 0 ? exercise.numberOfSets : 3,
                 setData: ExerciseSet(
-                    id: .init(),
+                    id: exercise.setData.id,
                     reps: exercise.setData.reps > 0 ? exercise.setData.reps : 10
                 ),
                 restBetweenSets: exercise.restBetweenSets > 0 ? exercise.restBetweenSets : 60

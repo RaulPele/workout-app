@@ -19,7 +19,7 @@ extension TimeInterval {
 
 struct WorkoutCardView: View {
     
-    let workout: Workout
+    let workout: WorkoutSession
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {

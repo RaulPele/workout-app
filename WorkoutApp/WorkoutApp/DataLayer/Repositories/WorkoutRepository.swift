@@ -1,69 +1,70 @@
 //
-//  WorkoutRepository.swift
+//  WorkoutTemplateRepository.swift
 //  WorkoutApp
 //
-//  Created by Raul Pele on 03.05.2023.
+//  Created by Raul Pele on 21.05.2023.
 //
 
 import Foundation
-import HealthKit
 
 protocol WorkoutRepository: Repository where T == Workout {
     
 }
 
-class WorkoutAPIRepository: WorkoutRepository {
+@MainActor //I dont like this
+class WorkoutLocalRepository: WorkoutRepository {
     
-    private let workoutService: WorkoutService
-    private let healthKitManager: HealthKitManager
-    
-    init(workoutService: WorkoutService,
-         healthKitManager: HealthKitManager) {
-        self.workoutService = workoutService
-        self.healthKitManager = healthKitManager
-    }
+    private let localDataSource = SwiftDataDataSource<Workout>()
+    private let logger = CustomLogger(
+        subsystem: Bundle.main.bundleIdentifier ?? "WorkoutApp",
+        category: "WorkoutRepository"
+    )
     
     func getAll() async throws -> [Workout] {
-        let hkWorkouts = try await healthKitManager.loadWorkouts()
-        
-        let workouts = hkWorkouts.compactMap { hkWorkout in
-            let workout: Workout? = try? FileIOManager.read(forId: hkWorkout.uuid, fromDirectory: .workoutSessions)
-            return workout
+        logger.debug("Fetching all workouts")
+        do {
+            let workouts = try await localDataSource.fetchAll()
+            logger.info("Successfully fetched \(workouts.count) workouts")
+            return workouts
+        } catch {
+            logger.error("Failed to fetch workouts: \(error.localizedDescription)")
+            throw error
         }
-        
-        return workouts
     }
     
     func save(entity: Workout) async throws -> Workout {
-        try FileIOManager.write(entity: entity, toDirectory: .workoutSessions)
-        return entity
+        logger.debug("Saving workout: \(entity.name) (ID: \(entity.id))")
+        do {
+            try await localDataSource.save(entity: entity)
+            logger.info("Successfully saved workout: \(entity.name) (ID: \(entity.id))")
+            return entity
+        } catch {
+            logger.error("Failed to save workout: \(entity.name) (ID: \(entity.id)), error: \(error.localizedDescription)")
+            throw error
+        }
     }
     
-    //TODO: implement delete
+
 }
 
+extension Workout: SwiftDataConvertible {
+    
+    var dto: WorkoutDTO {
+        WorkoutDTO(from: self)
+    }
+    
+}
 
 class MockedWorkoutRepository: WorkoutRepository {
     
-    func save(entity: Workout) async throws -> Workout {
-        
-        return entity
-    }
-    
-    
-    private let workoutService: WorkoutService = MockedWorkoutService()
+    private var templates = [Workout]()
     
     func getAll() async throws -> [Workout] {
-        return try await workoutService.getAll()
-    }
-}
-
-class MockedWorkoutEmptyRepository: WorkoutRepository {
-    func save(entity: Workout) async throws -> Workout {
-        return entity
+        return templates
     }
     
-    func getAll() async throws -> [Workout] {
-        return []
+    func save(entity: Workout) async throws -> Workout {
+        templates.append(entity)
+        return entity
     }
 }

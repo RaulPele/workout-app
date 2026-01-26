@@ -46,7 +46,7 @@ class WorkoutTemplatesNavigationManager: NavigationManager {
     
     enum Screens {
         case workoutsList
-        case workoutsBuilderView(WorkoutTemplate?)
+        case workoutsBuilderView(Workout?)
     }
 }
 

@@ -46,12 +46,12 @@ struct MainCoordinatorView: View {
 }
 
 private struct HomeWrapper: View {
-    let workoutRepository: any WorkoutRepository
+    let workoutRepository: any WorkoutSessionRepository
     let healthKitManager: HealthKitManager
     let navigationManager: WorkoutSessionsNavigationManager
     @StateObject private var viewModel: Home.ViewModel
     
-    init(workoutRepository: any WorkoutRepository, healthKitManager: HealthKitManager, navigationManager: WorkoutSessionsNavigationManager) {
+    init(workoutRepository: any WorkoutSessionRepository, healthKitManager: HealthKitManager, navigationManager: WorkoutSessionsNavigationManager) {
         self.workoutRepository = workoutRepository
         self.healthKitManager = healthKitManager
         self.navigationManager = navigationManager
@@ -72,11 +72,11 @@ private struct HomeWrapper: View {
 private struct WorkoutTemplatesListWrapper: View {
     
     let exerciseService: any ExerciseServiceProtocol
-    let workoutTemplateService: any WorkoutTemplateServiceProtocol
+    let workoutTemplateService: any WorkoutServiceProtocol
     let navigationManager: WorkoutTemplatesNavigationManager
     @State private var viewModel: WorkoutTemplatesList.ViewModel
     
-    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
+    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
         self.exerciseService = exerciseService
         self.workoutTemplateService = workoutTemplateService
         self.navigationManager = navigationManager
@@ -101,11 +101,11 @@ private struct WorkoutTemplatesListWrapper: View {
 
 private struct WorkoutTemplateBuilderWrapper: View {
     let exerciseService: any ExerciseServiceProtocol
-    let workoutTemplateService: any WorkoutTemplateServiceProtocol
+    let workoutTemplateService: any WorkoutServiceProtocol
     let navigationManager: WorkoutTemplatesNavigationManager
     @State private var viewModel: WorkoutTemplateBuilder.ViewModel
     
-    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutTemplateServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
+    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
         self.exerciseService = exerciseService
         self.workoutTemplateService = workoutTemplateService
         self.navigationManager = navigationManager

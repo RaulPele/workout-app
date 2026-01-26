@@ -9,7 +9,7 @@ import Foundation
 
 /// Navigation route for Workout Details screen
 struct WorkoutRoute: Hashable {
-    let workout: Workout
+    let workout: WorkoutSession
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(workout.id)

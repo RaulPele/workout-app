@@ -37,16 +37,16 @@ class PhoneCommunicator: NSObject, WCSessionDelegate {
         session.sendMessageData(json, replyHandler: replyHandler)
     }
     
-    func requestWorkoutTemplates(completion: @escaping ([WorkoutTemplate]) -> Void) throws {
+    func requestWorkoutTemplates(completion: @escaping ([Workout]) -> Void) throws {
         
         let message = Message(contentType: .workoutTemplates, data: Data())
         print("Requesting workout templates")
         try send(message: message) { [weak self] response in
-            var templates = [WorkoutTemplate]()
+            var templates = [Workout]()
             print("Decoding workout templates")
 
             do {
-                templates = try JSONDecoder().decode([WorkoutTemplate].self, from: response)
+                templates = try JSONDecoder().decode([Workout].self, from: response)
             } catch {
                 print("Error occured while decoding templates")
                 self?.logger.error("Error occured while decoding templates")
@@ -56,7 +56,7 @@ class PhoneCommunicator: NSObject, WCSessionDelegate {
         
     }
     
-    func send(workoutSession: Workout) throws {
+    func send(workoutSession: WorkoutSession) throws {
         let sessionData = try encoder.encode(workoutSession)
         let message = Message(contentType: .workoutSession, data: sessionData)
         try send(message: message, replyHandler: nil)

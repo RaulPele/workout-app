@@ -188,7 +188,7 @@ struct WorkoutTemplateBuilder {
         WorkoutTemplateBuilder.ContentView(
             viewModel: .init(
                 exerciseService: MockedExerciseService(),
-                workoutTemplateService: MockedWorkoutTemplateService()
+                workoutTemplateService: MockedWorkoutService()
             )
         )
     }
@@ -204,7 +204,7 @@ private struct WorkoutTemplateBuilderPreviewWithExercises: View {
     init() {
         viewModel = WorkoutTemplateBuilder.ViewModel(
             exerciseService: MockedExerciseService(),
-            workoutTemplateService: MockedWorkoutTemplateService()
+            workoutTemplateService: MockedWorkoutService()
         )
         viewModel.exercises = [.mockedBBSquats, .mockedBBBenchPress]
     }

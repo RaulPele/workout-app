@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension Workout {
+extension WorkoutSession {
     
-    static let mocked1: Workout = .init(id: .init(),
+    static let mocked1: WorkoutSession = .init(id: .init(),
                                         title: "Day 3 Week 4",
                                         workoutTemplate: .mockedWorkoutTemplate,
                                         performedExercises: [.mockedBBBenchPress, .mockedBBSquats],
@@ -21,7 +21,7 @@ extension Workout {
                                         activeCalories: 780
     )
     
-    static let mocked2: Workout = .init(id: .init(),
+    static let mocked2: WorkoutSession = .init(id: .init(),
                                         title: "Morning session",
                                         workoutTemplate: .mockedWorkoutTemplate,
                                         performedExercises: [.mockedBBBenchPress, .mockedBBSquats],
@@ -32,7 +32,7 @@ extension Workout {
                                         totalCalories: 900,
                                         activeCalories: 780)
     
-    static let mocked3: Workout = .init(id: .init(),
+    static let mocked3: WorkoutSession = .init(id: .init(),
                                         title: "After work session",
                                         workoutTemplate: .mockedWorkoutTemplate,
                                         performedExercises: [.mockedBBBenchPress, .mockedBBSquats],
@@ -43,7 +43,7 @@ extension Workout {
                                         totalCalories: 900,
                                         activeCalories: 780)
     
-    static let mocked4: Workout = .init(id: .init(),
+    static let mocked4: WorkoutSession = .init(id: .init(),
                                         title: "TSW Day 3 Week 4",
                                         workoutTemplate: .mockedWorkoutTemplate,
                                         performedExercises: [.mockedBBBenchPress, .mockedBBSquats],
@@ -55,6 +55,6 @@ extension Workout {
                                         activeCalories: 780
     )
     
-    static let mockedSet = [Workout.mocked1, .mocked2, .mocked3, .mocked4]
+    static let mockedSet = [WorkoutSession.mocked1, .mocked2, .mocked3, .mocked4]
 }
 

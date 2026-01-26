@@ -10,7 +10,7 @@ import Foundation
 struct AppTester {
     
     func createWorkoutTemplatesFiles() {
-        let mockedTemplate = WorkoutTemplate.mockedWorkoutTemplate
+        let mockedTemplate = Workout.mockedWorkoutTemplate
         try? FileIOManager.write(entity: mockedTemplate, toDirectory: .workoutTemplates)
         print("Wrote mocked templates to app directory")
     }
