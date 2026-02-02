@@ -129,7 +129,7 @@ class SwiftDataManager {
 }
 
 @MainActor
-class SwiftDataDataSource<T: SwiftDataConvertible> {
+class SwiftDataDataSource<T: SwiftDataConvertible> where T: Identifiable, T.ID == UUID {
     
     private let manager = SwiftDataManager.shared
     private let logger = CustomLogger(
@@ -153,5 +153,34 @@ class SwiftDataDataSource<T: SwiftDataConvertible> {
         let list: [T.DTO] = try await manager.fetchAll()
         let domainEntities = list.map { $0.toDomain() }
         return domainEntities
+    }
+    
+    func delete(entity: T) async throws {
+        let entityId = entity.id
+        
+        do {
+            // Fetch all DTOs and find the matching one
+            let allDTOs: [T.DTO] = try await manager.fetchAll()
+            
+            // Find the DTO with matching ID
+            guard let dtoToDelete = allDTOs.first(where: { dto in
+                let domainEntity = dto.toDomain()
+                if let identifiable = domainEntity as? any Identifiable {
+                    return (identifiable.id as? UUID) == entityId
+                }
+                return false
+            }) else {
+                let entityType = String(describing: T.self)
+                logger.debug("No DTO found to delete for entity of type: \(entityType), id: \(entityId)")
+                return
+            }
+            
+            try await manager.delete(dtoToDelete)
+            logger.info("Successfully deleted entity of type: \(String(describing: T.self)), id: \(entityId)")
+        } catch {
+            let entityType = String(describing: T.self)
+            logger.error("Failed to delete domain entity of type: \(entityType), id: \(entityId), error: \(error.localizedDescription)")
+            throw error
+        }
     }
 }

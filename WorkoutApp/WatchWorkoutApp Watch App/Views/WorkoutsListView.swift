@@ -89,12 +89,6 @@ extension HKWorkoutActivityType: Identifiable {
     }
 }
 
-//struct WorkoutsListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        WorkoutsListView()
-//    }
-//}
-
-//extension PreviewDevice {
-//    let appleWatchSeries8: PreviewDevice = .init(rawValue: "Apple Watch Series 8")
-//}
+#Preview {
+    WorkoutsListView()
+}
