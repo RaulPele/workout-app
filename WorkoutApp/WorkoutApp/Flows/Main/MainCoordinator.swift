@@ -32,8 +32,8 @@ struct MainCoordinatorView: View {
             Tab(value: TabBarItem.workoutTemplates) {
                 NavigationStack(path: $workoutTemplatesNavigationManager.path) {
                     WorkoutTemplatesListWrapper(
-                        exerciseService: dependencyContainer.exerciseService,
-                        workoutTemplateService: dependencyContainer.workoutTemplateService,
+                        exerciseRepository: dependencyContainer.exerciseRepository,
+                        workoutTemplateRepository: dependencyContainer.workoutTemplateRepository,
                         navigationManager: workoutTemplatesNavigationManager
                     )
                 }
@@ -49,13 +49,13 @@ private struct HomeWrapper: View {
     let workoutRepository: any WorkoutSessionRepository
     let healthKitManager: HealthKitManager
     let navigationManager: WorkoutSessionsNavigationManager
-    @StateObject private var viewModel: Home.ViewModel
-    
+    @State private var viewModel: Home.ViewModel
+
     init(workoutRepository: any WorkoutSessionRepository, healthKitManager: HealthKitManager, navigationManager: WorkoutSessionsNavigationManager) {
         self.workoutRepository = workoutRepository
         self.healthKitManager = healthKitManager
         self.navigationManager = navigationManager
-        self._viewModel = StateObject(wrappedValue: Home.ViewModel(workoutRepository: workoutRepository, healthKitManager: healthKitManager))
+        self._viewModel = State(wrappedValue: Home.ViewModel(workoutRepository: workoutRepository, healthKitManager: healthKitManager))
     }
     
     var body: some View {
@@ -70,25 +70,25 @@ private struct HomeWrapper: View {
 }
 
 private struct WorkoutTemplatesListWrapper: View {
-    
-    let exerciseService: any ExerciseServiceProtocol
-    let workoutTemplateService: any WorkoutServiceProtocol
+
+    let exerciseRepository: any ExerciseRepositoryProtocol
+    let workoutTemplateRepository: any WorkoutRepository
     let navigationManager: WorkoutTemplatesNavigationManager
     @State private var viewModel: WorkoutTemplatesList.ViewModel
-    
-    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager) {
-        self.exerciseService = exerciseService
-        self.workoutTemplateService = workoutTemplateService
+
+    init(exerciseRepository: any ExerciseRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager) {
+        self.exerciseRepository = exerciseRepository
+        self.workoutTemplateRepository = workoutTemplateRepository
         self.navigationManager = navigationManager
-        self._viewModel = State(wrappedValue: WorkoutTemplatesList.ViewModel(workoutTemplateService: workoutTemplateService))
+        self._viewModel = State(wrappedValue: WorkoutTemplatesList.ViewModel(workoutTemplateRepository: workoutTemplateRepository))
     }
-    
+
     var body: some View {
         WorkoutTemplatesList.ContentView(viewModel: viewModel)
             .navigationDestination(for: WorkoutTemplateBuilderRoute.self) { route in
                 WorkoutTemplateBuilderWrapper(
-                    exerciseService: exerciseService,
-                    workoutTemplateService: workoutTemplateService,
+                    exerciseRepository: exerciseRepository,
+                    workoutTemplateRepository: workoutTemplateRepository,
                     navigationManager: navigationManager,
                     route: route
                 )
@@ -100,19 +100,19 @@ private struct WorkoutTemplatesListWrapper: View {
 }
 
 private struct WorkoutTemplateBuilderWrapper: View {
-    let exerciseService: any ExerciseServiceProtocol
-    let workoutTemplateService: any WorkoutServiceProtocol
+    let exerciseRepository: any ExerciseRepositoryProtocol
+    let workoutTemplateRepository: any WorkoutRepository
     let navigationManager: WorkoutTemplatesNavigationManager
     @State private var viewModel: WorkoutTemplateBuilder.ViewModel
-    
-    init(exerciseService: any ExerciseServiceProtocol, workoutTemplateService: any WorkoutServiceProtocol, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
-        self.exerciseService = exerciseService
-        self.workoutTemplateService = workoutTemplateService
+
+    init(exerciseRepository: any ExerciseRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
+        self.exerciseRepository = exerciseRepository
+        self.workoutTemplateRepository = workoutTemplateRepository
         self.navigationManager = navigationManager
         self._viewModel = State(wrappedValue: WorkoutTemplateBuilder.ViewModel(
-            exerciseService: exerciseService,
-            workoutTemplateService: workoutTemplateService,
-            templateId: route.templateId
+            exerciseRepository: exerciseRepository,
+            workoutTemplateRepository: workoutTemplateRepository,
+            workout: route.workout
         ))
     }
     

@@ -22,7 +22,7 @@ protocol Repository {
     func save(entity: T) async throws
     
     /// Deletes an entity and triggers an update to entitiesPublisher
-    func delete(entity: T) async throws
+//    func delete(entity: T) async throws
     
     /// Manually triggers a refresh of the entities
     func loadData() async throws

@@ -10,10 +10,10 @@ import Foundation
 import SwiftUI
 
 struct Home {
-    
+
     struct ContentView: View {
-        
-        @ObservedObject var viewModel: ViewModel
+
+        var viewModel: ViewModel
         
         var body: some View {
             if viewModel.workouts.isEmpty {

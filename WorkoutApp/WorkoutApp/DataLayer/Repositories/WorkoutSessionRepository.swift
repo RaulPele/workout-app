@@ -5,65 +5,69 @@
 //  Created by Raul Pele on 03.05.2023.
 //
 
+import Combine
 import Foundation
 import HealthKit
 
-protocol WorkoutSessionRepository: Repository where T == WorkoutSession {
-    
-}
+protocol WorkoutSessionRepository: Repository where T == WorkoutSession {}
 
 class WorkoutSessionAPIRepository: WorkoutSessionRepository {
-    
-    private let workoutService: WorkoutSessionService
+
     private let healthKitManager: HealthKitManager
-    
-    init(workoutService: WorkoutSessionService,
-         healthKitManager: HealthKitManager) {
-        self.workoutService = workoutService
+    private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])
+
+    var entitiesPublisher: AnyPublisher<[WorkoutSession], Never> {
+        sessionsSubject.eraseToAnyPublisher()
+    }
+
+    init(healthKitManager: HealthKitManager) {
         self.healthKitManager = healthKitManager
     }
-    
-    func getAll() async throws -> [WorkoutSession] {
+
+    func loadData() async throws {
         let hkWorkouts = try await healthKitManager.loadWorkouts()
-        
-        let workouts = hkWorkouts.compactMap { hkWorkout in
-            let workout: WorkoutSession? = try? FileIOManager.read(forId: hkWorkout.uuid, fromDirectory: .workoutSessions)
-            return workout
+        let workouts: [WorkoutSession] = hkWorkouts.compactMap { hkWorkout in
+            try? FileIOManager.read(forId: hkWorkout.uuid, fromDirectory: .workoutSessions)
         }
-        
-        return workouts
+        sessionsSubject.send(workouts)
     }
-    
-    func save(entity: WorkoutSession) async throws -> WorkoutSession {
+
+    func save(entity: WorkoutSession) async throws {
         try FileIOManager.write(entity: entity, toDirectory: .workoutSessions)
-        return entity
+        try await loadData()
     }
-    
-    //TODO: implement delete
 }
 
-
 class MockedWorkoutSessionRepository: WorkoutSessionRepository {
-    
-    func save(entity: WorkoutSession) async throws -> WorkoutSession {
-        
-        return entity
+
+    private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])
+
+    var entitiesPublisher: AnyPublisher<[WorkoutSession], Never> {
+        sessionsSubject.eraseToAnyPublisher()
     }
-    
-    
-    private let workoutService: WorkoutSessionService = MockedWorkoutSessionService()
-    
-    func getAll() async throws -> [WorkoutSession] {
-        return try await workoutService.getAll()
+
+    func loadData() async throws {
+        sessionsSubject.send(WorkoutSession.mockedSet)
+    }
+
+    func save(entity: WorkoutSession) async throws {
+        try await loadData()
     }
 }
 
 class MockedWorkoutSessionEmptyRepository: WorkoutSessionRepository {
-    func save(entity: WorkoutSession) async throws -> WorkoutSession {
-        return entity
+
+    private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])
+
+    var entitiesPublisher: AnyPublisher<[WorkoutSession], Never> {
+        sessionsSubject.eraseToAnyPublisher()
     }
-    
-    func getAll() async throws -> [WorkoutSession] {
-        return []
+
+    func loadData() async throws {
+        sessionsSubject.send([])
+    }
+
+    func save(entity: WorkoutSession) async throws {
+        try await loadData()
     }
 }

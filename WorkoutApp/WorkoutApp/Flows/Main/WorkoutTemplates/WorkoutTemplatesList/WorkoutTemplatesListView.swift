@@ -16,12 +16,12 @@ struct WorkoutTemplatesList {
         var body: some View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: .default) {
-                    if viewModel.workoutTemplates.isEmpty && !viewModel.isLoading {
+                    if viewModel.workouts.isEmpty && !viewModel.isLoading {
                         EmptyStateView(onCreateTemplate: {
                             viewModel.handleAddButtonTapped()
                         })
-                    } else if !viewModel.workoutTemplates.isEmpty {
-                        ForEach(viewModel.workoutTemplates) { template in
+                    } else if !viewModel.workouts.isEmpty {
+                        ForEach(viewModel.workouts) { template in
                             TemplateCardButton(
                                 template: template,
                                 onTap: {
@@ -49,28 +49,27 @@ struct WorkoutTemplatesList {
                 }
             }
             .refreshable {
-                await viewModel.refreshTemplates()
+//                await viewModel.refreshTemplates() TODO: implement
             }
             .overlay {
-                if viewModel.isLoading && viewModel.workoutTemplates.isEmpty {
+                if viewModel.isLoading && viewModel.workouts.isEmpty {
                     LoadingOverlayView()
                 }
             }
             .onAppear {
                 viewModel.handleOnAppear()
             }
-            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.workoutTemplates)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.workouts)
         }
         
         private var templateCountSubtitle: String {
-            let count = viewModel.workoutTemplates.count
+            let count = viewModel.workouts.count
             return "\(count) workout\(count == 1 ? "" : "s")"
         }
     }
 }
 
 // MARK: - Template Card Button
-
 private struct TemplateCardButton: View {
     let template: Workout
     let onTap: () -> Void
@@ -146,7 +145,7 @@ private extension CGFloat {
 
 #Preview {
     NavigationStack {
-        WorkoutTemplatesList.ContentView(viewModel: .init(workoutTemplateService: MockedWorkoutService()))
+        WorkoutTemplatesList.ContentView(viewModel: .init(workoutTemplateRepository: MockedWorkoutRepository()))
     }
 }
 

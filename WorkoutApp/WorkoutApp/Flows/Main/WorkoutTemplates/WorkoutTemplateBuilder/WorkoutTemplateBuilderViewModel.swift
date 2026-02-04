@@ -7,36 +7,37 @@
 
 import Observation
 import SwiftUI
- struct ExerciseIndex: Identifiable {
+
+struct ExerciseIndex: Identifiable {
     let id: Int
 }
 
 extension WorkoutTemplateBuilder {
-    
+
     @Observable class ViewModel {
-        
+
+        //MARK: - Properties
         var title: String = "New Workout" //TODO: fix
 
         var showEditingView: Bool = false
         var showAddExerciseView: Bool = false
-        
+
         var isEditing = false
         var deletingExerciseId: UUID?
         var editingExerciseIndex: ExerciseIndex?
-        
+
         var exercises = [Exercise]()
-        
-        let exerciseService: any ExerciseServiceProtocol
-        let workoutTemplateService: any WorkoutServiceProtocol
-        
-        var templateId: UUID?
-        
+
+        let exerciseRepository: any ExerciseRepositoryProtocol
+        let workoutTemplateRepository: any WorkoutRepository
+
+        var workout: Workout?
+
         @ObservationIgnored weak var navigationManager: WorkoutTemplatesNavigationManager?
         @ObservationIgnored private var saveTemplateTask: Task<Void, Never>?
-        @ObservationIgnored private var loadTemplateTask: Task<Void, Never>?
-        
+
         private let logger = CustomLogger(subsystem: "WorkoutBuilder", category: String(describing: ViewModel.self))
-        
+
         var selectedExercise: Binding<Exercise>? {
             didSet {
                 if selectedExercise != nil {
@@ -45,22 +46,24 @@ extension WorkoutTemplateBuilder {
                 }
             }
         }
-        
-        init(exerciseService: any ExerciseServiceProtocol,
-             workoutTemplateService: any WorkoutServiceProtocol,
-             templateId: UUID? = nil) {
-            exercises = []
-            self.exerciseService = exerciseService
-            self.workoutTemplateService = workoutTemplateService
-            self.templateId = templateId
-            logger.debug("WorkoutTemplateBuilder ViewModel initialized with templateId: \(templateId?.uuidString ?? "nil")")
-            
-            if let templateId {
-                loadTemplate(templateId: templateId)
 
+        //MARK: - Initializers
+        init(exerciseRepository: any ExerciseRepositoryProtocol,
+             workoutTemplateRepository: any WorkoutRepository,
+             workout: Workout? = nil) {
+            self.exerciseRepository = exerciseRepository
+            self.workoutTemplateRepository = workoutTemplateRepository
+            self.workout = workout
+            if let workout {
+                title = workout.name
+                exercises = workout.exercises
+                isEditing = true
+                logger.debug("WorkoutTemplateBuilder ViewModel initialized for workout: \(workout.name)")
+            } else {
+                logger.debug("WorkoutTemplateBuilder ViewModel initialized for new workout")
             }
         }
-        
+
         //MARK: - Public Handlers
         @MainActor
         func handleOnSaveTapped() {
@@ -68,17 +71,17 @@ extension WorkoutTemplateBuilder {
             saveWorkoutTemplate()
             isEditing = false
         }
-        
+
         func handleOnEditTapped() {
             logger.info("Edit button tapped")
             isEditing = true
         }
-        
-        func handleBackAction() { 
+
+        func handleBackAction() {
             logger.debug("Back action triggered")
             navigationManager?.pop()
         }
-        
+
         func handleAddExerciseButtonTapped() {
             logger.debug("Add exercise button tapped")
             if !isEditing {
@@ -86,47 +89,25 @@ extension WorkoutTemplateBuilder {
             }
             showAddExerciseView = true
         }
-        
+
         //MARK: - Private Methods
-        private func loadTemplate(templateId: UUID) {
-            loadTemplateTask?.cancel()
-            loadTemplateTask = Task { @MainActor [weak self] in
-                guard let self else { return } //TODO: this creates a strong reference
-                do {
-                    let allTemplates = try await self.workoutTemplateService.getAll()
-                    if let template = allTemplates.first(where: { $0.id == templateId }) {
-                        self.title = template.name
-                        self.exercises = template.exercises
-                        self.isEditing = true
-                        self.logger.info("Loaded template: \(template.name) with \(template.exercises.count) exercises")
-                    } else {
-                        self.logger.error("Template with id \(templateId) not found")
-                    }
-                } catch {
-                    self.logger.error("Error while loading template: \(error.localizedDescription)")
-                }
-            }
-        }
-        
         private func saveWorkoutTemplate() {
             //TODO: field validations
             logger.info("Starting to save workout template: \(self.title)")
             saveTemplateTask?.cancel()
-            
+
             saveTemplateTask = Task(priority: .userInitiated) { [weak self] in
                 guard let self = self else { return }
-                let templateId = self.templateId ?? UUID()
-                let template = Workout(id: templateId, name: title, exercises: exercises)
-                logger.debug("\(self.templateId != nil ? "Updating" : "Creating") template with \(exercises.count) exercises")
+                let id = self.workout?.id ?? UUID()
+                let template = Workout(id: id, name: title, exercises: exercises)
+                logger.debug("\(self.workout != nil ? "Updating" : "Creating") template with \(exercises.count) exercises")
                 do {
-                    try await self.workoutTemplateService.save(entity: template)
+                    try await self.workoutTemplateRepository.save(entity: template)
                     logger.info("Successfully saved workout template: \(self.title)")
                 } catch {
                     logger.error("Error while saving template: \(error.localizedDescription)")
                 }
             }
         }
-        
-        
     }
 }
