@@ -5,65 +5,77 @@
 //  Created by Raul Pele on 29.05.2023.
 //
 
+import Combine
 import SwiftUI
 
 extension WorkoutTemplatesList {
-   
+
     @Observable class ViewModel {
-        
+
         //MARK: - Properties
-        var workoutTemplates = [Workout]()
+        var workouts = [Workout]()
         var isLoading = false
-        private let workoutTemplateService: any WorkoutServiceProtocol
-        
+        private let workoutTemplateRepository: any WorkoutRepository
+
         @ObservationIgnored weak var navigationManager: WorkoutTemplatesNavigationManager?
-        
+
         private var loadTask: Task<Void, Never>?
         
-        init(workoutTemplateService: any WorkoutServiceProtocol) {
-            self.workoutTemplateService = workoutTemplateService
+        private var cancellables = Set<AnyCancellable>()
+
+        //MARK: - Initializers
+        init(workoutTemplateRepository: any WorkoutRepository) {
+            self.workoutTemplateRepository = workoutTemplateRepository
+            subscribeToWorkoutRepository()
             loadTemplates()
         }
-        
+
         //MARK: - Private Methods
+        private func subscribeToWorkoutRepository() {
+            workoutTemplateRepository
+                .entitiesPublisher
+                .sink { [weak self] workouts in
+                    self?.workouts = workouts
+                }
+                .store(in: &cancellables)
+        }
+        
         private func loadTemplates() {
             loadTask?.cancel()
             isLoading = true
             loadTask = Task { @MainActor [weak self] in
-                guard let self = self else { return }
+                defer { self?.isLoading = false }
                 do {
-                    self.workoutTemplates = try await workoutTemplateService.getAll()
+                    try await self?.workoutTemplateRepository.loadData()
                 } catch {
                     print("Error while loading templates: \(error.localizedDescription)")
                 }
-                self.isLoading = false
             }
         }
-        
+
+        private func currentTemplatesFromPublisher() async -> [Workout] {
+            await withCheckedContinuation { continuation in
+                var cancellable: AnyCancellable?
+                cancellable = workoutTemplateRepository.entitiesPublisher
+                    .first()
+                    .sink { value in
+                        continuation.resume(returning: value)
+                        cancellable = nil
+                    }
+            }
+        }
+
         //MARK: - Event handlers
         func handleAddButtonTapped() {
             navigationManager?.push(WorkoutTemplateBuilderRoute())
         }
-        
+
         func handleTemplateTapped(_ template: Workout) {
-            navigationManager?.push(WorkoutTemplateBuilderRoute(templateId: template.id))
+            navigationManager?.push(WorkoutTemplateBuilderRoute(workout: template))
         }
-        
+
         func handleOnAppear() {
             loadTemplates()
         }
-        
-        @MainActor
-        func refreshTemplates() async {
-            loadTask?.cancel()
-            isLoading = true
-            do {
-                workoutTemplates = try await workoutTemplateService.getAll()
-            } catch {
-                print("Error while refreshing templates: \(error.localizedDescription)")
-            }
-            isLoading = false
-        }
     }
 }
-

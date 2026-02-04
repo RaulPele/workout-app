@@ -19,24 +19,17 @@ struct RootCoordinatorView: View {
     
     @State private var currentFlow: RootFlow = .main
     @State private var dependencyContainer: DependencyContainer = {
-//        let authService = MockedAuthenticationService()
-        let workoutService = MockedWorkoutSessionService()
         let healthKitManager = HealthKitManager()
-        let workoutRepository = WorkoutSessionAPIRepository(workoutService: workoutService, healthKitManager: healthKitManager)
+        let workoutRepository = WorkoutSessionAPIRepository(healthKitManager: healthKitManager)
         let exerciseRepository = ExerciseRepository()
-        let exerciseService = ExerciseService(exerciseRepository: exerciseRepository)
         let workoutTemplateRepository = WorkoutLocalRepository()
-        let watchCommunicator = WatchCommunicator()
+        let watchCommunicator = WatchCommunicator(workoutRepository: workoutTemplateRepository)
 
-        let workoutTemplateService = WorkoutService(repository: workoutTemplateRepository, watchCommunicator: watchCommunicator)
-        
         return DependencyContainer(
-//            authenticationService: authService,
-            workoutService: workoutService,
             workoutRepository: workoutRepository,
+            workoutTemplateRepository: workoutTemplateRepository,
+            exerciseRepository: exerciseRepository,
             healthKitManager: healthKitManager,
-            exerciseService: exerciseService,
-            workoutTemplateService: workoutTemplateService,
             watchCommunicator: watchCommunicator
         )
     }()

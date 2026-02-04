@@ -22,8 +22,7 @@ protocol SwiftDataConvertible {
 
 // MARK: - SwiftDataManager
 
-@MainActor
-class SwiftDataManager {
+actor SwiftDataManager {
     
     private let logger = CustomLogger(
         subsystem: Bundle.main.bundleIdentifier ?? "WorkoutApp",
@@ -51,29 +50,32 @@ class SwiftDataManager {
     
     private let modelContainer: ModelContainer
     
-    var mainContext: ModelContext {
-        modelContainer.mainContext
-    }
-    
     private init(modelContainer: ModelContainer) {
         self.modelContainer = modelContainer
         logger.info("SwiftDataManager initialized")
     }
     
+    @MainActor private var mainContext: ModelContext {
+        return modelContainer.mainContext
+    }
+    
     // MARK: - Generic DTO CRUD Operations
     
+    @MainActor
     func fetchAll<T: PersistentModel>() async throws -> [T] {
         let descriptor = FetchDescriptor<T>()
         let results = try mainContext.fetch(descriptor)
         return results
     }
     
+    @MainActor
     func fetch<T: PersistentModel>(predicate: Predicate<T>?) async throws -> [T] {
         let descriptor = FetchDescriptor<T>(predicate: predicate)
         let results = try mainContext.fetch(descriptor)
         return results
     }
     
+    @MainActor
     func save<T: PersistentModel>(_ entity: T) async throws {
         mainContext.insert(entity)
         
@@ -86,6 +88,7 @@ class SwiftDataManager {
         }
     }
     
+    @MainActor
     func saveAll<T: PersistentModel>(_ entities: [T]) async throws {
         for entity in entities {
             mainContext.insert(entity)
@@ -100,6 +103,7 @@ class SwiftDataManager {
         }
     }
     
+    @MainActor
     func delete<T: PersistentModel>(_ entity: T) async throws {
         mainContext.delete(entity)
         
@@ -112,6 +116,7 @@ class SwiftDataManager {
         }
     }
     
+    @MainActor
     func deleteAll<T: PersistentModel>(_ entities: [T]) async throws {
         for entity in entities {
             mainContext.delete(entity)
@@ -128,7 +133,6 @@ class SwiftDataManager {
     
 }
 
-@MainActor
 class SwiftDataDataSource<T: SwiftDataConvertible> where T: Identifiable, T.ID == UUID {
     
     private let manager = SwiftDataManager.shared

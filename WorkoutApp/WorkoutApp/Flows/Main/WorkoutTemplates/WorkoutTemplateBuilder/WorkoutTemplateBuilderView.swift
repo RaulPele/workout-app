@@ -46,7 +46,7 @@ struct WorkoutTemplateBuilder {
             }
             .sheet(isPresented: $viewModel.showAddExerciseView) {
                 AddExerciseView(
-                    exerciseService: viewModel.exerciseService,
+                    exerciseRepository: viewModel.exerciseRepository,
                     onExerciseSelected: { exercise in
                         viewModel.exercises.append(exercise)
                     }
@@ -187,8 +187,9 @@ struct WorkoutTemplateBuilder {
     NavigationStack {
         WorkoutTemplateBuilder.ContentView(
             viewModel: .init(
-                exerciseService: MockedExerciseService(),
-                workoutTemplateService: MockedWorkoutService()
+                exerciseRepository: MockedExerciseRepository(),
+                workoutTemplateRepository: MockedWorkoutRepository(),
+                workout: nil
             )
         )
     }
@@ -203,8 +204,9 @@ private struct WorkoutTemplateBuilderPreviewWithExercises: View {
     
     init() {
         viewModel = WorkoutTemplateBuilder.ViewModel(
-            exerciseService: MockedExerciseService(),
-            workoutTemplateService: MockedWorkoutService()
+            exerciseRepository: MockedExerciseRepository(),
+            workoutTemplateRepository: MockedWorkoutRepository(),
+            workout: nil
         )
         viewModel.exercises = [.mockedBBSquats, .mockedBBBenchPress]
     }
