@@ -65,7 +65,7 @@ class MockedWorkoutRepository: WorkoutRepository {
         workoutsSubject.send(templates)
     }
 
-    private var templates = [Workout]()
+    private var templates = [Workout.mockedWorkoutTemplate, .mockedWorkoutTemplate2()]
 
     // Reactive publishers
     private let workoutsSubject = CurrentValueSubject<[Workout], Never>([])

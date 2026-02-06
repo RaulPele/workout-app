@@ -15,7 +15,7 @@ struct WorkoutTemplatesList {
         
         var body: some View {
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: .default) {
+                LazyVStack(alignment: .leading) {
                     if viewModel.workouts.isEmpty && !viewModel.isLoading {
                         EmptyStateView(onCreateTemplate: {
                             viewModel.handleAddButtonTapped()
@@ -35,8 +35,7 @@ struct WorkoutTemplatesList {
                         }
                     }
                 }
-                .padding(.horizontal, .default)
-                .padding(.vertical, .small)
+                .padding()
             }
             .background(Color.background)
             .navigationTitle("My Workouts")
@@ -80,7 +79,7 @@ private struct TemplateCardButton: View {
             tapCount += 1
             onTap()
         }) {
-            WorkoutTemplateCardView(Workout: template)
+            WorkoutTemplateCardView(workout: template)
         }
         .buttonStyle(.plain)
         .sensoryFeedback(.impact(weight: .light), trigger: tapCount)
@@ -93,12 +92,12 @@ private struct EmptyStateView: View {
     let onCreateTemplate: () -> Void
     
     var body: some View {
-        VStack(spacing: .large) {
+        VStack {
             Image(systemName: "list.bullet.clipboard")
-                .font(.system(size: 64))
+                .font(.largeTitle)
                 .foregroundStyle(.secondary.opacity(0.6))
             
-            VStack(spacing: .small) {
+            VStack {
                 Text("No Workout Templates")
                     .font(.title2)
                     .bold()
@@ -108,7 +107,7 @@ private struct EmptyStateView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, .extraLarge)
+                    .padding(.horizontal)
             }
             
             Button("Create Template", systemImage: "plus.circle.fill") {
@@ -118,7 +117,7 @@ private struct EmptyStateView: View {
             .controlSize(.large)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, .extraLarge)
+        .padding(.vertical)
     }
 }
 
@@ -132,15 +131,6 @@ private struct LoadingOverlayView: View {
                 .scaleEffect(1.2)
         }
     }
-}
-
-// MARK: - Padding Extensions
-
-private extension CGFloat {
-    static let small: CGFloat = 8
-    static let `default`: CGFloat = 16
-    static let large: CGFloat = 24
-    static let extraLarge: CGFloat = 80
 }
 
 #Preview {

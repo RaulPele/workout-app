@@ -9,25 +9,25 @@ import SwiftUI
 
 struct WorkoutTemplateCardView: View {
     
-    let Workout: Workout
+    let workout: Workout
     
     private let maxVisibleExercises = 3
     private let cardCornerRadius: CGFloat = 16
     
     var body: some View {
         VStack(alignment: .leading) {
-            CardHeaderView(title: Workout.name)
+            CardHeaderView(title: workout.name)
             
             Divider()
                 .foregroundStyle(.secondary.opacity(0.3))
                         
-            if !Workout.exercises.isEmpty {
+            if !workout.exercises.isEmpty {
                 ExerciseListView(
-                    exercises: Workout.exercises,
+                    exercises: workout.exercises,
                     maxVisible: maxVisibleExercises
                 )
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .overlay(ExerciseCountBadge(count: Workout.exercises.count), alignment: .topTrailing)
+                .overlay(ExerciseCountBadge(count: workout.exercises.count), alignment: .topTrailing)
             }
         }
         .padding()
@@ -46,7 +46,7 @@ private struct CardHeaderView: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.heading2)
+                .font(.headline)
                 .foregroundStyle(Color.onSurface)
                 .lineLimit(2)
             
@@ -152,6 +152,6 @@ private extension CGFloat {
     ZStack {
         Color.background
             .ignoresSafeArea()
-        WorkoutTemplateCardView(Workout: .mockedWorkoutTemplate)
+        WorkoutTemplateCardView(workout: .mockedWorkoutTemplate)
     }
 }
