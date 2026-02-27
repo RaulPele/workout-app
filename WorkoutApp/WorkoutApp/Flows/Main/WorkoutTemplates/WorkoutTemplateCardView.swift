@@ -8,150 +8,104 @@
 import SwiftUI
 
 struct WorkoutTemplateCardView: View {
-    
+
     let workout: Workout
-    
-    private let maxVisibleExercises = 3
-    private let cardCornerRadius: CGFloat = 16
-    
+
+    private let cardCornerRadius: CGFloat = 14
+    private let maxVisibleExercises = 4
+
     var body: some View {
-        VStack(alignment: .leading) {
-            CardHeaderView(title: workout.name)
-            
-            Divider()
-                .foregroundStyle(.secondary.opacity(0.3))
-                        
-            if !workout.exercises.isEmpty {
-                ExerciseListView(
-                    exercises: workout.exercises,
-                    maxVisible: maxVisibleExercises
+        HStack(spacing: 0) {
+            AccentBar()
+
+            VStack(alignment: .leading, spacing: 6) {
+                CardHeader(
+                    title: workout.name,
+                    exerciseCount: workout.exercises.count
                 )
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .overlay(ExerciseCountBadge(count: workout.exercises.count), alignment: .topTrailing)
+
+                if !workout.exercises.isEmpty {
+                    ExerciseSummary(
+                        exercises: workout.exercises,
+                        maxVisible: maxVisibleExercises
+                    )
+                }
             }
+            .padding(.vertical, 14)
+            .padding(.horizontal, 14)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.surface)
         .clipShape(.rect(cornerRadius: cardCornerRadius))
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2)
     }
 }
 
-// MARK: - Card Header View
+// MARK: - Accent Bar
 
-private struct CardHeaderView: View {
-    let title: String
-    
+private struct AccentBar: View {
     var body: some View {
-        HStack {
+        Color.primaryColor
+            .frame(width: 4)
+    }
+}
+
+// MARK: - Card Header
+
+private struct CardHeader: View {
+    let title: String
+    let exerciseCount: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
             Text(title)
                 .font(.headline)
                 .foregroundStyle(Color.onSurface)
                 .lineLimit(2)
-            
-            Spacer()
-            
-            Image(systemName: "chevron.right")
-                .font(.caption)
+
+            Text(exerciseCountText)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
     }
-}
 
-// MARK: - Exercise Count Badge
-
-private struct ExerciseCountBadge: View {
-    let count: Int
-    
-    var body: some View {
-        HStack {
-            
-            HStack(spacing: .small) {
-                Image(systemName: "dumbbell.fill")
-                    .foregroundStyle(Color.primaryColor)
-                    .font(.caption)
-                
-                Text(exerciseCountText)
-                    .foregroundStyle(Color.onSurface)
-                    .font(.subheadline)
-            }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(Color.primaryColor.opacity(0.15))
-            .clipShape(.rect(cornerRadius: 8))
-        }
-    }
-    
     private var exerciseCountText: String {
-        "\(count) \(count == 1 ? "exercise" : "exercises")"
+        "\(exerciseCount) \(exerciseCount == 1 ? "exercise" : "exercises")"
     }
 }
 
-// MARK: - Exercise List View
+// MARK: - Exercise Summary
 
-private struct ExerciseListView: View {
+private struct ExerciseSummary: View {
     let exercises: [Exercise]
     let maxVisible: Int
-    
+
     var body: some View {
-        VStack(alignment: .leading, spacing: .extraSmall) {
-            ForEach(exercises.prefix(maxVisible)) { exercise in
-                ExerciseRowView(name: exercise.name)
-            }
-            
-            if exercises.count > maxVisible {
-                MoreExercisesIndicator(count: exercises.count - maxVisible)
-            }
+        Text(summaryText)
+            .font(.footnote)
+            .foregroundStyle(.tertiary)
+            .lineLimit(1)
+    }
+
+    private var summaryText: String {
+        let visible = exercises.prefix(maxVisible).map(\.name)
+        let remaining = exercises.count - maxVisible
+
+        if remaining > 0 {
+            return visible.joined(separator: ", ") + " +\(remaining)"
         }
-        .padding(.top, .extraSmall)
+        return visible.joined(separator: ", ")
     }
-}
-
-// MARK: - Exercise Row View
-
-private struct ExerciseRowView: View {
-    let name: String
-    
-    var body: some View {
-        HStack(spacing: .small) {
-            Circle()
-                .fill(Color.primaryColor)
-                .frame(width: 4, height: 4)
-            
-            Text(name)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-        }
-    }
-}
-
-// MARK: - More Exercises Indicator
-
-private struct MoreExercisesIndicator: View {
-    let count: Int
-    
-    var body: some View {
-        Text("+\(count) more")
-            .font(.caption2)
-            .foregroundStyle(.secondary)
-            .padding(.leading, 10)
-    }
-}
-
-// MARK: - Spacing Extensions
-
-private extension CGFloat {
-    static let extraSmall: CGFloat = 4
-    static let small: CGFloat = 6
-    static let `default`: CGFloat = 12
 }
 
 #Preview {
     ZStack {
         Color.background
             .ignoresSafeArea()
-        WorkoutTemplateCardView(workout: .mockedWorkoutTemplate)
+
+        VStack(spacing: 12) {
+            WorkoutTemplateCardView(workout: .mockedWorkoutTemplate)
+            WorkoutTemplateCardView(workout: .mockedWorkoutTemplate)
+        }
+        .padding()
     }
 }

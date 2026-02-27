@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tail:*)",
+      "Bash(git:*)",
+      "Bash(find:*)",
+      "Bash(echo gradle not installed:*)",
+      "Bash(cd:*)"
+    ]
+  }
+}
