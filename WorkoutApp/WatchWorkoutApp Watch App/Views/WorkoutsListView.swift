@@ -11,36 +11,28 @@ import WatchConnectivity
 import OSLog
 
 struct WorkoutsListView: View {
-    
-    @EnvironmentObject private var workoutManager: WorkoutManager
-    
+
+    @Environment(WorkoutManager.self) private var workoutManager
+
     let workoutType: HKWorkoutActivityType = .traditionalStrengthTraining
-    @State private var isLoading = false //TODO: create viewmodel
-    
+
     var body: some View {
-        NavigationSplitView {
-            List(workoutManager.workoutTemplates, selection: $workoutManager.selectedWorkoutTemplate) { template in
-                NavigationLink(value: template) {
-                    Text(template.name)
+        List(workoutManager.workoutTemplates) { template in
+            NavigationLink(value: template) {
+                Text(template.name)
+            }
+        }
+        .listStyle(.carousel)
+        .overlay {
+            if workoutManager.isLoading {
+                ZStack {
+                    Color.black.ignoresSafeArea()
+                    ActivityIndicator(color: .primaryColor)
                 }
             }
-            .listStyle(.carousel)
-            .overlay {
-                if workoutManager.isLoading {
-                    ZStack {
-                        Color.black.ignoresSafeArea()
-                        ActivityIndicator(color: .primaryColor)
-                    }
-                }
-            }
-            .onAppear {
-                workoutManager.isLoading = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    workoutManager.loadWorkoutTemplates()
-                }
-            }
-        } detail: {
-            SessionPagingView()
+        }
+        .task {
+            await workoutManager.loadWorkoutTemplates()
         }
     }
 }
@@ -49,12 +41,12 @@ extension HKWorkoutActivityType: Identifiable {
     public var id: UInt {
         rawValue
     }
-    
+
     var name: String {
         switch self {
         case .traditionalStrengthTraining:
             return "Traditional Strength Training"
-            
+
         default:
             return ""
         }
@@ -64,6 +56,6 @@ extension HKWorkoutActivityType: Identifiable {
 #if DEBUG
 #Preview {
     WorkoutsListView()
-        .environmentObject(WorkoutManager())
+        .environment(WorkoutManager())
 }
 #endif
