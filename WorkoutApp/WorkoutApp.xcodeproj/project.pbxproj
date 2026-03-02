@@ -24,6 +24,8 @@
 		DE1E5CD62EFB541100EF4D55 /* WorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E5CD52EFB541100EF4D55 /* WorkoutAppApp.swift */; };
 		DE1E5CDA2EFC3D0400EF4D55 /* NavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E5CD72EFC3D0400EF4D55 /* NavigationManager.swift */; };
 		DE1E5CDB2EFC3D0400EF4D55 /* NavigationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E5CD82EFC3D0400EF4D55 /* NavigationRoutes.swift */; };
+		DE1E5CDC2EFC3E0400EF4D55 /* NavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E5CD72EFC3D0400EF4D55 /* NavigationManager.swift */; };
+		DE1E5CE02EFC3E0800EF4D55 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1E5CDF2EFC3E0700EF4D55 /* Date+Extensions.swift */; };
 		DE3252AB2C482D3800B3B6F0 /* CustomLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */; };
 		DE3252AC2C482D5000B3B6F0 /* CustomLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */; };
 		DE3353FC29F07F3D002D4891 /* AccountStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3353FB29F07F3D002D4891 /* AccountStatus.swift */; };
@@ -51,6 +53,7 @@
 		DE6D676B2A472B4000A78BBD /* HealthKitAuthorizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6D676A2A472B4000A78BBD /* HealthKitAuthorizationView.swift */; };
 		DE6D676C2A472B9800A78BBD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDFC2F92A0B83F300E736E0 /* Constants.swift */; };
 		DE6D676E2A472CE700A78BBD /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6D676D2A472CE700A78BBD /* AppCoordinator.swift */; };
+		411D590E752C4069824AE3E4 /* WorkoutsFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411D590E752C4069824AE3E3 /* WorkoutsFlowCoordinator.swift */; };
 		DEA0BAB12A07D8E200F9BBBA /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0BAB02A07D8E200F9BBBA /* ListView.swift */; };
 		DEA431C229D8822D00DFA6E4 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */; };
 		DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C529D8936200DFA6E4 /* RoundedButton.swift */; };
@@ -141,6 +144,7 @@
 		DE1E5CD52EFB541100EF4D55 /* WorkoutAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutAppApp.swift; sourceTree = "<group>"; };
 		DE1E5CD72EFC3D0400EF4D55 /* NavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManager.swift; sourceTree = "<group>"; };
 		DE1E5CD82EFC3D0400EF4D55 /* NavigationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRoutes.swift; sourceTree = "<group>"; };
+		DE1E5CDF2EFC3E0700EF4D55 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		DE3252AA2C482D3800B3B6F0 /* CustomLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLogger.swift; sourceTree = "<group>"; };
 		DE3353FB29F07F3D002D4891 /* AccountStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountStatus.swift; sourceTree = "<group>"; };
 		DE33540029F08420002D4891 /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
@@ -160,6 +164,7 @@
 		DE63022A2A2B32DC00BA5E54 /* AddExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExerciseView.swift; sourceTree = "<group>"; };
 		DE6D676A2A472B4000A78BBD /* HealthKitAuthorizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitAuthorizationView.swift; sourceTree = "<group>"; };
 		DE6D676D2A472CE700A78BBD /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		411D590E752C4069824AE3E3 /* WorkoutsFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutsFlowCoordinator.swift; sourceTree = "<group>"; };
 		DEA0BAB02A07D8E200F9BBBA /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		DEA431C129D8822D00DFA6E4 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
 		DEA431C529D8936200DFA6E4 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
@@ -310,6 +315,7 @@
 				DEF951972A24BF8E00D80381 /* CurrentExerciseView.swift */,
 				DE6D676A2A472B4000A78BBD /* HealthKitAuthorizationView.swift */,
 				DE6D676D2A472CE700A78BBD /* AppCoordinator.swift */,
+				411D590E752C4069824AE3E3 /* WorkoutsFlowCoordinator.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -362,6 +368,7 @@
 				DEAF7F3D2A0D353400682ACD /* Assets.xcassets */,
 				DEAF7F3F2A0D353400682ACD /* Preview Content */,
 				DED4576B2A1E6CDA00066DAE /* PhoneCommunicator.swift */,
+				DE1E5CDF2EFC3E0700EF4D55 /* Date+Extensions.swift */,
 			);
 			path = "WatchWorkoutApp Watch App";
 			sourceTree = "<group>";
@@ -663,6 +670,7 @@
 				DEF951982A24BF8E00D80381 /* CurrentExerciseView.swift in Sources */,
 				DE3D0A532A0D773E00EF23CB /* ElapsedTimeView.swift in Sources */,
 				DE6D676E2A472CE700A78BBD /* AppCoordinator.swift in Sources */,
+				411D590E752C4069824AE3E4 /* WorkoutsFlowCoordinator.swift in Sources */,
 				DEF951962A24B37A00D80381 /* MetricsAndExercisesView.swift in Sources */,
 				DE6D676C2A472B9800A78BBD /* Constants.swift in Sources */,
 				DED457702A1E724300066DAE /* Workout.swift in Sources */,
@@ -688,6 +696,8 @@
 				DE6D676B2A472B4000A78BBD /* HealthKitAuthorizationView.swift in Sources */,
 				DE5042022A21055A00B7D498 /* WorkoutSession.swift in Sources */,
 				DE3D0A572A0D79D300EF23CB /* SummaryView.swift in Sources */,
+				DE1E5CDC2EFC3E0400EF4D55 /* NavigationManager.swift in Sources */,
+				DE1E5CE02EFC3E0800EF4D55 /* Date+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
