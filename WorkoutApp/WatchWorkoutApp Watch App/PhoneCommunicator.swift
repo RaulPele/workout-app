@@ -38,22 +38,26 @@ class PhoneCommunicator: NSObject, WCSessionDelegate {
     }
     
     
-    func requestWorkoutTemplates(completion: @escaping ([Workout]) -> Void) throws {
-        
+    func requestWorkoutTemplates() async throws -> [Workout] {
         let message = Message(contentType: .workoutTemplates, data: Data())
-        print("Requesting workout templates")
-        try send(message: message) { [weak self] response in
-            var templates = [Workout]()
-            self?.logger.debug("Decoding workout templates")
+        logger.info("Requesting workout templates")
 
+        return try await withCheckedThrowingContinuation { continuation in
             do {
-                templates = try JSONDecoder().decode([Workout].self, from: response)
+                try send(message: message) { [weak self] response in
+                    self?.logger.debug("Decoding workout templates")
+                    do {
+                        let templates = try JSONDecoder().decode([Workout].self, from: response)
+                        continuation.resume(returning: templates)
+                    } catch {
+                        self?.logger.error("Error occured while decoding templates \(error.localizedDescription)")
+                        continuation.resume(throwing: error)
+                    }
+                }
             } catch {
-                self?.logger.error("Error occured while decoding templates \(error.localizedDescription)")
+                continuation.resume(throwing: error)
             }
-            completion(templates)
         }
-        
     }
     
     func send(workoutSession: WorkoutSession) throws {
@@ -68,8 +72,6 @@ class PhoneCommunicator: NSObject, WCSessionDelegate {
     }
     
     func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
-//        logger.log("Received message from phone: \(String(data: messageData, encoding: .utf8))")
         logger.info("Received message from phone: \(String(data: messageData, encoding: .utf8))")
     }
 }
-//1093706E-5897-49A2-ABE4-364B3744CD1B id sent from watch

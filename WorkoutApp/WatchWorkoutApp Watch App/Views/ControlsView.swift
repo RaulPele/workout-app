@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ControlsView: View {
-    
-    @EnvironmentObject private var workoutManager: WorkoutManager
-    
+
+    @Environment(WorkoutManager.self) private var workoutManager
+
     var body: some View {
         HStack {
             VStack {
@@ -23,7 +23,7 @@ struct ControlsView: View {
                 .font(.title2)
                 Text("End")
             }
-            
+
             VStack {
                 Button {
                     workoutManager.togglePauseWorkout()
@@ -37,9 +37,3 @@ struct ControlsView: View {
         }
     }
 }
-
-//struct ControlsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ControlsView()
-//    }
-//}

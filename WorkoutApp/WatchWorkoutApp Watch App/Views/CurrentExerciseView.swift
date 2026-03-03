@@ -8,37 +8,39 @@
 import SwiftUI
 
 extension CurrentExerciseView {
-    
-    class ViewModel: ObservableObject {
-        
-        @Published var currentExercise: PerformedExercise
-        @Published var reps = ClosedRange(uncheckedBounds: (0, 500))
-        @Published var weights = ClosedRange(uncheckedBounds: (0, 500))
-        @Published var currentRepCount: Int = 0
-        @Published var currentWeight: Int = 0
-        @Published var currentSet: Int = 1
-        @Published var shouldShowMetrics = true
-        @Published var shouldShowConfirmation = false
-        @Published var currentRestTime: TimeInterval = 0
-        @Published var startDate = Date.now
-        @Published var shouldShowRestView: Bool = false
-        var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
+    @MainActor @Observable
+    class ViewModel {
+
+        var currentExercise: PerformedExercise
+        var reps = ClosedRange(uncheckedBounds: (0, 500))
+        var weights = ClosedRange(uncheckedBounds: (0, 500))
+        var currentRepCount: Int = 0
+        var currentWeight: Int = 0
+        var currentSet: Int = 1
+        var shouldShowMetrics = true
+        var shouldShowConfirmation = false
+        var currentRestTime: TimeInterval = 0
+        var startDate = Date.now
+        var shouldShowRestView: Bool = false
         var workoutManager: WorkoutManager?
-        
+
+        @ObservationIgnored private var restTimerTask: Task<Void, Never>?
+
         private let onFinished: () -> Void
-        
+
         init(currentExercise: PerformedExercise, onFinished: @escaping () -> Void) {
             self.currentExercise = currentExercise
             self.onFinished = onFinished
         }
-        
+
         var hasFinishedExercise: Bool {
             return currentSet > currentExercise.exercise.numberOfSets
         }
-        
+
         var lastPerformedSet: PerformedSet?
-        
-        //MARK: - Handlers
+
+        // MARK: - Handlers
         func handleEndSetTapped() {
             currentSet += 1
             lastPerformedSet = PerformedSet(
@@ -48,86 +50,70 @@ extension CurrentExerciseView {
                 weight: Double(currentWeight),
                 restTime: 0
             )
-            
+
             shouldShowConfirmation = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                guard let self else { return }
-                self.shouldShowConfirmation = false
-                
-                if self.hasFinishedExercise {
+            Task {
+                try? await Task.sleep(for: .seconds(2))
+                shouldShowConfirmation = false
+
+                if hasFinishedExercise {
                     print("Finished exercise!")
-                    self.currentExercise.sets.append(self.lastPerformedSet!)
-                    self.workoutManager?.performedExercises.append(self.currentExercise)
-    //                currentSet = 1
-                    self.onFinished()
-                    if let workoutManager = self.workoutManager {
-                        if workoutManager.remainingExercises.isEmpty {
-                            workoutManager.endWorkout()
-                        }
+                    currentExercise.sets.append(lastPerformedSet!)
+                    workoutManager?.performedExercises.append(currentExercise)
+                    onFinished()
+                    if let workoutManager, workoutManager.remainingExercises.isEmpty {
+                        workoutManager.endWorkout()
                     }
                 } else {
-                    self.startRest()
+                    startRest()
                 }
-                
-//                if !self.hasFinishedExercise {
-//                    startRest()
-//                }
             }
-            
-            
         }
-        
+
         func startRest() {
             shouldShowRestView = true
             startDate = Date.now
-            timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-            
+            currentRestTime = 0
+            restTimerTask = Task {
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .seconds(1))
+                    guard !Task.isCancelled else { break }
+                    currentRestTime = Date.now.timeIntervalSince(startDate)
+                    if currentRestTime >= currentExercise.exercise.restBetweenSets {
+                        endRest()
+                        break
+                    }
+                }
+            }
         }
+
         func endRest() {
-            timer.upstream.connect().cancel()
+            restTimerTask?.cancel()
+            restTimerTask = nil
             lastPerformedSet?.restTime = currentRestTime
             currentExercise.sets.append(lastPerformedSet!)
             shouldShowRestView = false
-            print("CURRENT REST TIME: \(currentRestTime)")
         }
-        
     }
 }
 
 struct CurrentExerciseView: View {
-    
-    @StateObject private var viewModel: ViewModel
-    @EnvironmentObject private var workoutManager: WorkoutManager
-    
+
+    @State private var viewModel: ViewModel
+    @Environment(WorkoutManager.self) private var workoutManager
+
     init(currentExercise: PerformedExercise) {
         _viewModel = .init(wrappedValue: ViewModel(currentExercise: currentExercise, onFinished: {}))
-//        self.viewModel = viewModel
     }
-    
+
     var body: some View {
-        VStack() {
+        VStack {
             Text("Set: \(viewModel.currentExercise.sets.count + 1) / \(viewModel.currentExercise.exercise.numberOfSets)")
-                HStack {
-//                    Picker("Reps", selection: $viewModel.currentRepCount) {
-//                        ForEach(viewModel.reps, id: \.self) { rep in
-//                            Text("\(rep) reps")
-//                        }
-//                    }
-//                    .pickerStyle(.wheel)
+            HStack {
+            }
+            .padding(.vertical)
 
-//                    Picker("Weight", selection: $viewModel.currentWeight) {
-//                        ForEach(viewModel.weights, id: \.self) { weight in
-//                            Text("\(weight) kg")
-//                        }
-//                    }
-//                    .pickerStyle(.wheel)
-
-                }
-                .padding(.vertical)
-//            }
-            
             Spacer()
-//                .layoutPriority(-1)
             Button {
                 viewModel.handleEndSetTapped()
             } label: {
@@ -135,7 +121,6 @@ struct CurrentExerciseView: View {
             }
             .buttonStyle(.bordered)
             .tint(Color.primaryColor)
-//            .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .overlay {
             endSetConfirmationView
@@ -148,41 +133,34 @@ struct CurrentExerciseView: View {
         .onAppear {
             viewModel.workoutManager = workoutManager
         }
-    } 
-    
+    }
+
     @ViewBuilder
     private var endSetConfirmationView: some View {
         if viewModel.shouldShowConfirmation {
             ZStack {
                 Color.black
-                
+
                 VStack {
                     Text(viewModel.hasFinishedExercise ? "Exercise finished! " : "Set \(viewModel.currentSet - 1)")
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.primaryColor)
+                        .foregroundStyle(Color.primaryColor)
                 }
                 .font(.title)
-
             }
             .transition(.opacity.animation(.default))
         }
     }
-    
+
     @ViewBuilder
     private var restTimeView: some View {
         if viewModel.shouldShowRestView {
             ZStack {
                 Color.black
-                
+
                 VStack {
                     ElapsedTimeView(elapsedTime: viewModel.currentRestTime, showSubseconds: false)
-                        .onReceive(viewModel.timer) { firedDate in
-                            viewModel.currentRestTime = firedDate.timeIntervalSince(viewModel.startDate)
-                            if viewModel.currentRestTime >= viewModel.currentExercise.exercise.restBetweenSets {
-                                viewModel.endRest()
-                            }
-                        }
-                    
+
                     Button {
                         viewModel.endRest()
                     } label: {
@@ -194,4 +172,3 @@ struct CurrentExerciseView: View {
         }
     }
 }
-

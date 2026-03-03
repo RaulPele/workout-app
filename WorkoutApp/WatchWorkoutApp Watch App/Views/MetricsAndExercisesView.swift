@@ -8,44 +8,33 @@
 import SwiftUI
 
 struct MetricsAndExercisesView: View {
-    
+
     enum Tab {
         case metrics
         case exercise1
         case exercise2
     }
-    
+
     @State var selection: Int = 0
     @State var availableExercises = [Exercise]()
-    @EnvironmentObject var workoutManager: WorkoutManager
-    
-    
+    @Environment(WorkoutManager.self) private var workoutManager
+
     var body: some View {
         VStack(spacing: 1) {
-            Color.blue
             TabView(selection: $selection) {
                 MetricsView()
                     .tag(0)
-                
-                //            if let exercises = workoutManager.remainingExercises {
-                
+
                 ForEach(workoutManager.remainingExercises.indices, id: \.self) { index in
                     CurrentExerciseView(currentExercise: PerformedExercise(
                         id: .init(),
-                        exercise: workoutManager.remainingExercises[index],
+                        exercise: workoutManager.remainingExercises[index], //TODO: fix index out of range error
                         sets: []))
-                    //                    Color.red
-                    .tag(index + 1 )
-                    //                        .id(workoutManager.remainingExercises.indices)
+                    .tag(index + 1)
                 }
-                //            }
             }
             .tabViewStyle(.carousel)
             .layoutPriority(1)
         }
-
-//        .scenePadding()
-//        .navigationTitle("qweqwe")
-//        .navigationBarHidden(false)
     }
 }

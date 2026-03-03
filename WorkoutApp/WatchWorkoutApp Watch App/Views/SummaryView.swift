@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct SummaryView: View {
-    
-    @EnvironmentObject var workoutManager: WorkoutManager
+
+    @Environment(WorkoutManager.self) private var workoutManager
     @Environment(\.dismiss) var dismiss
-    
+
     @State private var durationFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute, .second]
         formatter.zeroFormattingBehavior = .pad
         return formatter
     }()
-    
+
     var body: some View {
         if workoutManager.workout == nil {
             ProgressView("Saving Workout")
@@ -32,7 +32,7 @@ struct SummaryView: View {
                         value: durationFormatter.string(from: workoutManager.workout?.duration ?? 0.0) ?? ""
                     )
                         .foregroundStyle(.yellow)
-                    
+
                     SummaryMetricView(
                         title: "Total Energy",
                         value: Measurement(
@@ -48,17 +48,17 @@ struct SummaryView: View {
                         )
                     )
                         .foregroundStyle(.pink)
-                    
+
                     SummaryMetricView(
                         title: "Avg. Heart Rate",
                         value: workoutManager.averageHeartRate.formatted(.number.precision(.fractionLength(0))) + " bpm")
                         .foregroundStyle(.red)
-                    
+
                     Text("Activity Rings")
-                    
+
                     ActivityRingsView(healthStore: workoutManager.healthStore)
                         .frame(width: 50, height: 50)
-                    
+
                     Button("Done") {
                         dismiss()
                     }
@@ -73,10 +73,10 @@ struct SummaryView: View {
 }
 
 struct SummaryMetricView: View {
-    
+
     var title: String
     var value: String
-    
+
     var body: some View {
         Text(title)
             .foregroundStyle(.foreground)
@@ -85,8 +85,3 @@ struct SummaryMetricView: View {
         Divider()
     }
 }
-//struct SummaryView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SummaryView()
-//    }
-//}
