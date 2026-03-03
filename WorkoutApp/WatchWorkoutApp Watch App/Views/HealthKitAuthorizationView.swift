@@ -8,28 +8,27 @@
 import SwiftUI
 
 extension HealthKitAuthorizationView {
-    
-    class ViewModel: ObservableObject {
-        
+
+    @MainActor @Observable
+    class ViewModel {
+
         var workoutManager: WorkoutManager?
         let onFinished: () -> Void
-        
+
         init(onFinished: @escaping () -> Void) {
             self.onFinished = onFinished
         }
-        
-        func handleOnAppear() {
+
+        func handleOnAppear() async {
             let status = workoutManager?.healthStore.authorizationStatus(for: .workoutType())
             if status == .sharingAuthorized {
                 onFinished()
             } else if status == .notDetermined {
-                workoutManager?.requestAuthorization(onFinished: { [weak self] in
-                    self?.checkAuthorization()
-                })
-                
+                await workoutManager?.requestAuthorization()
+                checkAuthorization()
             }
         }
-        
+
         func checkAuthorization() {
             let status = workoutManager?.healthStore.authorizationStatus(for: .workoutType())
             if status == .sharingAuthorized {
@@ -40,25 +39,23 @@ extension HealthKitAuthorizationView {
 }
 
 struct HealthKitAuthorizationView: View {
-    
-    @EnvironmentObject private var workoutManager: WorkoutManager
-    @StateObject private var viewModel: ViewModel
-    
+
+    @Environment(WorkoutManager.self) private var workoutManager
+    @State private var viewModel: ViewModel
+
     init(onFinished: @escaping () -> Void) {
-        self._viewModel = StateObject(wrappedValue: ViewModel(onFinished: onFinished))
+        self._viewModel = State(wrappedValue: ViewModel(onFinished: onFinished))
     }
-    
-    
+
     var body: some View {
         Text("\(Constants.appName) is not authorized to access HealthKit. Open Health and grant permissions.")
             .font(.headline)
-            .foregroundColor(Color.onBackground)
+            .foregroundStyle(Color.onBackground)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.black)
-            .onAppear {
+            .task {
                 viewModel.workoutManager = workoutManager
-                viewModel.handleOnAppear()
+                await viewModel.handleOnAppear()
             }
-        
     }
 }

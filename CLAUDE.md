@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-WorkoutApp is a native iOS + watchOS fitness tracking application built with Swift 5 and SwiftUI. It allows users to build workout templates, track workout sessions via HealthKit, and sync data between iPhone and Apple Watch. Targets iOS 26.0+ and watchOS 26.0+.
+WorkoutApp is a native iOS + watchOS fitness tracking application built with Swift 6.2 and SwiftUI. It allows users to build workout templates, track workout sessions via HealthKit, and sync data between iPhone and Apple Watch. Targets iOS 26.0+ and watchOS 26.0+.
 
 ## Build & Run
 
@@ -57,11 +57,7 @@ There are no test targets, linters, or CI pipelines configured.
 
 ## Swift & SwiftUI Conventions
 
-These conventions are enforced in this project (from `.cursor/rules/`):
+See `AGENTS.md` at the project root for the full Swift, SwiftUI, and SwiftData coding guidelines enforced in this project. Key project-specific notes:
 
-- **Concurrency:** Mark `@Observable` classes with `@MainActor`. Use modern Swift concurrency (async/await) — never GCD (`DispatchQueue`). `SwiftDataManager` is an actor for thread safety.
-- **SwiftUI:** Use `foregroundStyle()` not `foregroundColor()`. Use `clipShape(.rect(cornerRadius:))` not `cornerRadius()`. Use Tab API not `tabItem()`. Use `NavigationStack` not `NavigationView`. Use `Button` instead of `onTapGesture()` unless tap location/count is needed.
-- **SwiftData with CloudKit:** No `@Attribute(.unique)`. Properties need defaults or optionality. Relationships must be optional.
-- **General Swift:** Avoid force unwraps/try. Use `localizedStandardContains()` for text filtering. Prefer static member lookup (`.circle` not `Circle()`). Use `Task.sleep(for:)` not `Task.sleep(nanoseconds:)`.
-- **View structure:** Extract subviews into separate `View` structs — do not use computed properties for view decomposition. Each type goes in its own Swift file.
-- **No third-party frameworks** without asking first. Avoid UIKit unless explicitly requested.
+- `SwiftDataManager` is an actor for thread safety.
+- No third-party frameworks without asking first.

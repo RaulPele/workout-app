@@ -10,7 +10,7 @@ import HealthKit
 import SwiftUI
 
 struct ActivityRingsView: WKInterfaceObjectRepresentable {
-    
+
     let healthStore: HKHealthStore
 
     func makeWKInterfaceObject(context: Context) -> some WKInterfaceObject {
@@ -22,7 +22,7 @@ struct ActivityRingsView: WKInterfaceObjectRepresentable {
 
         let predicate = HKQuery.predicateForActivitySummary(with: components)
         let query = HKActivitySummaryQuery(predicate: predicate) { query, summaries, error in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 activityRingsObject.setActivitySummary(summaries?.first, animated: true)
             }
         }
@@ -33,6 +33,5 @@ struct ActivityRingsView: WKInterfaceObjectRepresentable {
     }
 
     func updateWKInterfaceObject(_ wkInterfaceObject: WKInterfaceObjectType, context: Context) {
-
     }
 }
