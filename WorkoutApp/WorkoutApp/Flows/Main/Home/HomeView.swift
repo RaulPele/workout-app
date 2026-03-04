@@ -23,8 +23,8 @@ struct Home {
                     .foregroundColor(.onBackground)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.background)
-                    .onAppear {
-                        viewModel.handleOnAppear()
+                    .refreshable {
+                        await viewModel.refreshWorkouts()
                     }
                     .overlay {
                         loadingView
@@ -50,7 +50,9 @@ struct Home {
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
                 .background(Color.background)
-                .onAppear(perform: viewModel.handleOnAppear)
+                .refreshable {
+                    await viewModel.refreshWorkouts()
+                }
                 .overlay {
                     loadingView
                 }

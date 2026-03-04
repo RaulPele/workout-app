@@ -48,15 +48,12 @@ struct WorkoutTemplatesList {
                 }
             }
             .refreshable {
-//                await viewModel.refreshTemplates() TODO: implement
+                await viewModel.refreshTemplates()
             }
             .overlay {
                 if viewModel.isLoading && viewModel.workouts.isEmpty {
                     LoadingOverlayView()
                 }
-            }
-            .onAppear {
-                viewModel.handleOnAppear()
             }
             .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.workouts)
         }

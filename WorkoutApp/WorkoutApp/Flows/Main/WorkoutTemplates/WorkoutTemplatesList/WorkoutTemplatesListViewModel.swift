@@ -74,8 +74,14 @@ extension WorkoutTemplatesList {
             navigationManager?.push(WorkoutTemplateBuilderRoute(workout: template))
         }
 
-        func handleOnAppear() {
-            loadTemplates()
+        func refreshTemplates() async {
+            isLoading = true
+            defer { isLoading = false }
+            do {
+                try await workoutTemplateRepository.loadData()
+            } catch {
+                print("Error while loading templates: \(error.localizedDescription)")
+            }
         }
     }
 }
