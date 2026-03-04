@@ -7,37 +7,64 @@
 
 import Combine
 import Foundation
-import HealthKit
 
 protocol WorkoutSessionRepository: Repository where T == WorkoutSession {}
 
+// MARK: - SwiftDataConvertible
+extension WorkoutSession: SwiftDataConvertible {
+
+    var dto: WorkoutSessionDTO {
+        WorkoutSessionDTO(from: self)
+    }
+}
+
+// MARK: - WorkoutSessionAPIRepository
 class WorkoutSessionAPIRepository: WorkoutSessionRepository {
 
+    // MARK: - Properties
     private let healthKitManager: HealthKitManager
+    private let localDataSource = SwiftDataDataSource<WorkoutSession>()
     private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])
+
+    private let logger = CustomLogger(
+        subsystem: Bundle.main.bundleIdentifier ?? "WorkoutApp",
+        category: "WorkoutSessionRepository"
+    )
 
     var entitiesPublisher: AnyPublisher<[WorkoutSession], Never> {
         sessionsSubject.eraseToAnyPublisher()
     }
 
+    // MARK: - Initializers
     init(healthKitManager: HealthKitManager) {
         self.healthKitManager = healthKitManager
     }
 
+    // MARK: - Public Methods
     func loadData() async throws {
         let hkWorkouts = try await healthKitManager.loadWorkouts()
-        let workouts: [WorkoutSession] = hkWorkouts.compactMap { hkWorkout in
-            try? FileIOManager.read(forId: hkWorkout.uuid, fromDirectory: .workoutSessions)
-        }
-        sessionsSubject.send(workouts)
+        let hkWorkoutIDs = Set(hkWorkouts.map(\.uuid))
+
+        let allSessions: [WorkoutSession] = try await localDataSource.fetchAll()
+        let sessions = allSessions.filter { hkWorkoutIDs.contains($0.id) }
+
+        sessionsSubject.send(sessions)
     }
 
     func save(entity: WorkoutSession) async throws {
-        try FileIOManager.write(entity: entity, toDirectory: .workoutSessions)
-        try await loadData()
+        logger.debug("Saving workout session: \(entity.title ?? "untitled") (ID: \(entity.id))")
+        do {
+            try await localDataSource.save(entity: entity)
+            logger.info("Successfully saved workout session (ID: \(entity.id))")
+            try await loadData()
+        } catch {
+            logger.error("Failed to save workout session (ID: \(entity.id)), error: \(error.localizedDescription)")
+            throw error
+        }
     }
 }
 
+// MARK: - MockedWorkoutSessionRepository
 class MockedWorkoutSessionRepository: WorkoutSessionRepository {
 
     private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])
@@ -55,6 +82,7 @@ class MockedWorkoutSessionRepository: WorkoutSessionRepository {
     }
 }
 
+// MARK: - MockedWorkoutSessionEmptyRepository
 class MockedWorkoutSessionEmptyRepository: WorkoutSessionRepository {
 
     private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])

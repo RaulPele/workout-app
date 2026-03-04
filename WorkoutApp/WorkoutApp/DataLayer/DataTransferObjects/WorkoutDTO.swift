@@ -13,7 +13,6 @@ class WorkoutDTO: DomainConvertible {
     @Attribute(.unique) var id: UUID
     var name: String
     var exercises: [ExerciseDTO]
-//    var workoutSessions: [WorkoutSessionDTO]?
     
     init(id: UUID, name: String, exercises: [ExerciseDTO]) {
         self.id = id
@@ -26,7 +25,6 @@ class WorkoutDTO: DomainConvertible {
     }
     
     func toDomain() -> Workout {
-        // Only convert owned properties, NOT inverse relationships (workoutSessions)
         Workout(
             id: id,
             name: name,

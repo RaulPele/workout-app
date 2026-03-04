@@ -33,10 +33,7 @@ actor SwiftDataManager {
         let schema = Schema([
             WorkoutDTO.self,
             ExerciseDTO.self,
-//            ExerciseSetDTO.self,
-//            WorkoutSessionDTO.self,
-//            PerformedExerciseDTO.self,
-//            PerformedSetDTO.self
+            WorkoutSessionDTO.self,
         ])
         
         
