@@ -16,7 +16,6 @@ class ExerciseDTO: DomainConvertible {
     var setData: ExerciseSet
     var restBetweenSets: TimeInterval
     @Relationship(inverse: \WorkoutDTO.exercises) var workouts: [WorkoutDTO]?
-//    var performedExercises: [PerformedExerciseDTO]?
     
     init(id: UUID, name: String, numberOfSets: Int, setData: ExerciseSet, restBetweenSets: TimeInterval) {
         self.id = id
@@ -37,7 +36,7 @@ class ExerciseDTO: DomainConvertible {
     }
     
     func toDomain() -> Exercise {
-        // Only convert owned properties, NOT inverse relationships (workouts, performedExercises)
+        // Only convert owned properties, NOT inverse relationships (workouts)
         Exercise(
             id: id,
             name: name,
