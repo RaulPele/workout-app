@@ -23,7 +23,10 @@ struct RootCoordinatorView: View {
         let workoutRepository = WorkoutSessionAPIRepository(healthKitManager: healthKitManager)
         let exerciseRepository = ExerciseRepository()
         let workoutTemplateRepository = WorkoutLocalRepository()
-        let watchCommunicator = WatchCommunicator(workoutRepository: workoutTemplateRepository)
+        let watchCommunicator = WatchCommunicator(
+            workoutRepository: workoutTemplateRepository,
+            workoutSessionRepository: workoutRepository
+        )
 
         return DependencyContainer(
             workoutRepository: workoutRepository,

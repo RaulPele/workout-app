@@ -8,70 +8,122 @@
 import Foundation
 import WatchConnectivity
 import OSLog
+import Combine
 
+//MARK: - Note to future: a repository might be nice here as well 
 class PhoneCommunicator: NSObject, WCSessionDelegate {
-    
-    private let logger = CustomLogger(subsystem: Bundle.main.bundleIdentifier ?? Constants.appName, category: String(describing: PhoneCommunicator.self))
+
+    // MARK: - Properties
+    var templatesPublisher: AnyPublisher<[Workout], Never> {
+        templatesSubject.eraseToAnyPublisher()
+    }
+
+    private let templatesSubject = CurrentValueSubject<[Workout], Never>([])
+    private let logger = CustomLogger(
+        subsystem: Bundle.main.bundleIdentifier ?? Constants.appName,
+        category: String(describing: PhoneCommunicator.self)
+    )
     private let session = WCSession.default
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
-    
+
+    // MARK: - Initializers
     override init() {
         super.init()
-        
-        if WCSession.isSupported() {
-            logger.info("WCSession is supported on watch")
-            session.delegate = self
-            session.activate()
-        }
+
+        configure()
     }
     
-    private func send(message: Message, replyHandler: ((Data) -> Void)?) throws {
-        let json = try encoder.encode(message)
-        if session.isReachable {
-            logger.info("Session is reachable")
-        } else {
-            logger.info("Session is NOT reachable.")
+    // MARK: - Public Methods
+    func send(workoutSession: WorkoutSession) {
+        do {
+            let userInfo = try WatchMessage.workoutSession(workoutSession).toDictionary()
+            session.transferUserInfo(userInfo)
+            logger.info("Queued workout session for transfer via transferUserInfo")
+        } catch {
+            logger.error("Failed to encode workout session for transfer: \(error.localizedDescription)")
         }
-        
-        session.sendMessageData(json, replyHandler: replyHandler)
     }
-    
-    
+
     func requestWorkoutTemplates() async throws -> [Workout] {
-        let message = Message(contentType: .workoutTemplates, data: Data())
+        let requestData = try WatchMessage.requestTemplates.toData()
+
         logger.info("Requesting workout templates")
 
+        guard session.isReachable else {
+            logger.info("Phone not reachable, falling back to cached application context")
+            return templatesFromCachedContext()
+        }
+
         return try await withCheckedThrowingContinuation { continuation in
-            do {
-                try send(message: message) { [weak self] response in
-                    self?.logger.debug("Decoding workout templates")
-                    do {
-                        let templates = try JSONDecoder().decode([Workout].self, from: response)
-                        continuation.resume(returning: templates)
-                    } catch {
-                        self?.logger.error("Error occured while decoding templates \(error.localizedDescription)")
-                        continuation.resume(throwing: error)
-                    }
+            session.sendMessageData(requestData, replyHandler: { [weak self] response in
+                guard let self else { return }
+                self.logger.debug("Decoding workout templates from reply")
+                do {
+                    let templates = try self.decoder.decode([Workout].self, from: response)
+                    continuation.resume(returning: templates)
+                } catch {
+                    self.logger.error("Error decoding templates: \(error.localizedDescription)")
+                    continuation.resume(throwing: error)
                 }
-            } catch {
-                continuation.resume(throwing: error)
+            }, errorHandler: { [weak self] error in
+                guard let self else { return }
+                self.logger.error("sendMessageData failed: \(error.localizedDescription), falling back to cached context")
+                let cached = self.templatesFromCachedContext()
+                continuation.resume(returning: cached)
+            })
+        }
+    }
+
+    // MARK: - WCSessionDelegate
+
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        logger.info("Session activated with state \(activationState.rawValue)")
+        if activationState == .activated {
+            let cached = templatesFromCachedContext()
+            if !cached.isEmpty {
+                logger.info("Found \(cached.count) templates in cached application context on activation")
+                templatesSubject.send(cached)
             }
         }
     }
-    
-    func send(workoutSession: WorkoutSession) throws {
-        let sessionData = try encoder.encode(workoutSession)
-        let message = Message(contentType: .workoutSession, data: sessionData)
-        try send(message: message, replyHandler: nil)
+
+    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
+        logger.info("Received application context from phone")
+        do {
+            let message = try WatchMessage.fromDictionary(applicationContext)
+            if case .workoutTemplates(let templates) = message {
+                logger.info("Decoded \(templates.count) templates from application context")
+                templatesSubject.send(templates)
+            }
+        } catch {
+            logger.error("Failed to decode application context: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Private Methods
+    private func configure() {
+        guard WCSession.isSupported() else {
+            logger.info("WCSession is not support on watch!")
+            return
+        }
+        logger.info("WCSession is supported on watch")
+        session.delegate = self
+        session.activate()
     }
     
-    
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        logger.info("Session activated with state \(activationState.rawValue)")
-    }
-    
-    func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
-        logger.info("Received message from phone: \(String(data: messageData, encoding: .utf8))")
+    private func templatesFromCachedContext() -> [Workout] {
+        let context = session.receivedApplicationContext
+        guard !context.isEmpty else { return [] }
+
+        do {
+            let message = try WatchMessage.fromDictionary(context)
+            if case .workoutTemplates(let templates) = message {
+                return templates
+            }
+        } catch {
+            logger.error("Failed to decode cached application context: \(error.localizedDescription)")
+        }
+        return []
     }
 }

@@ -36,7 +36,10 @@ class MockedDependencyContainer: DependencyContainer {
             workoutTemplateRepository: workoutTemplateRepository,
             exerciseRepository: MockedExerciseRepository(),
             healthKitManager: HealthKitManager(),
-            watchCommunicator: WatchCommunicator(workoutRepository: workoutTemplateRepository)
+            watchCommunicator: WatchCommunicator(
+                workoutRepository: workoutTemplateRepository,
+                workoutSessionRepository: MockedWorkoutSessionRepository()
+            )
         )
     }
 }
