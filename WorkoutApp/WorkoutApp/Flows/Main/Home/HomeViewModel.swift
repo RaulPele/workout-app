@@ -30,8 +30,14 @@ extension Home {
             loadWorkouts()
         }
 
-        func handleOnAppear() {
-            loadWorkouts()
+        func refreshWorkouts() async {
+            isLoading = true
+            defer { isLoading = false }
+            do {
+                try await workoutRepository.loadData()
+            } catch {
+                print("Error while loading workouts: \(error.localizedDescription)")
+            }
         }
 
         private func subscribeToWorkoutSessions() {
