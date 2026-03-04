@@ -30,7 +30,7 @@ class WorkoutManager: NSObject {
     @ObservationIgnored let healthStore = HKHealthStore()
     @ObservationIgnored var session: HKWorkoutSession?
     @ObservationIgnored var builder: HKLiveWorkoutBuilder?
-    @ObservationIgnored let phoneCommunicator: PhoneCommunicator
+    @ObservationIgnored let phoneCommunicator: any PhoneCommunicatorProtocol
     @ObservationIgnored private var cancellables = Set<AnyCancellable>()
 
     var running = false
@@ -49,7 +49,7 @@ class WorkoutManager: NSObject {
 
     // MARK: - Initializers
 
-    init(phoneCommunicator: PhoneCommunicator = PhoneCommunicator()) {
+    init(phoneCommunicator: any PhoneCommunicatorProtocol = PhoneCommunicator()) {
         self.phoneCommunicator = phoneCommunicator
         super.init()
         subscribeToTemplates()
@@ -210,7 +210,7 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
 
                             guard let wkSession = self.workoutSession else { return }
                             print("Sent workout session with id: \(wkSession.id) to PHONE")
-                            try? self.phoneCommunicator.send(workoutSession: wkSession)
+                            self.phoneCommunicator.send(workoutSession: wkSession)
                         }
                     }
                 }

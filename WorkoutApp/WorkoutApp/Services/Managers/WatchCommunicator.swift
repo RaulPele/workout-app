@@ -10,7 +10,11 @@ import WatchConnectivity
 import OSLog
 import Combine
 
-class WatchCommunicator: NSObject, WCSessionDelegate {
+// MARK: - Protocol
+protocol WatchCommunicatorProtocol: AnyObject {}
+
+// MARK: - WatchCommunicator
+class WatchCommunicator: NSObject, WCSessionDelegate, WatchCommunicatorProtocol {
 
     // MARK: - Properties
     private let workoutRepository: any WorkoutRepository
@@ -109,7 +113,11 @@ class WatchCommunicator: NSObject, WCSessionDelegate {
                 case .requestTemplates:
                     logger.info("Received request for workout templates from Watch")
 
-                    try await workoutRepository.loadData()
+                    do {
+                        try await workoutRepository.loadData()
+                    } catch {
+                        logger.error("Failed to load workout data: \(error.localizedDescription)")
+                    }
 
                     let workouts = await withCheckedContinuation { continuation in
                         var cancellable: AnyCancellable?
@@ -134,3 +142,6 @@ class WatchCommunicator: NSObject, WCSessionDelegate {
         }
     }
 }
+
+// MARK: - MockedWatchCommunicator
+class MockedWatchCommunicator: WatchCommunicatorProtocol {}

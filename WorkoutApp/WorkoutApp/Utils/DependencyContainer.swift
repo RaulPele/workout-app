@@ -10,7 +10,7 @@ import Foundation
 class DependencyContainer {
     let workoutRepository: any WorkoutSessionRepository
     let healthKitManager: HealthKitManager
-    let watchCommunicator: WatchCommunicator
+    let watchCommunicator: any WatchCommunicatorProtocol
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
 
@@ -18,7 +18,7 @@ class DependencyContainer {
          workoutTemplateRepository: any WorkoutRepository,
          exerciseRepository: any ExerciseRepositoryProtocol,
          healthKitManager: HealthKitManager,
-         watchCommunicator: WatchCommunicator
+         watchCommunicator: any WatchCommunicatorProtocol
     ) {
         self.workoutRepository = workoutRepository
         self.workoutTemplateRepository = workoutTemplateRepository
@@ -36,10 +36,7 @@ class MockedDependencyContainer: DependencyContainer {
             workoutTemplateRepository: workoutTemplateRepository,
             exerciseRepository: MockedExerciseRepository(),
             healthKitManager: HealthKitManager(),
-            watchCommunicator: WatchCommunicator(
-                workoutRepository: workoutTemplateRepository,
-                workoutSessionRepository: MockedWorkoutSessionRepository()
-            )
+            watchCommunicator: MockedWatchCommunicator()
         )
     }
 }

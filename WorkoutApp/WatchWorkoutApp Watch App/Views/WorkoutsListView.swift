@@ -56,6 +56,6 @@ extension HKWorkoutActivityType: Identifiable {
 #if DEBUG
 #Preview {
     WorkoutsListView()
-        .environment(WorkoutManager())
+        .environment(WorkoutManager(phoneCommunicator: MockedPhoneCommunicator()))
 }
 #endif
