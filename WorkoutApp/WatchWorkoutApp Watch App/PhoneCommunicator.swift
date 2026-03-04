@@ -10,8 +10,15 @@ import WatchConnectivity
 import OSLog
 import Combine
 
-//MARK: - Note to future: a repository might be nice here as well 
-class PhoneCommunicator: NSObject, WCSessionDelegate {
+// MARK: - Protocol
+protocol PhoneCommunicatorProtocol {
+    var templatesPublisher: AnyPublisher<[Workout], Never> { get }
+    func requestWorkoutTemplates() async throws -> [Workout]
+    func send(workoutSession: WorkoutSession)
+}
+
+// MARK: - PhoneCommunicator
+class PhoneCommunicator: NSObject, WCSessionDelegate, PhoneCommunicatorProtocol {
 
     // MARK: - Properties
     var templatesPublisher: AnyPublisher<[Workout], Never> {
@@ -24,7 +31,6 @@ class PhoneCommunicator: NSObject, WCSessionDelegate {
         category: String(describing: PhoneCommunicator.self)
     )
     private let session = WCSession.default
-    private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
     // MARK: - Initializers
@@ -126,4 +132,20 @@ class PhoneCommunicator: NSObject, WCSessionDelegate {
         }
         return []
     }
+}
+
+// MARK: - MockedPhoneCommunicator
+class MockedPhoneCommunicator: PhoneCommunicatorProtocol {
+
+    private let templatesSubject = CurrentValueSubject<[Workout], Never>([])
+
+    var templatesPublisher: AnyPublisher<[Workout], Never> {
+        templatesSubject.eraseToAnyPublisher()
+    }
+
+    func requestWorkoutTemplates() async throws -> [Workout] {
+        [.mockedWorkoutTemplate, .mockedWorkoutTemplate2()]
+    }
+
+    func send(workoutSession: WorkoutSession) {}
 }
