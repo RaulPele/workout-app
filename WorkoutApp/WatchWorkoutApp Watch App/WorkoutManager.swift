@@ -7,6 +7,7 @@
 
 import Foundation
 import HealthKit
+import Combine
 
 @MainActor @Observable
 class WorkoutManager: NSObject {
@@ -29,7 +30,8 @@ class WorkoutManager: NSObject {
     @ObservationIgnored let healthStore = HKHealthStore()
     @ObservationIgnored var session: HKWorkoutSession?
     @ObservationIgnored var builder: HKLiveWorkoutBuilder?
-    @ObservationIgnored private let phoneCommunicator = PhoneCommunicator()
+    @ObservationIgnored let phoneCommunicator: PhoneCommunicator
+    @ObservationIgnored private var cancellables = Set<AnyCancellable>()
 
     var running = false
     var isLoading = false
@@ -44,6 +46,14 @@ class WorkoutManager: NSObject {
     var heartRate: Double = 0
     var activeEnergyBurned: Double = 0
     var averageHeartRate: Double = 0
+
+    // MARK: - Initializers
+
+    init(phoneCommunicator: PhoneCommunicator = PhoneCommunicator()) {
+        self.phoneCommunicator = phoneCommunicator
+        super.init()
+        subscribeToTemplates()
+    }
 
     var remainingExercises: [Exercise] {
         guard let selectedWorkoutTemplate else { return [] }
@@ -161,6 +171,17 @@ class WorkoutManager: NSObject {
             print("ERROR WHILE LOADING WORKOUTS ON WATCH: \(error.localizedDescription)")
         }
         isLoading = false
+    }
+
+    // MARK: - Private Methods
+    private func subscribeToTemplates() {
+        phoneCommunicator
+            .templatesPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] templates in
+                self?.workoutTemplates = templates
+            }
+            .store(in: &cancellables)
     }
 }
 
