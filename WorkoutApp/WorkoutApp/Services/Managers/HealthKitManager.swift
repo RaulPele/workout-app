@@ -8,7 +8,16 @@
 import Foundation
 import HealthKit
 
-class HealthKitManager {
+// MARK: - Protocol
+protocol HealthKitManagerProtocol {
+    func isAuthorizedToShare() -> Bool
+    func requestPermissions(fromWatch: Bool) async throws
+    func loadWorkouts() async throws -> [HKWorkout]
+    func getAverageHeartRate(for workout: HKWorkout) async throws -> Double
+}
+
+// MARK: - Implementation
+class HealthKitManager: HealthKitManagerProtocol {
     
     private let healthStore = HKHealthStore()
     private let logger = CustomLogger(
@@ -130,4 +139,12 @@ class HealthKitManager {
             }
         }
     }
+}
+
+// MARK: - Mock
+class MockedHealthKitManager: HealthKitManagerProtocol {
+    func isAuthorizedToShare() -> Bool { true }
+    func requestPermissions(fromWatch: Bool) async throws {}
+    func loadWorkouts() async throws -> [HKWorkout] { [] }
+    func getAverageHeartRate(for workout: HKWorkout) async throws -> Double { 0 }
 }

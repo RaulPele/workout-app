@@ -22,7 +22,7 @@ extension WorkoutSession: SwiftDataConvertible {
 class WorkoutSessionAPIRepository: WorkoutSessionRepository {
 
     // MARK: - Properties
-    private let healthKitManager: HealthKitManager
+    private let healthKitManager: any HealthKitManagerProtocol
     private let localDataSource = SwiftDataDataSource<WorkoutSession>()
     private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])
 
@@ -36,7 +36,7 @@ class WorkoutSessionAPIRepository: WorkoutSessionRepository {
     }
 
     // MARK: - Initializers
-    init(healthKitManager: HealthKitManager) {
+    init(healthKitManager: any HealthKitManagerProtocol) {
         self.healthKitManager = healthKitManager
     }
 

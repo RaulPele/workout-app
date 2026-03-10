@@ -17,13 +17,13 @@ extension Home {
         var isLoading = false
 
         private let workoutRepository: any WorkoutSessionRepository
-        private let healthKitManager: HealthKitManager
+        private let healthKitManager: any HealthKitManagerProtocol
         @ObservationIgnored weak var navigationManager: WorkoutSessionsNavigationManager?
         @ObservationIgnored private var cancellables = Set<AnyCancellable>()
         @ObservationIgnored private var loadTask: Task<Void, Never>?
 
         init(workoutRepository: any WorkoutSessionRepository,
-             healthKitManager: HealthKitManager,
+             healthKitManager: any HealthKitManagerProtocol,
              navigationManager: WorkoutSessionsNavigationManager) {
             self.workoutRepository = workoutRepository
             self.healthKitManager = healthKitManager

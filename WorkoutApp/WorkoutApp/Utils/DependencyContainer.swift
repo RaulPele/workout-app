@@ -11,7 +11,7 @@ import SwiftUI
 // MARK: - Protocol
 protocol DependencyContainerProtocol {
     var workoutRepository: any WorkoutSessionRepository { get }
-    var healthKitManager: HealthKitManager { get }
+    var healthKitManager: any HealthKitManagerProtocol { get }
     var watchCommunicator: any WatchCommunicatorProtocol { get }
     var exerciseRepository: any ExerciseRepositoryProtocol { get }
     var workoutTemplateRepository: any WorkoutRepository { get }
@@ -20,7 +20,7 @@ protocol DependencyContainerProtocol {
 // MARK: - Live Implementation
 struct DependencyContainer: DependencyContainerProtocol {
     let workoutRepository: any WorkoutSessionRepository
-    let healthKitManager: HealthKitManager
+    let healthKitManager: any HealthKitManagerProtocol
     let watchCommunicator: any WatchCommunicatorProtocol
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
@@ -60,7 +60,7 @@ extension EnvironmentValues {
 // MARK: - Mocked Implementation
 struct MockedDependencyContainer: DependencyContainerProtocol {
     let workoutRepository: any WorkoutSessionRepository
-    let healthKitManager: HealthKitManager
+    let healthKitManager: any HealthKitManagerProtocol
     let watchCommunicator: any WatchCommunicatorProtocol
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
@@ -70,7 +70,7 @@ struct MockedDependencyContainer: DependencyContainerProtocol {
         self.workoutRepository = MockedWorkoutSessionRepository()
         self.workoutTemplateRepository = workoutTemplateRepository
         self.exerciseRepository = MockedExerciseRepository()
-        self.healthKitManager = HealthKitManager()
+        self.healthKitManager = MockedHealthKitManager()
         self.watchCommunicator = MockedWatchCommunicator()
     }
 }

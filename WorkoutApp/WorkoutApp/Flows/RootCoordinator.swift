@@ -58,11 +58,11 @@ struct RootCoordinatorView: View {
 }
 
 private struct HealthKitAuthorizationWrapper: View {
-    let healthKitManager: HealthKitManager
+    let healthKitManager: any HealthKitManagerProtocol
     let onFinished: () -> Void
     @State private var viewModel: HealthKitAuthorization.ContentView.ViewModel
     
-    init(healthKitManager: HealthKitManager, onFinished: @escaping () -> Void) {
+    init(healthKitManager: any HealthKitManagerProtocol, onFinished: @escaping () -> Void) {
         self.healthKitManager = healthKitManager
         self.onFinished = onFinished
         self._viewModel = State(initialValue: HealthKitAuthorization.ContentView.ViewModel(healthKitManager: healthKitManager))
