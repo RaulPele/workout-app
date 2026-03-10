@@ -23,9 +23,11 @@ extension Home {
         @ObservationIgnored private var loadTask: Task<Void, Never>?
 
         init(workoutRepository: any WorkoutSessionRepository,
-             healthKitManager: HealthKitManager) {
+             healthKitManager: HealthKitManager,
+             navigationManager: WorkoutSessionsNavigationManager) {
             self.workoutRepository = workoutRepository
             self.healthKitManager = healthKitManager
+            self.navigationManager = navigationManager
             subscribeToWorkoutSessions()
             loadWorkouts()
         }

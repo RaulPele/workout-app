@@ -20,12 +20,14 @@ extension WorkoutTemplatesList {
         @ObservationIgnored weak var navigationManager: WorkoutTemplatesNavigationManager?
 
         private var loadTask: Task<Void, Never>?
-        
+
         private var cancellables = Set<AnyCancellable>()
 
         //MARK: - Initializers
-        init(workoutTemplateRepository: any WorkoutRepository) {
+        init(workoutTemplateRepository: any WorkoutRepository,
+             navigationManager: WorkoutTemplatesNavigationManager) {
             self.workoutTemplateRepository = workoutTemplateRepository
+            self.navigationManager = navigationManager
             subscribeToWorkoutRepository()
             loadTemplates()
         }
