@@ -14,7 +14,7 @@ extension HealthKitAuthorization.ContentView {
         
         var isLoading = false
         
-        let healthKitManager: HealthKitManager
+        let healthKitManager: any HealthKitManagerProtocol
         var authorizationTask: Task<Void, Never>?
         
         var onFinished: (() -> Void)?
@@ -24,7 +24,7 @@ extension HealthKitAuthorization.ContentView {
             category: "HealthKitAuthorizationViewModel"
         )
         
-        init(healthKitManager: HealthKitManager) {
+        init(healthKitManager: any HealthKitManagerProtocol) {
             self.healthKitManager = healthKitManager
         }
         

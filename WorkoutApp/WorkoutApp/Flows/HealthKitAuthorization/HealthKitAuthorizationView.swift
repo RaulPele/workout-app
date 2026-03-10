@@ -66,5 +66,5 @@ struct HealthKitAuthorization {
 }
 
 #Preview {
-    HealthKitAuthorization.ContentView(viewModel: .init(healthKitManager: .init()))
+    HealthKitAuthorization.ContentView(viewModel: .init(healthKitManager: MockedHealthKitManager()))
 }

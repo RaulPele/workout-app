@@ -47,11 +47,11 @@ struct MainCoordinatorView: View {
 
 private struct HomeWrapper: View {
     let workoutRepository: any WorkoutSessionRepository
-    let healthKitManager: HealthKitManager
+    let healthKitManager: any HealthKitManagerProtocol
     let navigationManager: WorkoutSessionsNavigationManager
     @State private var viewModel: Home.ViewModel
 
-    init(workoutRepository: any WorkoutSessionRepository, healthKitManager: HealthKitManager, navigationManager: WorkoutSessionsNavigationManager) {
+    init(workoutRepository: any WorkoutSessionRepository, healthKitManager: any HealthKitManagerProtocol, navigationManager: WorkoutSessionsNavigationManager) {
         self.workoutRepository = workoutRepository
         self.healthKitManager = healthKitManager
         self.navigationManager = navigationManager
