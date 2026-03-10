@@ -7,36 +7,38 @@
 
 import Foundation
 
-class DependencyContainer {
+// MARK: - Protocol
+protocol DependencyContainerProtocol {
+    var workoutRepository: any WorkoutSessionRepository { get }
+    var healthKitManager: HealthKitManager { get }
+    var watchCommunicator: any WatchCommunicatorProtocol { get }
+    var exerciseRepository: any ExerciseRepositoryProtocol { get }
+    var workoutTemplateRepository: any WorkoutRepository { get }
+}
+
+// MARK: - Live Implementation
+struct DependencyContainer: DependencyContainerProtocol {
+    let workoutRepository: any WorkoutSessionRepository
+    let healthKitManager: HealthKitManager
+    let watchCommunicator: any WatchCommunicatorProtocol
+    let exerciseRepository: any ExerciseRepositoryProtocol
+    let workoutTemplateRepository: any WorkoutRepository
+}
+
+// MARK: - Mocked Implementation
+struct MockedDependencyContainer: DependencyContainerProtocol {
     let workoutRepository: any WorkoutSessionRepository
     let healthKitManager: HealthKitManager
     let watchCommunicator: any WatchCommunicatorProtocol
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
 
-    init(workoutRepository: any WorkoutSessionRepository,
-         workoutTemplateRepository: any WorkoutRepository,
-         exerciseRepository: any ExerciseRepositoryProtocol,
-         healthKitManager: HealthKitManager,
-         watchCommunicator: any WatchCommunicatorProtocol
-    ) {
-        self.workoutRepository = workoutRepository
-        self.workoutTemplateRepository = workoutTemplateRepository
-        self.exerciseRepository = exerciseRepository
-        self.healthKitManager = healthKitManager
-        self.watchCommunicator = watchCommunicator
-    }
-}
-
-class MockedDependencyContainer: DependencyContainer {
     init() {
         let workoutTemplateRepository = MockedWorkoutRepository()
-        super.init(
-            workoutRepository: MockedWorkoutSessionRepository(),
-            workoutTemplateRepository: workoutTemplateRepository,
-            exerciseRepository: MockedExerciseRepository(),
-            healthKitManager: HealthKitManager(),
-            watchCommunicator: MockedWatchCommunicator()
-        )
+        self.workoutRepository = MockedWorkoutSessionRepository()
+        self.workoutTemplateRepository = workoutTemplateRepository
+        self.exerciseRepository = MockedExerciseRepository()
+        self.healthKitManager = HealthKitManager()
+        self.watchCommunicator = MockedWatchCommunicator()
     }
 }

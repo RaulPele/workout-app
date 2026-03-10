@@ -10,7 +10,7 @@ import SwiftUI
 
 struct MainCoordinatorView: View {
     
-    let dependencyContainer: DependencyContainer
+    let dependencyContainer: any DependencyContainerProtocol
     
     @State private var selectedTab: TabBarItem = .workoutSessions
     @State private var workoutSessionsNavigationManager = WorkoutSessionsNavigationManager()
