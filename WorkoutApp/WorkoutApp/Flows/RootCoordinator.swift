@@ -17,7 +17,7 @@ enum RootFlow {
 
 struct RootCoordinatorView: View {
 
-    let dependencyContainer: any DependencyContainerProtocol
+    @Environment(\.dependencyContainer) private var dependencyContainer
 
     @State private var currentFlow: RootFlow = .main
     
@@ -40,9 +40,7 @@ struct RootCoordinatorView: View {
             case .authentication:
                 EmptyView()
             case .main:
-                MainCoordinatorView(
-                    dependencyContainer: dependencyContainer
-                )
+                MainCoordinatorView()
             }
         }
         .onAppear {

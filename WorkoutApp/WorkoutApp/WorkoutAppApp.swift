@@ -14,7 +14,8 @@ struct WorkoutAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootCoordinatorView(dependencyContainer: dependencyContainer)
+            RootCoordinatorView()
+                .environment(\.dependencyContainer, dependencyContainer)
         }
     }
 }
