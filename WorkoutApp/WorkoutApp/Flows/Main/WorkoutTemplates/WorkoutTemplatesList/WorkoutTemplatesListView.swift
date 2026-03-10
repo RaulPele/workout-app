@@ -132,7 +132,10 @@ private struct LoadingOverlayView: View {
 
 #Preview {
     NavigationStack {
-        WorkoutTemplatesList.ContentView(viewModel: .init(workoutTemplateRepository: MockedWorkoutRepository()))
+        WorkoutTemplatesList.ContentView(viewModel: .init(
+            workoutTemplateRepository: MockedWorkoutRepository(),
+            navigationManager: WorkoutTemplatesNavigationManager()
+        ))
     }
 }
 

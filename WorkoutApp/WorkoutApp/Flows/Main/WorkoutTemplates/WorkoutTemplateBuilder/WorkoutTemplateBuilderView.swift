@@ -189,6 +189,7 @@ struct WorkoutTemplateBuilder {
             viewModel: .init(
                 exerciseRepository: MockedExerciseRepository(),
                 workoutTemplateRepository: MockedWorkoutRepository(),
+                navigationManager: WorkoutTemplatesNavigationManager(),
                 workout: nil
             )
         )
@@ -206,6 +207,7 @@ private struct WorkoutTemplateBuilderPreviewWithExercises: View {
         viewModel = WorkoutTemplateBuilder.ViewModel(
             exerciseRepository: MockedExerciseRepository(),
             workoutTemplateRepository: MockedWorkoutRepository(),
+            navigationManager: WorkoutTemplatesNavigationManager(),
             workout: nil
         )
         viewModel.exercises = [.mockedBBSquats, .mockedBBBenchPress]

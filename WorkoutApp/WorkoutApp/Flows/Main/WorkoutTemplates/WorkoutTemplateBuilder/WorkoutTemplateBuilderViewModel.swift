@@ -50,9 +50,11 @@ extension WorkoutTemplateBuilder {
         //MARK: - Initializers
         init(exerciseRepository: any ExerciseRepositoryProtocol,
              workoutTemplateRepository: any WorkoutRepository,
+             navigationManager: WorkoutTemplatesNavigationManager,
              workout: Workout? = nil) {
             self.exerciseRepository = exerciseRepository
             self.workoutTemplateRepository = workoutTemplateRepository
+            self.navigationManager = navigationManager
             self.workout = workout
             if let workout {
                 title = workout.name

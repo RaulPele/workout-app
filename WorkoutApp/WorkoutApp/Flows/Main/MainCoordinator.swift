@@ -55,16 +55,17 @@ private struct HomeWrapper: View {
         self.workoutRepository = workoutRepository
         self.healthKitManager = healthKitManager
         self.navigationManager = navigationManager
-        self._viewModel = State(wrappedValue: Home.ViewModel(workoutRepository: workoutRepository, healthKitManager: healthKitManager))
+        self._viewModel = State(wrappedValue: Home.ViewModel(
+            workoutRepository: workoutRepository,
+            healthKitManager: healthKitManager,
+            navigationManager: navigationManager
+        ))
     }
-    
+
     var body: some View {
         Home.ContentView(viewModel: viewModel)
             .navigationDestination(for: WorkoutRoute.self) { route in
                 WorkoutDetails.ContentView(viewModel: WorkoutDetails.ViewModel(workout: route.workout))
-            }
-            .onAppear {
-                viewModel.navigationManager = navigationManager
             }
     }
 }
@@ -80,7 +81,10 @@ private struct WorkoutTemplatesListWrapper: View {
         self.exerciseRepository = exerciseRepository
         self.workoutTemplateRepository = workoutTemplateRepository
         self.navigationManager = navigationManager
-        self._viewModel = State(wrappedValue: WorkoutTemplatesList.ViewModel(workoutTemplateRepository: workoutTemplateRepository))
+        self._viewModel = State(wrappedValue: WorkoutTemplatesList.ViewModel(
+            workoutTemplateRepository: workoutTemplateRepository,
+            navigationManager: navigationManager
+        ))
     }
 
     var body: some View {
@@ -92,9 +96,6 @@ private struct WorkoutTemplatesListWrapper: View {
                     navigationManager: navigationManager,
                     route: route
                 )
-            }
-            .onAppear {
-                viewModel.navigationManager = navigationManager //TODO: refactor this; could be sent through environment
             }
     }
 }
@@ -112,15 +113,13 @@ private struct WorkoutTemplateBuilderWrapper: View {
         self._viewModel = State(wrappedValue: WorkoutTemplateBuilder.ViewModel(
             exerciseRepository: exerciseRepository,
             workoutTemplateRepository: workoutTemplateRepository,
+            navigationManager: navigationManager,
             workout: route.workout
         ))
     }
-    
+
     var body: some View {
         WorkoutTemplateBuilder.ContentView(viewModel: viewModel)
-            .onAppear {
-                viewModel.navigationManager = navigationManager
-            }
     }
 }
 
