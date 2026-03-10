@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // MARK: - Protocol
 protocol DependencyContainerProtocol {
@@ -41,6 +42,18 @@ struct DependencyContainer: DependencyContainerProtocol {
             exerciseRepository: exerciseRepository,
             workoutTemplateRepository: workoutTemplateRepository
         )
+    }
+}
+
+// MARK: - Environment Key
+private struct DependencyContainerKey: EnvironmentKey {
+    static let defaultValue: any DependencyContainerProtocol = MockedDependencyContainer()
+}
+
+extension EnvironmentValues {
+    var dependencyContainer: any DependencyContainerProtocol {
+        get { self[DependencyContainerKey.self] }
+        set { self[DependencyContainerKey.self] = newValue }
     }
 }
 
