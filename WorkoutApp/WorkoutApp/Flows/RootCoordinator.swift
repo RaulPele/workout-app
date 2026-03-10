@@ -18,7 +18,7 @@ enum RootFlow {
 struct RootCoordinatorView: View {
     
     @State private var currentFlow: RootFlow = .main
-    @State private var dependencyContainer: DependencyContainer = {
+    @State private var dependencyContainer: any DependencyContainerProtocol = {
         let healthKitManager = HealthKitManager()
         let workoutRepository = WorkoutSessionAPIRepository(healthKitManager: healthKitManager)
         let exerciseRepository = ExerciseRepository()
@@ -30,10 +30,10 @@ struct RootCoordinatorView: View {
 
         return DependencyContainer(
             workoutRepository: workoutRepository,
-            workoutTemplateRepository: workoutTemplateRepository,
-            exerciseRepository: exerciseRepository,
             healthKitManager: healthKitManager,
-            watchCommunicator: watchCommunicator
+            watchCommunicator: watchCommunicator,
+            exerciseRepository: exerciseRepository,
+            workoutTemplateRepository: workoutTemplateRepository
         )
     }()
     
