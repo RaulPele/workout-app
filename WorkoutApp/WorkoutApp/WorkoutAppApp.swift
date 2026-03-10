@@ -9,10 +9,12 @@ import SwiftUI
 
 @main
 struct WorkoutAppApp: App {
-    
+
+    @State private var dependencyContainer: any DependencyContainerProtocol = DependencyContainer.live()
+
     var body: some Scene {
         WindowGroup {
-            RootCoordinatorView()
+            RootCoordinatorView(dependencyContainer: dependencyContainer)
         }
     }
 }
