@@ -10,7 +10,6 @@ import Foundation
 
 protocol ExerciseRepositoryProtocol: Repository where T == Exercise {}
 
-@MainActor
 class ExerciseRepository: ExerciseRepositoryProtocol {
 
     private let localDataSource = SwiftDataDataSource<Exercise>()
