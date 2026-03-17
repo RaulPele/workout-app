@@ -19,13 +19,14 @@ protocol DependencyContainerProtocol {
 
 // MARK: - Live Implementation
 struct DependencyContainer: DependencyContainerProtocol {
+    
     let workoutRepository: any WorkoutSessionRepository
     let healthKitManager: any HealthKitManagerProtocol
     let watchCommunicator: any WatchCommunicatorProtocol
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
 
-    @MainActor static func live() -> DependencyContainer {
+    static func live() -> DependencyContainer {
         let healthKitManager = HealthKitManager()
         let workoutRepository = WorkoutSessionAPIRepository(healthKitManager: healthKitManager)
         let exerciseRepository = ExerciseRepository()
