@@ -42,7 +42,7 @@ struct WorkoutDetails {
         
         private var titleView: some View {
             Text(viewModel.workout.title ?? "No title")
-                .foregroundColor(Color.onBackground)
+                .foregroundStyle(Color.onBackground)
                 .font(.heading1)
         }
         
@@ -50,7 +50,7 @@ struct WorkoutDetails {
             VStack(alignment: .leading) {
                 
                 Text("Workout details")
-                    .foregroundColor(.onBackground)
+                    .foregroundStyle(Color.onBackground)
                     .font(.heading2)
                 
                 ListView(items: viewModel.workoutDetailsData, backgroundColor: .surface2) { rowData in
@@ -64,7 +64,7 @@ struct WorkoutDetails {
         private var exercisesView: some View {
             VStack(alignment: .leading) {
                 Text("Performed exercises")
-                    .foregroundColor(.onBackground)
+                    .foregroundStyle(Color.onBackground)
                     .font(.heading2)
                 
                 ListView(items: viewModel.workout.performedExercises, backgroundColor: .surface2) { performedExercise in
@@ -76,7 +76,7 @@ struct WorkoutDetails {
         
         private var divider: some View {
             Rectangle()
-                .foregroundColor(.white)
+                .foregroundStyle(Color.divider)
                 .frame(height: 1)
         }
         
@@ -96,7 +96,7 @@ struct WorkoutDetails {
                 Text(characteristic.key.title)
                 Text(characteristic.displayValue)
             }
-            .foregroundColor(foregroundColor(for: characteristic))
+            .foregroundStyle(foregroundColor(for: characteristic))
         }
         
         private func foregroundColor(for characteristic: WorkoutCharacteristic) -> Color {
@@ -110,7 +110,7 @@ struct WorkoutDetails {
                 return .red
                 
             default:
-                return .white
+                return .onSurface
             }
         }
         
@@ -141,7 +141,7 @@ struct WorkoutDetails {
                         }.padding(.leading, 12)
                     }
                 }
-                .foregroundColor(.primaryColor)
+                .foregroundStyle(Color.primaryColor)
             }
             
             private var exercisePreview: some View {

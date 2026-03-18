@@ -13,13 +13,13 @@ struct StartASessionView: View {
             Spacer()
             Text("Start a workout session from your watch! ")
                 .font(.heading1)
-                .foregroundColor(Color.onBackground)
+                .foregroundStyle(Color.onBackground)
                 .multilineTextAlignment(.center)
             
 //
             Image("watch-list-view")
                 .cornerRadius(15)
-                .shadow(color: .white, radius: 8)
+                .shadow(color: Color.imageShadow, radius: 8)
             Spacer()
             Spacer()
         }

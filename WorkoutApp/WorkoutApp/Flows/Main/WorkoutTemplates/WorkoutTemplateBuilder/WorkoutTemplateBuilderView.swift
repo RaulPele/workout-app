@@ -105,7 +105,7 @@ struct WorkoutTemplateBuilder {
                             } label: {
                                 Label("Add", systemImage: "plus")
                                     .font(.headline)
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(Color.buttonForeground)
                                     .padding(16)
                                     .background(Color.primaryColor)
                                     .clipShape(.capsule)

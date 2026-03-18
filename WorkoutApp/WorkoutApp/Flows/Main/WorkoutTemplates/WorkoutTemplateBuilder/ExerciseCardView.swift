@@ -77,7 +77,7 @@ struct ExerciseCardView: View {
                     glowingBorder
                 }
             }
-            .shadow(color: isEditMode ? Color.primaryColor.opacity(0.3) : .black.opacity(0.05), 
+            .shadow(color: isEditMode ? Color.primaryColor.opacity(0.3) : Color.onBackground.opacity(0.05),
                    radius: isEditMode ? 12 : 8, 
                    x: 0, 
                    y: 2)
@@ -107,7 +107,7 @@ struct ExerciseCardView: View {
         } label: {
             Image(systemName: "trash")
                 .font(.body)
-                .foregroundStyle(.white)
+                .foregroundStyle(Color.buttonForeground)
                 .frame(maxHeight: .infinity)
                 .frame(width: 64)
                 .background {

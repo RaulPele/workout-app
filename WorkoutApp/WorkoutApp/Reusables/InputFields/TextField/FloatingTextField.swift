@@ -20,13 +20,13 @@ struct FloatingTextField: View {
             HStack {
                 ZStack(alignment: .leading) {
                     Text(title)
-                        .foregroundColor(.white.opacity(0.8))
+                        .foregroundStyle(Color.onBackground.opacity(0.8))
                         .font(.body)
                         .offset(y: text.isEmpty ? 0 : -25)
                         .padding(.vertical, 10)
-                    
+
                     TextField("", text: $text)
-                        .foregroundColor(.white.opacity(0.8))
+                        .foregroundStyle(Color.onBackground.opacity(0.8))
                         .disableAutocorrection(true)
                         .font(.body)
                         .focused($isFocused)
@@ -39,7 +39,7 @@ struct FloatingTextField: View {
             
             Divider()
                 .frame(height: isFocused ? 2 : 1)
-                .background(isFocused ? Color.white : Color.gray)
+                .background(isFocused ? Color.onBackground : Color.divider)
                 .padding(.top, 6)
         }
     }

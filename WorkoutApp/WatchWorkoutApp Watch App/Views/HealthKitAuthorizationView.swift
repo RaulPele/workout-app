@@ -52,7 +52,7 @@ struct HealthKitAuthorizationView: View {
             .font(.headline)
             .foregroundStyle(Color.onBackground)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black)
+            .background(Color.background)
             .task {
                 viewModel.workoutManager = workoutManager
                 await viewModel.handleOnAppear()

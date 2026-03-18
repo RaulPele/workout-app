@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ActivityIndicator: View {
     
-    var color: Color = .white
+    var color: Color = .onBackground
     var scale: CGFloat = 1
     
     var body: some View {

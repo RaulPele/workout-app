@@ -52,7 +52,7 @@ struct ListView<Item: Identifiable, RowContent: View>: View {
     
     private var dividerView: some View {
         RoundedRectangle(cornerRadius: 15)
-            .fill(Color.gray)
+            .fill(Color.divider)
             .frame(height: 1)
     }
     

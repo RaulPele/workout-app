@@ -24,13 +24,13 @@ struct WorkoutCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
                 Text(workout.title ?? " No title")
-                    .foregroundColor(.onSurface)
+                    .foregroundStyle(Color.onSurface)
                     .font(.heading3)
                 Text(workout.duration?.formatted() ?? "0:00:00")
-                    .foregroundColor(.onSurface)
+                    .foregroundStyle(Color.onSurface)
                     .bold()
                 Text("\(workout.activeCalories ?? 0) KCAL")
-                    .foregroundColor(.onSurface)
+                    .foregroundStyle(Color.onSurface)
                 
             }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -45,7 +45,7 @@ private extension WorkoutCardView {
     
     var dateView: some View {
         Text(workout.endDate ?? .now, style: .date)
-            .foregroundColor(.onSurface)
+            .foregroundStyle(Color.onSurface)
     }
 }
 

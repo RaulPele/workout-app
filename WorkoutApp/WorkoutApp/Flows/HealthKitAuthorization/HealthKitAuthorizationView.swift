@@ -53,7 +53,7 @@ struct HealthKitAuthorization {
         private var authorizationButtonView: some View {
             Buttons.Filled(
                 title: "Authorize",
-                backgroundColor: .white,
+                backgroundColor: .surface,
                 foregroundColor: .red,
                 fontSize: 15,
                 isLoading: viewModel.isLoading
