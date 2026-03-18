@@ -44,7 +44,6 @@ struct OnboardingView: View {
         }
         .tabViewStyle(.page)
         .background(Color.background)
-        .background(Color.red)
     }
     
     private var finishButtonView: some View {

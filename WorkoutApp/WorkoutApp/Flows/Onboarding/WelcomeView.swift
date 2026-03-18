@@ -13,12 +13,12 @@ struct WelcomeView: View {
             Spacer()
             Text("Welcome! ")
                 .font(.heading1)
-                .foregroundColor(Color.onBackground)
+                .foregroundStyle(Color.onBackground)
             
 //
             Text("WorkoutApp is an easy way to track and analyze your workout sessions")
                 .font(.heading1)
-                .foregroundColor(.onBackground)
+                .foregroundStyle(Color.onBackground)
                 .multilineTextAlignment(.center)
             Spacer()
             Spacer()

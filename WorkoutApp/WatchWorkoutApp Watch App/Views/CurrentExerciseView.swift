@@ -139,7 +139,7 @@ struct CurrentExerciseView: View {
     private var endSetConfirmationView: some View {
         if viewModel.shouldShowConfirmation {
             ZStack {
-                Color.black
+                Color.background
 
                 VStack {
                     Text(viewModel.hasFinishedExercise ? "Exercise finished! " : "Set \(viewModel.currentSet - 1)")
@@ -156,7 +156,7 @@ struct CurrentExerciseView: View {
     private var restTimeView: some View {
         if viewModel.shouldShowRestView {
             ZStack {
-                Color.black
+                Color.background
 
                 VStack {
                     ElapsedTimeView(elapsedTime: viewModel.currentRestTime, showSubseconds: false)

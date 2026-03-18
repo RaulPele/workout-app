@@ -22,8 +22,8 @@ struct RoundedTextField: View {
     init(text: Binding<String>,
          placeHolderText: String = "Enter text here",
          isSecured: Bool = false,
-         foregroundColor: Color = .black,
-         backgroundColor: Color = .white,
+         foregroundColor: Color = .onBackground,
+         backgroundColor: Color = .surface,
          borderColor: Color = .mint,
          keyboardType: UIKeyboardType = .default,
          textContentType: UITextContentType? = nil) {
@@ -43,7 +43,7 @@ struct RoundedTextField: View {
             .background(backgroundColor.cornerRadius(14)
                 .overlay(RoundedRectangle(cornerRadius: 14)
                     .strokeBorder(borderColor, lineWidth: 1.5)))
-            .foregroundColor(foregroundColor)
+            .foregroundStyle(foregroundColor)
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .textContentType(textContentType)

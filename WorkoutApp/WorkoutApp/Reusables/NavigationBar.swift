@@ -41,7 +41,7 @@ struct NavigationBar<RightView: View>: View {
         .overlay(rightView(), alignment: .trailing)
         .padding(.horizontal, 24)
         .padding(.vertical, 10)
-        .foregroundColor(.onBackground)
+        .foregroundStyle(Color.onBackground)
     }
     
     private var backButtonView: some View {

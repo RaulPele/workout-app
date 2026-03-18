@@ -26,7 +26,7 @@ struct WorkoutsListView: View {
         .overlay {
             if workoutManager.isLoading {
                 ZStack {
-                    Color.black.ignoresSafeArea()
+                    Color.background.ignoresSafeArea()
                     ActivityIndicator(color: .primaryColor)
                 }
             }

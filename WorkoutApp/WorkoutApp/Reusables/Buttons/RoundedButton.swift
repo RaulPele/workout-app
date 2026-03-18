@@ -36,7 +36,7 @@ struct Buttons {
         @ViewBuilder
         private var loadingView: some View {
             if isLoading {
-                ActivityIndicator(color: .white)
+                ActivityIndicator(color: .buttonForeground)
             }
         }
     }

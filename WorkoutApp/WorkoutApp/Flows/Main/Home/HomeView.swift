@@ -20,7 +20,7 @@ struct Home {
                 Text("You don't have any workouts tracked. Open the watch application and get started!")
                     .multilineTextAlignment(.center)
                     .font(.heading1)
-                    .foregroundColor(.onBackground)
+                    .foregroundStyle(Color.onBackground)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.background)
                     .refreshable {
@@ -34,7 +34,7 @@ struct Home {
                     LazyVStack(alignment:.leading, spacing: 10) {
                         
                         Text("Workout sessions")
-                            .foregroundColor(.onBackground)
+                            .foregroundStyle(Color.onBackground)
                             .font(.heading1)
                             .padding(.bottom, 10)
                         ForEach(viewModel.workouts) { workout in
@@ -63,7 +63,7 @@ struct Home {
         private var loadingView: some View {
             if viewModel.isLoading {
                 ZStack {
-                    Color.black
+                    Color.background
                     ActivityIndicator(color: .red, scale: 2)
                 }
                 .ignoresSafeArea()

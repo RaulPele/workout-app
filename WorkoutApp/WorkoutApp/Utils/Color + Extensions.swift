@@ -8,24 +8,15 @@
 import Foundation
 import SwiftUI
 
-
-
 extension Color {
-    
-    static let primary: Color = .blue
-    
-    
-//    static let background: Color = .black.opacity(0.8)
-    static let background: Color = Color("DarkGrey")
-    static let surface: Color = .white.opacity(0.13)
-    static let surface2: Color = Color("DarkGrey25")
-    static let buttonBackground: Color = .blue
-    static let buttonForeground: Color = .white
-    static let accent: Color = .mint
-//    static let primaryColor: Color = Color("MyBlue")
-    static let primaryColor: Color = Color.cyan
-    static let onSurface = Color.white
-    static let onPrimary = Color.black
-    static let onBackground = Color.white
-    
+    // Asset catalog auto-generates: onSurface, onBackground, onPrimary,
+    // appBackground, appSurface, appSurface2, appPrimary, appDivider, imageShadow
+
+    static let background = Color(.appBackground)
+    static let surface = Color(.appSurface)
+    static let surface2 = Color(.appSurface2)
+    static let primaryColor = Color(.appPrimary)
+    static let buttonBackground = Color(.appPrimary)
+    static let buttonForeground = Color(.onPrimary)
+    static let divider = Color(.appDivider)
 }
