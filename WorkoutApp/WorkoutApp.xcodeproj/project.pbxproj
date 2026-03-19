@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		411D590E752C4069824AE3E4 /* WorkoutsFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411D590E752C4069824AE3E3 /* WorkoutsFlowCoordinator.swift */; };
+		7E8E940844B64EEC963A6E56 /* WatchNavigationRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7D4726D412847A6AAF6DFF1 /* WatchNavigationRoutes.swift */; };
+		46B24FAF1E594D6A9B70FDD5 /* WatchWorkoutsNavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 481245F321F04917B25DBA02 /* WatchWorkoutsNavigationManager.swift */; };
 		DE012DDE2A01446F0071601B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DDB2A01446F0071601B /* HomeView.swift */; };
 		DE012DDF2A01446F0071601B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DDC2A01446F0071601B /* HomeViewModel.swift */; };
 		DE012DE32A0146CC0071601B /* Color + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE012DE22A0146CC0071601B /* Color + Extensions.swift */; };
@@ -127,6 +129,8 @@
 
 /* Begin PBXFileReference section */
 		411D590E752C4069824AE3E3 /* WorkoutsFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutsFlowCoordinator.swift; sourceTree = "<group>"; };
+		F7D4726D412847A6AAF6DFF1 /* WatchNavigationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNavigationRoutes.swift; sourceTree = "<group>"; };
+		481245F321F04917B25DBA02 /* WatchWorkoutsNavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkoutsNavigationManager.swift; sourceTree = "<group>"; };
 		DE012DDB2A01446F0071601B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		DE012DDC2A01446F0071601B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		DE012DE22A0146CC0071601B /* Color + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color + Extensions.swift"; sourceTree = "<group>"; };
@@ -369,6 +373,8 @@
 				DEAF7F3F2A0D353400682ACD /* Preview Content */,
 				DED4576B2A1E6CDA00066DAE /* PhoneCommunicator.swift */,
 				DE1E5CDF2EFC3E0700EF4D55 /* Date+Extensions.swift */,
+				F7D4726D412847A6AAF6DFF1 /* WatchNavigationRoutes.swift */,
+				481245F321F04917B25DBA02 /* WatchWorkoutsNavigationManager.swift */,
 			);
 			path = "WatchWorkoutApp Watch App";
 			sourceTree = "<group>";
@@ -698,6 +704,8 @@
 				DE3D0A572A0D79D300EF23CB /* SummaryView.swift in Sources */,
 				DE1E5CDC2EFC3E0400EF4D55 /* NavigationManager.swift in Sources */,
 				DE1E5CE02EFC3E0800EF4D55 /* Date+Extensions.swift in Sources */,
+				7E8E940844B64EEC963A6E56 /* WatchNavigationRoutes.swift in Sources */,
+				46B24FAF1E594D6A9B70FDD5 /* WatchWorkoutsNavigationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
