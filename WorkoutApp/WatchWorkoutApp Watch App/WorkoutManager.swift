@@ -12,13 +12,19 @@ import Combine
 @MainActor @Observable
 class WorkoutManager: NSObject {
 
-    var selectedWorkoutTemplate: Workout? {
-        didSet {
-            guard let selectedWorkoutTemplate else { return }
-            startWorkout(workoutType: .traditionalStrengthTraining)
-        }
-    }
+    // MARK: - Properties
+    @ObservationIgnored let healthStore = HKHealthStore()
+    @ObservationIgnored private var session: HKWorkoutSession?
+    @ObservationIgnored private var builder: HKLiveWorkoutBuilder?
+    @ObservationIgnored let phoneCommunicator: any PhoneCommunicatorProtocol
+    @ObservationIgnored private var cancellables = Set<AnyCancellable>()
+    @ObservationIgnored private let logger = CustomLogger(
+        subsystem: "com.raulpele.WatchWorkoutApp",
+        category: "WorkoutManager"
+    )
 
+    private(set) var running = false
+    private(set) var isLoading = false
     var showingSummaryView: Bool = false {
         didSet {
             if showingSummaryView == false {
@@ -27,39 +33,51 @@ class WorkoutManager: NSObject {
         }
     }
 
-    @ObservationIgnored let healthStore = HKHealthStore()
-    @ObservationIgnored var session: HKWorkoutSession?
-    @ObservationIgnored var builder: HKLiveWorkoutBuilder?
-    @ObservationIgnored let phoneCommunicator: any PhoneCommunicatorProtocol
-    @ObservationIgnored private var cancellables = Set<AnyCancellable>()
-
-    var running = false
-    var isLoading = false
-
     // MARK: - Workout exercises
     var workoutTemplates = [Workout]()
-    var workoutSession: WorkoutSession?
-    var performedExercises: [PerformedExercise] = []
+    var selectedWorkoutTemplate: Workout? {
+        didSet {
+            guard let selectedWorkoutTemplate else { return }
+            Task {
+                await startWorkout(workoutType: .traditionalStrengthTraining)
+            }
+        }
+    }
+    private(set) var workoutSession: WorkoutSession?
+    private(set) var performedExercises: [PerformedExercise] = []
 
     // MARK: - Workout metrics
-    var workout: HKWorkout?
-    var heartRate: Double = 0
-    var activeEnergyBurned: Double = 0
-    var averageHeartRate: Double = 0
+    private(set) var workout: HKWorkout?
+    private(set) var heartRate: Double = 0
+    private(set) var activeEnergyBurned: Double = 0
+    private(set) var averageHeartRate: Double = 0
 
     // MARK: - Initializers
-
     init(phoneCommunicator: any PhoneCommunicatorProtocol = PhoneCommunicator()) {
         self.phoneCommunicator = phoneCommunicator
         super.init()
         subscribeToTemplates()
     }
 
+    // MARK: - Computed Properties
     var remainingExercises: [Exercise] {
         guard let selectedWorkoutTemplate else { return [] }
         return selectedWorkoutTemplate.exercises.filter { ex in !performedExercises.contains { $0.exercise.id == ex.id } }
     }
 
+    var workoutStartDate: Date? {
+        builder?.startDate
+    }
+
+    var isSessionPaused: Bool {
+        session?.state == .paused
+    }
+
+    func elapsedTime(at date: Date) -> TimeInterval {
+        builder?.elapsedTime(at: date) ?? 0
+    }
+
+    // MARK: - Public Methods
     func requestAuthorization() async {
         let typesToShare: Set = [
             HKQuantityType.workoutType()
@@ -75,44 +93,7 @@ class WorkoutManager: NSObject {
         do {
             try await healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead)
         } catch {
-            print("Error while requesting authorization: \(error.localizedDescription)")
-        }
-    }
-
-    func startWorkout(workoutType: HKWorkoutActivityType) {
-        let configuration = HKWorkoutConfiguration()
-        configuration.activityType = workoutType
-        configuration.locationType = .indoor
-
-        do {
-            session = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
-            builder = session?.associatedWorkoutBuilder()
-        } catch {
-            print("Error while creating session: \(error.localizedDescription)")
-            return
-        }
-
-        session?.delegate = self
-        builder?.delegate = self
-
-        builder?.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: configuration)
-
-        workoutSession = .mocked1 //TODO: change
-
-        let startDate = Date()
-        session?.startActivity(with: startDate)
-        builder?.beginCollection(withStart: startDate) { [weak self] success, error in
-            if let error {
-                print("Error in builder's beginCollection method: \(error.localizedDescription)")
-            } else if success {
-                Task { @MainActor in
-                    self?.workoutSession = WorkoutSession(
-                        id: UUID(),
-                        workoutTemplate: self?.selectedWorkoutTemplate ?? .mockedWorkoutTemplate,
-                        performedExercises: []
-                    )
-                }
-            }
+            logger.error("Error while requesting authorization: \(error.localizedDescription)")
         }
     }
 
@@ -132,19 +113,6 @@ class WorkoutManager: NSObject {
         }
     }
 
-    func resetWorkout() {
-        selectedWorkoutTemplate = nil
-        builder = nil
-        session = nil
-        workout = nil
-        workoutSession = nil
-
-        activeEnergyBurned = 0
-        averageHeartRate = 0
-        heartRate = 0
-        performedExercises = []
-    }
-
     func togglePauseWorkout() {
         running ? pauseWorkout() : resumeWorkout()
     }
@@ -159,7 +127,10 @@ class WorkoutManager: NSObject {
 
     func endWorkout() {
         session?.end()
-        showingSummaryView = true
+    }
+
+    func addPerformedExercise(_ exercise: PerformedExercise) {
+        performedExercises.append(exercise)
     }
 
     func loadWorkoutTemplates() async {
@@ -168,12 +139,61 @@ class WorkoutManager: NSObject {
             let templates = try await phoneCommunicator.requestWorkoutTemplates()
             workoutTemplates = templates
         } catch {
-            print("ERROR WHILE LOADING WORKOUTS ON WATCH: \(error.localizedDescription)")
+            logger.error("Error while loading workouts on watch: \(error.localizedDescription)")
         }
         isLoading = false
     }
 
     // MARK: - Private Methods
+    private func startWorkout(workoutType: HKWorkoutActivityType) async {
+        let configuration = HKWorkoutConfiguration()
+        configuration.activityType = workoutType
+        configuration.locationType = .indoor
+
+        do {
+            session = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
+            builder = session?.associatedWorkoutBuilder()
+        } catch {
+            logger.error("Error while creating session: \(error.localizedDescription)")
+            return
+        }
+
+        session?.delegate = self
+        builder?.delegate = self
+
+        builder?.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: configuration)
+
+        guard let template = selectedWorkoutTemplate else { return }
+
+        let startDate = Date()
+        session?.startActivity(with: startDate)
+
+        do {
+            try await builder?.beginCollection(at: startDate)
+
+            workoutSession = WorkoutSession(
+                id: UUID(),
+                workoutTemplate: template,
+                performedExercises: []
+            )
+        } catch {
+            logger.error("Error in builder's beginCollection method: \(error.localizedDescription)")
+        }
+    }
+
+    private func resetWorkout() {
+        selectedWorkoutTemplate = nil
+        builder = nil
+        session = nil
+        workout = nil
+        workoutSession = nil
+
+        activeEnergyBurned = 0
+        averageHeartRate = 0
+        heartRate = 0
+        performedExercises = []
+    }
+
     private func subscribeToTemplates() {
         phoneCommunicator
             .templatesPublisher
@@ -182,6 +202,34 @@ class WorkoutManager: NSObject {
                 self?.workoutTemplates = templates
             }
             .store(in: &cancellables)
+    }
+
+    private func finalizeWorkout(endDate: Date) async {
+        do {
+            try await builder?.endCollection(at: endDate)
+
+            let workout = try await builder?.finishWorkout()
+
+            self.workout = workout
+
+            workoutSession?.id = workout?.uuid ?? .init()
+            workoutSession?.activeCalories = workout?.activeEnergyBurned
+            workoutSession?.averageHeartRate = workout?.averageHeartRate
+            workoutSession?.totalCalories = workout?.totalCalories
+            workoutSession?.duration = workout?.duration
+            workoutSession?.performedExercises = performedExercises
+            workoutSession?.endDate = endDate
+            workoutSession?.startDate = workout?.startDate
+            workoutSession?.title = workout?.startDate.toMMMdd()
+
+            guard let wkSession = workoutSession else { return }
+            logger.info("Sent workout session with id: \(wkSession.id) to phone")
+            phoneCommunicator.send(workoutSession: wkSession)
+
+            showingSummaryView = true
+        } catch {
+            logger.error("Error finalizing workout: \(error.localizedDescription)")
+        }
     }
 }
 
@@ -193,32 +241,13 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
             self.running = toState == .running
 
             if toState == .ended {
-                self.builder?.endCollection(withEnd: date) { success, error in
-                    self.builder?.finishWorkout { workout, error in
-                        Task { @MainActor in
-                            self.workout = workout
-
-                            self.workoutSession?.id = workout?.uuid ?? .init()
-                            self.workoutSession?.activeCalories = workout?.activeEnergyBurned
-                            self.workoutSession?.averageHeartRate = workout?.averageHeartRate
-                            self.workoutSession?.totalCalories = workout?.totalCalories
-                            self.workoutSession?.duration = workout?.duration
-                            self.workoutSession?.performedExercises = self.performedExercises
-                            self.workoutSession?.endDate = date
-                            self.workoutSession?.startDate = workout?.startDate
-                            self.workoutSession?.title = workout?.startDate.toMMMdd()
-
-                            guard let wkSession = self.workoutSession else { return }
-                            print("Sent workout session with id: \(wkSession.id) to PHONE")
-                            self.phoneCommunicator.send(workoutSession: wkSession)
-                        }
-                    }
-                }
+                await self.finalizeWorkout(endDate: date)
             }
         }
     }
 
     nonisolated func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
+        logger.error("Workout session failed with error: \(error.localizedDescription)")
     }
 }
 
@@ -230,7 +259,7 @@ extension WorkoutManager: HKLiveWorkoutBuilderDelegate {
     nonisolated func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder, didCollectDataOf collectedTypes: Set<HKSampleType>) {
         for type in collectedTypes {
             guard let quantityType = type as? HKQuantityType else {
-                return
+                continue
             }
 
             let statistics = workoutBuilder.statistics(for: quantityType)

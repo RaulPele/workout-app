@@ -59,7 +59,7 @@ extension CurrentExerciseView {
                 if hasFinishedExercise {
                     print("Finished exercise!")
                     currentExercise.sets.append(lastPerformedSet!)
-                    workoutManager?.performedExercises.append(currentExercise)
+                    workoutManager?.addPerformedExercise(currentExercise)
                     onFinished()
                     if let workoutManager, workoutManager.remainingExercises.isEmpty {
                         workoutManager.endWorkout()
