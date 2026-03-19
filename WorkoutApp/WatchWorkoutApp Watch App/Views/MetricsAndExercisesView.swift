@@ -25,13 +25,14 @@ struct MetricsAndExercisesView: View {
                 MetricsView()
                     .tag(0)
 
-                ForEach(workoutManager.remainingExercises.indices, id: \.self) { index in
+                ForEach(Array(workoutManager.remainingExercises.enumerated()), id: \.element.id) { offset, exercise in
                     CurrentExerciseView(currentExercise: PerformedExercise(
                         id: .init(),
-                        exercise: workoutManager.remainingExercises[index], //TODO: fix index out of range error
+                        exercise: exercise,
                         sets: []))
-                    .tag(index + 1)
+                    .tag(offset + 1)
                 }
+                
             }
             .tabViewStyle(.carousel)
             .layoutPriority(1)
