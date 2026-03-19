@@ -10,6 +10,8 @@ import WatchKit
 
 struct SessionPagingView: View {
 
+    let workoutTemplate: Workout
+
     @Environment(\.isLuminanceReduced) var isLuminaceReduced
     @Environment(WorkoutManager.self) private var workoutManager
     @State private var selection: Tab = .metrics
@@ -27,8 +29,11 @@ struct SessionPagingView: View {
                 .toolbar(.hidden)
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: isLuminaceReduced ? .never : .automatic))
-        .navigationTitle(workoutManager.selectedWorkoutTemplate?.name ?? "")
+        .navigationTitle(workoutTemplate.name)
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            workoutManager.selectedWorkoutTemplate = workoutTemplate
+        }
         .onChange(of: workoutManager.running) { _, _ in
             displayMetricsView()
         }

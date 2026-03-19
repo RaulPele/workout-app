@@ -18,7 +18,7 @@ struct WorkoutsListView: View {
 
     var body: some View {
         List(workoutManager.workoutTemplates) { template in
-            NavigationLink(value: template) {
+            NavigationLink(value: WatchWorkoutSessionRoute(workoutTemplate: template)) {
                 Text(template.name)
             }
         }
