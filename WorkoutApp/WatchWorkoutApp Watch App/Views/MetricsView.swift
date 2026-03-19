@@ -14,15 +14,15 @@ struct MetricsView: View {
     var body: some View {
         TimelineView(
             MetricsTimelineSchedule(
-                from: workoutManager.builder?.startDate ?? Date(),
-                isPaused: workoutManager.session?.state == .paused
+                from: workoutManager.workoutStartDate ?? Date(),
+                isPaused: workoutManager.isSessionPaused
             )
         ) { context in
             VStack(alignment: .leading) {
 
                 Group {
                     ElapsedTimeView(
-                        elapsedTime: workoutManager.builder?.elapsedTime(at: context.date) ?? 0,
+                        elapsedTime: workoutManager.elapsedTime(at: context.date),
                         showSubseconds: context.cadence == .live
                     )
                     .foregroundStyle(.yellow)
