@@ -65,7 +65,7 @@ private struct HomeWrapper: View {
     var body: some View {
         Home.ContentView(viewModel: viewModel)
             .navigationDestination(for: WorkoutRoute.self) { route in
-                WorkoutDetails.ContentView(viewModel: WorkoutDetails.ViewModel(workout: route.workout))
+                WorkoutDetails.ContentView(viewModel: WorkoutDetails.ViewModel(session: route.workout))
             }
     }
 }
