@@ -6,91 +6,62 @@
 //
 
 import Foundation
-import SwiftUI
-
-struct WorkoutCharacteristic: Identifiable {
-    
-    var id: String { self.key.title}
-    
-    let key: Key
-    let value: String
-    
-    enum Key {
-        
-        case avgHeartRate
-        case activeCalories
-        case totalCalories
-        case duration
-        
-        var title: String {
-            
-            switch self {
-            case .avgHeartRate:
-                return "AVG Heart rate"
-                
-            case .activeCalories:
-                return "Active calories"
-                
-            case .totalCalories:
-                return "Total calories"
-                
-            case .duration:
-                return "Workout time"
-            }
-        }
-    }
-    
-    var displayValue: String {
-        switch self.key {
-        case .avgHeartRate:
-            return "\(value) BPM"
-            
-        case .activeCalories, .totalCalories:
-            return "\(value) KCAL"
-            
-//        case .duration:
-//            return value
-        default:
-            return value
-        }
-    }
-}
 
 extension WorkoutDetails {
-    
-    struct RowData: Identifiable {
-        let id = UUID()
-        
-        let first: WorkoutCharacteristic
-        let second: WorkoutCharacteristic
-    }
-    
-    class ViewModel: ObservableObject {
-        
-        @Published var isLoading: Bool = false
-        @Published var workout: WorkoutSession
-        var workoutDetailsData = [RowData]()
-//        var exercisesData = [PerformedExercise]()
-        
-        init(workout: WorkoutSession) {
-            self.workout = workout
-            computeWorkoutDetailsData()
-//            computeExercisesData()
+
+    @Observable
+    @MainActor
+    class ViewModel {
+
+        // MARK: - Properties
+        let session: WorkoutSession
+
+        var sessionTitle: String {
+            session.title ?? session.workoutTemplate.name
         }
-        
-        //MARK: - Compute data for display
-        private func computeWorkoutDetailsData() {
-            let avgHeartRate = WorkoutCharacteristic(key: .avgHeartRate, value: "\(workout.averageHeartRate ?? 0)")
-            let totalCalories = WorkoutCharacteristic(key: .totalCalories, value: "\(workout.totalCalories ?? 0)")
-            let activecalories = WorkoutCharacteristic(key: .activeCalories, value: "\(workout.activeCalories ?? 0)")
-            let duration = WorkoutCharacteristic(key: .duration, value: workout.duration?.formatted() ?? "0:00:00")
-            
-            self.workoutDetailsData = [
-                .init(first: duration, second: avgHeartRate),
-                .init(first: activecalories, second: totalCalories)
-            ]
+
+        var templateName: String {
+            session.workoutTemplate.name
         }
-        
-       
+
+        var sessionDateFormatted: String? {
+            session.startDate?.formatted(date: .abbreviated, time: .omitted)
+        }
+
+        var sessionTimeRange: String? {
+            guard let start = session.startDate,
+                  let end = session.endDate else { return nil }
+            let startFormatted = start.formatted(date: .omitted, time: .shortened)
+            let endFormatted = end.formatted(date: .omitted, time: .shortened)
+            return "\(startFormatted) - \(endFormatted)"
+        }
+
+        var durationFormatted: String {
+            guard let duration = session.duration else { return "--" }
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.hour, .minute, .second]
+            formatter.unitsStyle = .abbreviated
+            return formatter.string(from: duration) ?? "--"
+        }
+
+        var averageHeartRateFormatted: String {
+            guard let hr = session.averageHeartRate else { return "--" }
+            return "\(hr) BPM"
+        }
+
+        var activeCaloriesFormatted: String {
+            guard let cal = session.activeCalories else { return "--" }
+            return "\(cal) kcal"
+        }
+
+        var totalCaloriesFormatted: String {
+            guard let cal = session.totalCalories else { return "--" }
+            return "\(cal) kcal"
+        }
+
+        // MARK: - Initializers
+        init(session: WorkoutSession) {
+            self.session = session
+        }
     }
 }
