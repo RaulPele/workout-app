@@ -9,10 +9,18 @@ import Combine
 import Foundation
 import SwiftUI
 
+// MARK: - Workout Session Group
+struct WorkoutSessionGroup: Identifiable {
+    let id: String
+    let title: String
+    let sessions: [WorkoutSession]
+}
+
 extension Home {
 
     @Observable class ViewModel {
 
+        // MARK: - Properties
         var workouts: [WorkoutSession] = []
         var isLoading = false
 
@@ -22,6 +30,43 @@ extension Home {
         @ObservationIgnored private var cancellables = Set<AnyCancellable>()
         @ObservationIgnored private var loadTask: Task<Void, Never>?
 
+        var groupedWorkouts: [WorkoutSessionGroup] {
+            let calendar = Calendar.current
+            let now = Date.now
+
+            var today: [WorkoutSession] = []
+            var yesterday: [WorkoutSession] = []
+            var thisWeek: [WorkoutSession] = []
+            var thisMonth: [WorkoutSession] = []
+            var earlier: [WorkoutSession] = []
+
+            let sorted = workouts.sorted { ($0.endDate ?? .distantPast) > ($1.endDate ?? .distantPast) }
+
+            for session in sorted {
+                let date = session.endDate ?? .distantPast
+                if calendar.isDateInToday(date) {
+                    today.append(session)
+                } else if calendar.isDateInYesterday(date) {
+                    yesterday.append(session)
+                } else if calendar.isDate(date, equalTo: now, toGranularity: .weekOfYear) {
+                    thisWeek.append(session)
+                } else if calendar.isDate(date, equalTo: now, toGranularity: .month) {
+                    thisMonth.append(session)
+                } else {
+                    earlier.append(session)
+                }
+            }
+
+            return [
+                WorkoutSessionGroup(id: "today", title: "Today", sessions: today),
+                WorkoutSessionGroup(id: "yesterday", title: "Yesterday", sessions: yesterday),
+                WorkoutSessionGroup(id: "thisWeek", title: "This Week", sessions: thisWeek),
+                WorkoutSessionGroup(id: "thisMonth", title: "This Month", sessions: thisMonth),
+                WorkoutSessionGroup(id: "earlier", title: "Earlier", sessions: earlier),
+            ].filter { !$0.sessions.isEmpty }
+        }
+
+        // MARK: - Initializer
         init(workoutRepository: any WorkoutSessionRepository,
              healthKitManager: any HealthKitManagerProtocol,
              navigationManager: WorkoutSessionsNavigationManager) {
@@ -32,9 +77,8 @@ extension Home {
             loadWorkouts()
         }
 
+        // MARK: - Public Methods
         func refreshWorkouts() async {
-            isLoading = true
-            defer { isLoading = false }
             do {
                 try await workoutRepository.loadData()
             } catch {
@@ -42,6 +86,11 @@ extension Home {
             }
         }
 
+        func handleWorkoutTapped(for session: WorkoutSession) {
+            navigationManager?.push(WorkoutRoute(workout: session))
+        }
+
+        // MARK: - Private Methods
         private func subscribeToWorkoutSessions() {
             workoutRepository
                 .entitiesPublisher
@@ -62,10 +111,6 @@ extension Home {
                     print("Error while loading workouts: \(error.localizedDescription)")
                 }
             }
-        }
-
-        func handleWorkoutTapped(for session: WorkoutSession) {
-            navigationManager?.push(WorkoutRoute(workout: session))
         }
     }
 }
