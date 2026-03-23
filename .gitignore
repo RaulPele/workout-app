@@ -90,4 +90,5 @@ fastlane/test_output
 iOSInjectionProject/
 .DS_Store
 .cursor
-.claude/settings.local.json
+.claude/
+scratch/

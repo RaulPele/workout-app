@@ -70,6 +70,6 @@ class MockedExerciseRepository: ExerciseRepositoryProtocol {
 extension Exercise: SwiftDataConvertible {
 
     var dto: ExerciseDTO {
-        ExerciseDTO(id: id, name: name, numberOfSets: numberOfSets, setData: setData, restBetweenSets: restBetweenSets)
+        ExerciseDTO(id: id, definition: definition, numberOfSets: numberOfSets, setData: setData, restBetweenSets: restBetweenSets)
     }
 }

@@ -34,6 +34,7 @@ actor SwiftDataManager {
             WorkoutDTO.self,
             ExerciseDTO.self,
             WorkoutSessionDTO.self,
+            ExerciseDefinitionDTO.self,
         ])
         
         

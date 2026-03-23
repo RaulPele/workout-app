@@ -31,7 +31,7 @@ struct EditView: View {
             
             let exercise = Exercise(
                 id: exercise.wrappedValue.id,
-                name: exercise.wrappedValue.name,
+                definition: exercise.wrappedValue.definition,
                 numberOfSets: Int(newSets) ?? 0,
                 setData: .init(
                     id: exercise.wrappedValue.setData.id,
