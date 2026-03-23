@@ -33,6 +33,7 @@ struct MainCoordinatorView: View {
                 NavigationStack(path: $workoutTemplatesNavigationManager.path) {
                     WorkoutTemplatesListWrapper(
                         exerciseRepository: dependencyContainer.exerciseRepository,
+                        exerciseDefinitionRepository: dependencyContainer.exerciseDefinitionRepository,
                         workoutTemplateRepository: dependencyContainer.workoutTemplateRepository,
                         navigationManager: workoutTemplatesNavigationManager
                     )
@@ -73,12 +74,14 @@ private struct HomeWrapper: View {
 private struct WorkoutTemplatesListWrapper: View {
 
     let exerciseRepository: any ExerciseRepositoryProtocol
+    let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
     let navigationManager: WorkoutTemplatesNavigationManager
     @State private var viewModel: WorkoutTemplatesList.ViewModel
 
-    init(exerciseRepository: any ExerciseRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager) {
+    init(exerciseRepository: any ExerciseRepositoryProtocol, exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager) {
         self.exerciseRepository = exerciseRepository
+        self.exerciseDefinitionRepository = exerciseDefinitionRepository
         self.workoutTemplateRepository = workoutTemplateRepository
         self.navigationManager = navigationManager
         self._viewModel = State(wrappedValue: WorkoutTemplatesList.ViewModel(
@@ -92,6 +95,7 @@ private struct WorkoutTemplatesListWrapper: View {
             .navigationDestination(for: WorkoutTemplateBuilderRoute.self) { route in
                 WorkoutTemplateBuilderWrapper(
                     exerciseRepository: exerciseRepository,
+                    exerciseDefinitionRepository: exerciseDefinitionRepository,
                     workoutTemplateRepository: workoutTemplateRepository,
                     navigationManager: navigationManager,
                     route: route
@@ -102,16 +106,19 @@ private struct WorkoutTemplatesListWrapper: View {
 
 private struct WorkoutTemplateBuilderWrapper: View {
     let exerciseRepository: any ExerciseRepositoryProtocol
+    let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
     let navigationManager: WorkoutTemplatesNavigationManager
     @State private var viewModel: WorkoutTemplateBuilder.ViewModel
 
-    init(exerciseRepository: any ExerciseRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
+    init(exerciseRepository: any ExerciseRepositoryProtocol, exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
         self.exerciseRepository = exerciseRepository
+        self.exerciseDefinitionRepository = exerciseDefinitionRepository
         self.workoutTemplateRepository = workoutTemplateRepository
         self.navigationManager = navigationManager
         self._viewModel = State(wrappedValue: WorkoutTemplateBuilder.ViewModel(
             exerciseRepository: exerciseRepository,
+            exerciseDefinitionRepository: exerciseDefinitionRepository,
             workoutTemplateRepository: workoutTemplateRepository,
             navigationManager: navigationManager,
             workout: route.workout

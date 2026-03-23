@@ -8,6 +8,7 @@
 import Foundation
 
 struct Constants {
-    
+
     static let appName = "WorkoutApp"
+    static let apiBaseURL = URL(string: "http://172.20.10.7:8080")!
 }

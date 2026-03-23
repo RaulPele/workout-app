@@ -29,6 +29,7 @@ extension WorkoutTemplateBuilder {
         var exercises = [Exercise]()
 
         let exerciseRepository: any ExerciseRepositoryProtocol
+        let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
         let workoutTemplateRepository: any WorkoutRepository
 
         var workout: Workout?
@@ -49,10 +50,12 @@ extension WorkoutTemplateBuilder {
 
         //MARK: - Initializers
         init(exerciseRepository: any ExerciseRepositoryProtocol,
+             exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol,
              workoutTemplateRepository: any WorkoutRepository,
              navigationManager: WorkoutTemplatesNavigationManager,
              workout: Workout? = nil) {
             self.exerciseRepository = exerciseRepository
+            self.exerciseDefinitionRepository = exerciseDefinitionRepository
             self.workoutTemplateRepository = workoutTemplateRepository
             self.navigationManager = navigationManager
             self.workout = workout

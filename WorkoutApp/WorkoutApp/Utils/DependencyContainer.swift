@@ -15,16 +15,18 @@ protocol DependencyContainerProtocol {
     var watchCommunicator: any WatchCommunicatorProtocol { get }
     var exerciseRepository: any ExerciseRepositoryProtocol { get }
     var workoutTemplateRepository: any WorkoutRepository { get }
+    var exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol { get }
 }
 
 // MARK: - Live Implementation
 struct DependencyContainer: DependencyContainerProtocol {
-    
+
     let workoutRepository: any WorkoutSessionRepository
     let healthKitManager: any HealthKitManagerProtocol
     let watchCommunicator: any WatchCommunicatorProtocol
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
+    let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
 
     static func live() -> DependencyContainer {
         let healthKitManager = HealthKitManager()
@@ -35,13 +37,16 @@ struct DependencyContainer: DependencyContainerProtocol {
             workoutRepository: workoutTemplateRepository,
             workoutSessionRepository: workoutRepository
         )
+        let apiClient = APIClient(baseURL: Constants.apiBaseURL)
+        let exerciseDefinitionRepository = ExerciseDefinitionRepository(apiClient: apiClient)
 
         return DependencyContainer(
             workoutRepository: workoutRepository,
             healthKitManager: healthKitManager,
             watchCommunicator: watchCommunicator,
             exerciseRepository: exerciseRepository,
-            workoutTemplateRepository: workoutTemplateRepository
+            workoutTemplateRepository: workoutTemplateRepository,
+            exerciseDefinitionRepository: exerciseDefinitionRepository
         )
     }
 }
@@ -65,6 +70,7 @@ struct MockedDependencyContainer: DependencyContainerProtocol {
     let watchCommunicator: any WatchCommunicatorProtocol
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
+    let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
 
     init() {
         let workoutTemplateRepository = MockedWorkoutRepository()
@@ -73,5 +79,6 @@ struct MockedDependencyContainer: DependencyContainerProtocol {
         self.exerciseRepository = MockedExerciseRepository()
         self.healthKitManager = MockedHealthKitManager()
         self.watchCommunicator = MockedWatchCommunicator()
+        self.exerciseDefinitionRepository = MockedExerciseDefinitionRepository()
     }
 }
