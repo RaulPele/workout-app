@@ -32,7 +32,6 @@ actor SwiftDataManager {
     static let shared: SwiftDataManager = {
         let schema = Schema([
             WorkoutDTO.self,
-            ExerciseDTO.self,
             WorkoutSessionDTO.self,
             ExerciseDefinitionDTO.self,
         ])
@@ -101,6 +100,16 @@ actor SwiftDataManager {
         }
     }
     
+    @MainActor
+    func saveContext() async throws {
+        do {
+            try mainContext.save()
+        } catch {
+            logger.error("Failed to save context: \(error.localizedDescription)")
+            throw error
+        }
+    }
+
     @MainActor
     func delete<T: PersistentModel>(_ entity: T) async throws {
         mainContext.delete(entity)

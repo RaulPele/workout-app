@@ -19,7 +19,6 @@ extension WorkoutTemplateBuilder {
         //MARK: - Properties
         var title: String = "New Workout" //TODO: fix
 
-        var showEditingView: Bool = false
         var showAddExerciseView: Bool = false
 
         var isEditing = false
@@ -38,15 +37,6 @@ extension WorkoutTemplateBuilder {
         @ObservationIgnored private var saveTemplateTask: Task<Void, Never>?
 
         private let logger = CustomLogger(subsystem: "WorkoutBuilder", category: String(describing: ViewModel.self))
-
-        var selectedExercise: Binding<Exercise>? {
-            didSet {
-                if selectedExercise != nil {
-                    logger.debug("Exercise selected for editing")
-                    showEditingView = true
-                }
-            }
-        }
 
         //MARK: - Initializers
         init(exerciseRepository: any ExerciseRepositoryProtocol,
