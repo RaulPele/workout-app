@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreTransferable
 
 struct Exercise: Identifiable, Codable, Hashable {
 
@@ -55,6 +56,13 @@ struct Exercise: Identifiable, Codable, Hashable {
         try container.encode(numberOfSets, forKey: .numberOfSets)
         try container.encode(setData, forKey: .setData)
         try container.encode(restBetweenSets, forKey: .restBetweenSets)
+    }
+}
+
+// MARK: - Transferable
+extension Exercise: Transferable {
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .json)
     }
 }
 

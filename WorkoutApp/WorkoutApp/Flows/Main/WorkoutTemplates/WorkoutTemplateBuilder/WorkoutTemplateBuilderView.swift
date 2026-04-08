@@ -10,7 +10,7 @@ import SwiftUI
 struct WorkoutTemplateBuilder {
         
     struct ContentView: View {
-        
+
         @Bindable var viewModel: ViewModel
         @Environment(\.dismiss) private var dismiss
 
@@ -53,15 +53,13 @@ struct WorkoutTemplateBuilder {
                     }
                 )
             }
-            .sheet(item: $viewModel.editingExerciseIndex) { indexWrapper in
+            .appBottomSheet(item: $viewModel.editingExerciseIndex) { indexWrapper in
                 let index = indexWrapper.id
                 if index < viewModel.exercises.count {
                     EditView(
-                        exercise: Binding(
-                            get: { viewModel.exercises[index] },
-                            set: { viewModel.exercises[index] = $0 }
-                        ),
-                        onFinishedEditing: {
+                        exercise: viewModel.exercises[index],
+                        onFinishedEditing: { editedExercise in
+                            viewModel.exercises[index] = editedExercise
                             viewModel.editingExerciseIndex = nil
                         }
                     )
@@ -119,7 +117,9 @@ struct WorkoutTemplateBuilder {
                     .animation(.spring(duration: 0.3), value: viewModel.isEditing)
                     .padding(.bottom)
                     
-                    ForEach(viewModel.exercises.enumerated(), id: \.element.id) { offset, exercise in
+                    ReorderableVStack(viewModel.exercises, spacing: 8, onMove: { from, to in
+                        viewModel.moveExercise(from: from, to: to)
+                    }) { exercise, isDragging in
                         ExerciseCardView(
                             exercise: exercise,
                             isEditMode: viewModel.isEditing,
@@ -142,14 +142,19 @@ struct WorkoutTemplateBuilder {
                                 }
                             }
                         )
+                        .scaleEffect(isDragging ? 1.03 : 1.0)
+                        .shadow(
+                            color: isDragging ? Color.primaryColor.opacity(0.4) : .clear,
+                            radius: isDragging ? 16 : 0,
+                            y: isDragging ? 4 : 0
+                        )
                         .offset(x: viewModel.deletingExerciseId == exercise.id ? 2000 : 0)
                         .opacity(viewModel.deletingExerciseId == exercise.id ? 0 : 1)
-                        .padding(.bottom, 8)
                     }
                 }
             }
         }
-        
+
         private struct EmptyExercisesView: View {
             let onAddAction: () -> Void
             

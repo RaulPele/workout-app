@@ -15,9 +15,9 @@ struct ExerciseCardView: View {
     let isEditMode: Bool
     let onDeleteAction: (() -> Void)?
     let onTapAction: (() -> Void)?
-    
+
     @State private var glowOpacity: CGFloat = 0.6
-    
+
     //MARK: - Initializers
     init(
         exercise: Exercise,
@@ -40,20 +40,20 @@ struct ExerciseCardView: View {
                         .bold()
                         .foregroundStyle(Color.onBackground)
 //                    .lineLimit(2) //TODO: test with long names
-                    
+
                     HStack(spacing: 6) {
                         metricCapsule(
                             systemImage: "repeat",
                             value: "\(exercise.numberOfSets)",
                             label: "Sets"
                         )
-                        
+
                         metricCapsule(
                             systemImage: "number",
                             value: "\(exercise.setData.reps)",
                             label: "Reps"
                         )
-                        
+
                         metricCapsule(
                             systemImage: "timer",
                             value: formatRestTime(exercise.restBetweenSets),
@@ -63,7 +63,12 @@ struct ExerciseCardView: View {
                 }
             }
             .padding()
+            .padding(.leading, isEditMode ? 24 : 0)
+            .animation(.spring(duration: 0.3), value: isEditMode)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .overlay(alignment: .leading) {
+                dragHandle
+            }
             .overlay(alignment: .trailing) {
                 deleteButton
             }
@@ -123,6 +128,21 @@ struct ExerciseCardView: View {
 //        .allowsHitTesting(isEditMode)
     }
     
+    private var dragHandle: some View {
+        Image(systemName: "line.3.horizontal")
+            .font(.body)
+            .foregroundStyle(Color.onBackground.opacity(0.5))
+            .frame(maxHeight: .infinity)
+            .frame(width: 32)
+            .contentShape(Rectangle())
+            .padding(.leading, 8)
+            .reorderDragHandle()
+            .scaleEffect(x: isEditMode ? 1 : 0, anchor: .leading)
+            .opacity(isEditMode ? 1 : 0)
+            .disabled(!isEditMode)
+            .animation(.spring(duration: 0.3), value: isEditMode)
+    }
+
     private func metricCapsule(systemImage: String, value: String, label: String) -> some View {
         HStack(spacing: 4) {
             Image(systemName: systemImage)

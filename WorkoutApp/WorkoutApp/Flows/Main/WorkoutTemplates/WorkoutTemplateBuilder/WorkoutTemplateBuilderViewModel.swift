@@ -95,6 +95,16 @@ extension WorkoutTemplateBuilder {
             showAddExerciseView = true
         }
 
+        // MARK: - Reorder
+        func moveExercise(from sourceIndex: Int, to destinationIndex: Int) {
+            withAnimation(.spring(duration: 0.3)) {
+                exercises.move(
+                    fromOffsets: IndexSet(integer: sourceIndex),
+                    toOffset: destinationIndex > sourceIndex ? destinationIndex + 1 : destinationIndex
+                )
+            }
+        }
+
         //MARK: - Private Methods
         private func saveWorkoutTemplate() {
             //TODO: field validations
