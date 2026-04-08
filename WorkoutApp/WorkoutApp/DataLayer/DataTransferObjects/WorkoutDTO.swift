@@ -12,23 +12,19 @@ import SwiftData
 class WorkoutDTO: DomainConvertible {
     @Attribute(.unique) var id: UUID
     var name: String
-    var exercises: [ExerciseDTO]
-    
-    init(id: UUID, name: String, exercises: [ExerciseDTO]) {
+    var exercises: [Exercise]
+
+    init(id: UUID, name: String, exercises: [Exercise]) {
         self.id = id
         self.name = name
         self.exercises = exercises
     }
-    
-    convenience init (from workout: Workout) {
-        self.init(id: workout.id, name: workout.name, exercises: workout.exercises.map(\.dto))
+
+    convenience init(from workout: Workout) {
+        self.init(id: workout.id, name: workout.name, exercises: workout.exercises)
     }
-    
+
     func toDomain() -> Workout {
-        Workout(
-            id: id,
-            name: name,
-            exercises: exercises.map { $0.toDomain() }
-        )
+        Workout(id: id, name: name, exercises: exercises)
     }
 }

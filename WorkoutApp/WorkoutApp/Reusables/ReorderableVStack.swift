@@ -33,7 +33,7 @@ private struct PositionPreference: PreferenceKey {
 }
 
 // MARK: - Drag Callbacks (Environment)
-struct ReorderDragCallbacks {
+private struct ReorderDragCallbacks {
     let coordinateSpaceName: String
     let onDrag: (DragGesture.Value) -> Void
     let onDrop: () -> Void
@@ -44,10 +44,9 @@ private struct ReorderDragCallbacksKey: EnvironmentKey {
 }
 
 extension EnvironmentValues {
-    var reorderDragCallbacks: ReorderDragCallbacks? {
+    fileprivate var reorderDragCallbacks: ReorderDragCallbacks? {
         get { self[ReorderDragCallbacksKey.self] }
-        set { self[ReorderDragCallbacksKey.self] = newValue
-        }
+        set { self[ReorderDragCallbacksKey.self] = newValue }
     }
 }
 

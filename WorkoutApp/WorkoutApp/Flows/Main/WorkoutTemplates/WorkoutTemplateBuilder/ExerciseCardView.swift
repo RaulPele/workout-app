@@ -31,7 +31,7 @@ struct ExerciseCardView: View {
         self.onTapAction = onTapAction
     }
     
-    //MARK: - Properties
+    //MARK: - Body
     var body: some View {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 10) {
@@ -39,7 +39,6 @@ struct ExerciseCardView: View {
                         .font(.headline)
                         .bold()
                         .foregroundStyle(Color.onBackground)
-//                    .lineLimit(2) //TODO: test with long names
 
                     HStack(spacing: 6) {
                         metricCapsule(
@@ -103,7 +102,6 @@ struct ExerciseCardView: View {
                     glowOpacity = 0.6
                 }
             }
-//        .disabled(!isEditMode)
     }
     
     private var deleteButton: some View {
@@ -125,7 +123,6 @@ struct ExerciseCardView: View {
         .opacity(isEditMode ? 1 : 0)
         .disabled(!isEditMode)
         .animation(.spring(duration: 0.3), value: isEditMode)
-//        .allowsHitTesting(isEditMode)
     }
     
     private var dragHandle: some View {

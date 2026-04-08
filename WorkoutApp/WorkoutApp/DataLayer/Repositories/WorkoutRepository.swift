@@ -14,23 +14,34 @@ protocol WorkoutRepository: Repository where T == Workout {
 }
 
 class WorkoutLocalRepository: WorkoutRepository {
-    
+
     private let localDataSource = SwiftDataDataSource<Workout>()
+    private let manager = SwiftDataManager.shared
     private let workoutsSubject = CurrentValueSubject<[Workout], Never>([])
-    
+
     private let logger = CustomLogger(
         subsystem: Bundle.main.bundleIdentifier ?? "WorkoutApp",
         category: "WorkoutRepository"
     )
-    
+
     var entitiesPublisher: AnyPublisher<[Workout], Never> {
         workoutsSubject.eraseToAnyPublisher()
     }
-    
+
     func save(entity: Workout) async throws {
         logger.debug("Saving workout: \(entity.name) (ID: \(entity.id))")
         do {
-            try await localDataSource.save(entity: entity)
+            // Fetch existing workout by ID to update in place
+            let entityId = entity.id
+            let predicate = #Predicate<WorkoutDTO> { $0.id == entityId }
+            let existing: [WorkoutDTO] = try await manager.fetch(predicate: predicate)
+            if let existingDTO = existing.first {
+                existingDTO.name = entity.name
+                existingDTO.exercises = entity.exercises
+                try await manager.saveContext()
+            } else {
+                try await localDataSource.save(entity: entity)
+            }
             logger.info("Successfully saved workout: \(entity.name) (ID: \(entity.id))")
             try await loadData()
         } catch {
