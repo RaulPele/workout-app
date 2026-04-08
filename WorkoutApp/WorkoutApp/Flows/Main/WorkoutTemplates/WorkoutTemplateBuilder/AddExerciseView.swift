@@ -210,9 +210,9 @@ struct AddExerciseView: View {
             .sheet(isPresented: $viewModel.isAddingExercise) {
                 AddNewExerciseSheet(viewModel: viewModel)
             }
-            .sheet(isPresented: $viewModel.showEditView) {
+            .appBottomSheet(isPresented: $viewModel.showEditView) {
                 if let exercise = viewModel.selectedExercise {
-                    EditExerciseSheetWrapper(
+                    EditView(
                         exercise: exercise,
                         onFinishedEditing: { editedExercise in
                             viewModel.handleExerciseEdited(editedExercise)
@@ -232,12 +232,17 @@ struct AddExerciseView: View {
 // MARK: - Search Bar
 private extension AddExerciseView {
     var searchBar: some View {
-        TextField("Search exercises", text: $viewModel.searchText)
-            .textFieldStyle(.roundedBorder)
-            .padding()
-            .onChange(of: viewModel.searchText) { _, newValue in
-                viewModel.handleSearchChanged(newValue)
-            }
+        AppTextField(
+            "Search exercises",
+            text: $viewModel.searchText,
+            leadingIcon: "magnifyingglass",
+            trailingIcon: viewModel.searchText.isEmpty ? nil : "xmark.circle.fill",
+            onTrailingIconTapped: { viewModel.searchText = "" }
+        )
+        .padding()
+        .onChange(of: viewModel.searchText) { _, newValue in
+            viewModel.handleSearchChanged(newValue)
+        }
     }
 }
 
@@ -457,9 +462,12 @@ private struct AddNewExerciseSheet: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                TextField("Exercise name", text: $viewModel.newExerciseName)
+            VStack {
+                AppTextField("Exercise name", text: $viewModel.newExerciseName)
+                    .padding()
+                Spacer()
             }
+            .background(Color.background)
             .navigationTitle("New Exercise")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -480,28 +488,6 @@ private struct AddNewExerciseSheet: View {
                 }
             }
         }
-    }
-}
-
-// MARK: - Edit Exercise Sheet Wrapper
-private struct EditExerciseSheetWrapper: View {
-    let exercise: Exercise
-    let onFinishedEditing: (Exercise) -> Void
-    @State private var editedExercise: Exercise
-
-    init(exercise: Exercise, onFinishedEditing: @escaping (Exercise) -> Void) {
-        self.exercise = exercise
-        self.onFinishedEditing = onFinishedEditing
-        _editedExercise = State(initialValue: exercise)
-    }
-
-    var body: some View {
-        EditView(
-            exercise: $editedExercise,
-            onFinishedEditing: {
-                onFinishedEditing(editedExercise)
-            }
-        )
     }
 }
 
