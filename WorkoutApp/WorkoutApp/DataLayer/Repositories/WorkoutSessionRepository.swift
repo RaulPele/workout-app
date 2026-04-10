@@ -16,6 +16,18 @@ extension WorkoutSession: SwiftDataConvertible {
     var dto: WorkoutSessionDTO {
         WorkoutSessionDTO(from: self)
     }
+
+    func update(_ existingDTO: WorkoutSessionDTO) {
+        existingDTO.title = title
+        existingDTO.workoutTemplate = workoutTemplate
+        existingDTO.performedExercises = performedExercises
+        existingDTO.averageHeartRate = averageHeartRate
+        existingDTO.duration = duration
+        existingDTO.startDate = startDate
+        existingDTO.endDate = endDate
+        existingDTO.totalCalories = totalCalories
+        existingDTO.activeCalories = activeCalories
+    }
 }
 
 // MARK: - WorkoutSessionAPIRepository
