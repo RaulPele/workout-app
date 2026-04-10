@@ -18,6 +18,7 @@ protocol DomainConvertible {
 protocol SwiftDataConvertible {
     associatedtype DTO: DomainConvertible & PersistentModel
     var dto: DTO { get }
+    func update(_ existingDTO: DTO)
 }
 
 // MARK: - SwiftDataManager
@@ -149,10 +150,23 @@ class SwiftDataDataSource<T: SwiftDataConvertible> where T: Identifiable, T.ID =
     )
     
     func save(entity: T) async throws {
-        let dto = entity.dto
-        
         do {
-            try await manager.save(dto)
+            let allDTOs: [T.DTO] = try await manager.fetchAll()
+            let existingDTO = allDTOs.first(where: { dto in
+                let domain = dto.toDomain()
+                if let identifiable = domain as? any Identifiable {
+                    return (identifiable.id as? UUID) == entity.id
+                }
+                return false
+            })
+
+            if let existing = existingDTO {
+                entity.update(existing)
+                try await manager.saveContext()
+            } else {
+                let dto = entity.dto
+                try await manager.save(dto)
+            }
         } catch {
             let entityType = String(describing: T.self)
             logger.error("Failed to save domain entity of type: \(entityType), error: \(error.localizedDescription)")

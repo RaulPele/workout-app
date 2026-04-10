@@ -16,7 +16,6 @@ protocol WorkoutRepository: Repository where T == Workout {
 class WorkoutLocalRepository: WorkoutRepository {
 
     private let localDataSource = SwiftDataDataSource<Workout>()
-    private let manager = SwiftDataManager.shared
     private let workoutsSubject = CurrentValueSubject<[Workout], Never>([])
 
     private let logger = CustomLogger(
@@ -31,17 +30,7 @@ class WorkoutLocalRepository: WorkoutRepository {
     func save(entity: Workout) async throws {
         logger.debug("Saving workout: \(entity.name) (ID: \(entity.id))")
         do {
-            // Fetch existing workout by ID to update in place
-            let entityId = entity.id
-            let predicate = #Predicate<WorkoutDTO> { $0.id == entityId }
-            let existing: [WorkoutDTO] = try await manager.fetch(predicate: predicate)
-            if let existingDTO = existing.first {
-                existingDTO.name = entity.name
-                existingDTO.exercises = entity.exercises
-                try await manager.saveContext()
-            } else {
-                try await localDataSource.save(entity: entity)
-            }
+            try await localDataSource.save(entity: entity)
             logger.info("Successfully saved workout: \(entity.name) (ID: \(entity.id))")
             try await loadData()
         } catch {
@@ -63,11 +52,15 @@ class WorkoutLocalRepository: WorkoutRepository {
 }
 
 extension Workout: SwiftDataConvertible {
-    
+
     var dto: WorkoutDTO {
         WorkoutDTO(from: self)
     }
-    
+
+    func update(_ existingDTO: WorkoutDTO) {
+        existingDTO.name = name
+        existingDTO.exercises = exercises
+    }
 }
 
 class MockedWorkoutRepository: WorkoutRepository {
