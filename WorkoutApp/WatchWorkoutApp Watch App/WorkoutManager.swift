@@ -25,6 +25,7 @@ class WorkoutManager: NSObject {
 
     private(set) var running = false
     private(set) var isLoading = false
+    private(set) var loadError: Error?
     var showingSummaryView: Bool = false {
         didSet {
             if showingSummaryView == false {
@@ -35,16 +36,11 @@ class WorkoutManager: NSObject {
 
     // MARK: - Workout exercises
     var workoutTemplates = [Workout]()
-    var selectedWorkoutTemplate: Workout? {
-        didSet {
-            guard let selectedWorkoutTemplate else { return }
-            Task {
-                await startWorkout(workoutType: .traditionalStrengthTraining)
-            }
-        }
-    }
+    private(set) var activeWorkoutTemplate: Workout?
     private(set) var workoutSession: WorkoutSession?
-    private(set) var performedExercises: [PerformedExercise] = []
+
+    // MARK: - Internal State
+    private var pendingPerformedExercises: [PerformedExercise] = []
 
     // MARK: - Workout metrics
     private(set) var workout: HKWorkout?
@@ -60,11 +56,6 @@ class WorkoutManager: NSObject {
     }
 
     // MARK: - Computed Properties
-    var remainingExercises: [Exercise] {
-        guard let selectedWorkoutTemplate else { return [] }
-        return selectedWorkoutTemplate.exercises.filter { ex in !performedExercises.contains { $0.exercise.id == ex.id } }
-    }
-
     var workoutStartDate: Date? {
         builder?.startDate
     }
@@ -129,25 +120,31 @@ class WorkoutManager: NSObject {
         session?.end()
     }
 
-    func addPerformedExercise(_ exercise: PerformedExercise) {
-        performedExercises.append(exercise)
+    func finishWorkout(performedExercises: [PerformedExercise]) {
+        self.pendingPerformedExercises = performedExercises
+        endWorkout()
     }
 
     func loadWorkoutTemplates() async {
         isLoading = true
+        loadError = nil
         do {
             let templates = try await phoneCommunicator.requestWorkoutTemplates()
             workoutTemplates = templates
         } catch {
             logger.error("Error while loading workouts on watch: \(error.localizedDescription)")
+            if workoutTemplates.isEmpty {
+                loadError = error
+            }
         }
         isLoading = false
     }
 
-    // MARK: - Private Methods
-    private func startWorkout(workoutType: HKWorkoutActivityType) async {
+    func startWorkout(template: Workout) async {
+        activeWorkoutTemplate = template
+
         let configuration = HKWorkoutConfiguration()
-        configuration.activityType = workoutType
+        configuration.activityType = .traditionalStrengthTraining
         configuration.locationType = .indoor
 
         do {
@@ -162,8 +159,6 @@ class WorkoutManager: NSObject {
         builder?.delegate = self
 
         builder?.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: configuration)
-
-        guard let template = selectedWorkoutTemplate else { return }
 
         let startDate = Date()
         session?.startActivity(with: startDate)
@@ -181,17 +176,18 @@ class WorkoutManager: NSObject {
         }
     }
 
+    // MARK: - Private Methods
     private func resetWorkout() {
-        selectedWorkoutTemplate = nil
+        activeWorkoutTemplate = nil
         builder = nil
         session = nil
         workout = nil
         workoutSession = nil
+        pendingPerformedExercises = []
 
         activeEnergyBurned = 0
         averageHeartRate = 0
         heartRate = 0
-        performedExercises = []
     }
 
     private func subscribeToTemplates() {
@@ -217,7 +213,7 @@ class WorkoutManager: NSObject {
             workoutSession?.averageHeartRate = workout?.averageHeartRate
             workoutSession?.totalCalories = workout?.totalCalories
             workoutSession?.duration = workout?.duration
-            workoutSession?.performedExercises = performedExercises
+            workoutSession?.performedExercises = pendingPerformedExercises
             workoutSession?.endDate = endDate
             workoutSession?.startDate = workout?.startDate
             workoutSession?.title = workout?.startDate.toMMMdd()

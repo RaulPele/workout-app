@@ -7,36 +7,116 @@
 
 import SwiftUI
 import HealthKit
-import WatchConnectivity
-import OSLog
+import WatchKit
 
 struct WorkoutsListView: View {
 
+    // MARK: - Properties
     @Environment(WorkoutManager.self) private var workoutManager
 
-    let workoutType: HKWorkoutActivityType = .traditionalStrengthTraining
-
+    // MARK: - Body
     var body: some View {
-        List(workoutManager.workoutTemplates) { template in
-            NavigationLink(value: WatchWorkoutSessionRoute(workoutTemplate: template)) {
-                Text(template.name)
-            }
-        }
-        .listStyle(.carousel)
-        .overlay {
-            if workoutManager.isLoading {
+        Group {
+            if workoutManager.isLoading && workoutManager.workoutTemplates.isEmpty {
                 ZStack {
                     Color.background.ignoresSafeArea()
                     ActivityIndicator(color: .primaryColor)
                 }
+            } else if workoutManager.loadError != nil && workoutManager.workoutTemplates.isEmpty {
+                ErrorStateView {
+                    Task { await workoutManager.loadWorkoutTemplates() }
+                }
+            } else if workoutManager.workoutTemplates.isEmpty {
+                EmptyStateView()
+            } else {
+                List(workoutManager.workoutTemplates) { template in
+                    NavigationLink(value: WatchWorkoutSessionRoute(workoutTemplate: template)) {
+                        WorkoutTemplateCard(workout: template)
+                    }
+                    .listRowInsets(EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: 8))
+                }
+                .listStyle(.carousel)
             }
         }
+        .navigationTitle("Workouts")
         .task {
             await workoutManager.loadWorkoutTemplates()
         }
     }
 }
 
+// MARK: - WorkoutTemplateCard
+private struct WorkoutTemplateCard: View {
+
+    let workout: Workout
+
+    var body: some View {
+        Text(workout.name)
+            .font(.title3)
+            .fontWeight(.semibold)
+            .multilineTextAlignment(.center)
+            .lineLimit(3)
+            .foregroundStyle(Color.onSurface)
+            .frame(maxWidth: .infinity, minHeight: 120)
+            .padding(.horizontal, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.surface)
+            )
+    }
+}
+
+// MARK: - EmptyStateView
+private struct EmptyStateView: View {
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "figure.strengthtraining.traditional")
+                .font(.title2)
+                .foregroundStyle(.secondary)
+
+            Text("No Workouts")
+                .font(.headline)
+
+            Text("Create workout templates on your iPhone to get started.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .scenePadding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+// MARK: - ErrorStateView
+private struct ErrorStateView: View {
+
+    let onRetry: () -> Void
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: "iphone.slash")
+                .font(.title2)
+                .foregroundStyle(.secondary)
+
+            Text("Unable to Load")
+                .font(.headline)
+
+            Text("Check that your iPhone is nearby.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+
+            Button("Retry", action: onRetry)
+                .buttonStyle(.bordered)
+                .tint(Color.primaryColor)
+        }
+        .scenePadding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+// MARK: - HKWorkoutActivityType + Identifiable
 extension HKWorkoutActivityType: Identifiable {
     public var id: UInt {
         rawValue
@@ -54,8 +134,10 @@ extension HKWorkoutActivityType: Identifiable {
 }
 
 #if DEBUG
-#Preview {
-    WorkoutsListView()
-        .environment(WorkoutManager(phoneCommunicator: MockedPhoneCommunicator()))
+#Preview("With Templates") {
+    NavigationStack {
+        WorkoutsListView()
+            .environment(WorkoutManager(phoneCommunicator: MockedPhoneCommunicator()))
+    }
 }
 #endif

@@ -20,7 +20,7 @@ struct WorkoutsFlowCoordinator: View {
         NavigationStack(path: $navigationManager.path) {
             WorkoutsListView()
                 .navigationDestination(for: WatchWorkoutSessionRoute.self) { route in
-                    SessionPagingView(workoutTemplate: route.workoutTemplate)
+                    ActiveWorkoutView(workout: route.workoutTemplate)
                 }
         }
         .onChange(of: workoutManager.showingSummaryView) { oldValue, newValue in
