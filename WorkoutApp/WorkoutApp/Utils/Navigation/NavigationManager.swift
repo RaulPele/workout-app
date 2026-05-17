@@ -43,14 +43,10 @@ class WorkoutSessionsNavigationManager: NavigationManager {}
 /// Navigation manager for Workout Templates tab
 @Observable
 class WorkoutTemplatesNavigationManager: NavigationManager {
-    
+
     enum Screens {
         case workoutsList
         case workoutsBuilderView(Workout?)
     }
 }
-
-/// Navigation manager for Authentication flow
-@Observable
-class AuthenticationNavigationManager: NavigationManager {}
 

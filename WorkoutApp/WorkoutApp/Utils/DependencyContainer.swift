@@ -16,6 +16,7 @@ protocol DependencyContainerProtocol {
     var exerciseRepository: any ExerciseRepositoryProtocol { get }
     var workoutTemplateRepository: any WorkoutRepository { get }
     var exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol { get }
+    var authService: any AuthServiceProtocol { get }
 }
 
 // MARK: - Live Implementation
@@ -27,6 +28,7 @@ struct DependencyContainer: DependencyContainerProtocol {
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
     let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
+    let authService: any AuthServiceProtocol
 
     static func live() -> DependencyContainer {
         let healthKitManager = HealthKitManager()
@@ -39,6 +41,7 @@ struct DependencyContainer: DependencyContainerProtocol {
         )
         let apiClient = APIClient(baseURL: Constants.apiBaseURL)
         let exerciseDefinitionRepository = ExerciseDefinitionRepository(apiClient: apiClient)
+        let authService = FirebaseAuthService()
 
         return DependencyContainer(
             workoutRepository: workoutRepository,
@@ -46,7 +49,8 @@ struct DependencyContainer: DependencyContainerProtocol {
             watchCommunicator: watchCommunicator,
             exerciseRepository: exerciseRepository,
             workoutTemplateRepository: workoutTemplateRepository,
-            exerciseDefinitionRepository: exerciseDefinitionRepository
+            exerciseDefinitionRepository: exerciseDefinitionRepository,
+            authService: authService
         )
     }
 }
@@ -71,6 +75,7 @@ struct MockedDependencyContainer: DependencyContainerProtocol {
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
     let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
+    let authService: any AuthServiceProtocol
 
     init() {
         let workoutTemplateRepository = MockedWorkoutRepository()
@@ -80,5 +85,6 @@ struct MockedDependencyContainer: DependencyContainerProtocol {
         self.healthKitManager = MockedHealthKitManager()
         self.watchCommunicator = MockedWatchCommunicator()
         self.exerciseDefinitionRepository = MockedExerciseDefinitionRepository()
+        self.authService = MockAuthService()
     }
 }
