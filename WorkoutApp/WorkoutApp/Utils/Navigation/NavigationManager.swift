@@ -50,3 +50,7 @@ class WorkoutTemplatesNavigationManager: NavigationManager {
     }
 }
 
+/// Navigation manager for Profile tab
+@Observable
+class ProfileNavigationManager: NavigationManager {}
+

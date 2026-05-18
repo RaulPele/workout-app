@@ -15,7 +15,8 @@ struct MainCoordinatorView: View {
     @State private var selectedTab: TabBarItem = .workoutSessions
     @State private var workoutSessionsNavigationManager = WorkoutSessionsNavigationManager()
     @State private var workoutTemplatesNavigationManager = WorkoutTemplatesNavigationManager()
-    
+    @State private var profileNavigationManager = ProfileNavigationManager()
+
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab(value: TabBarItem.workoutSessions) {
@@ -40,6 +41,13 @@ struct MainCoordinatorView: View {
                 }
             } label: {
                 Label(TabBarItem.workoutTemplates.title, systemImage: "list.bullet.clipboard")
+            }
+            Tab(value: TabBarItem.profile) {
+                NavigationStack(path: $profileNavigationManager.path) {
+                    ProfileWrapper(authService: dependencyContainer.authService)
+                }
+            } label: {
+                Label(TabBarItem.profile.title, systemImage: "person.crop.circle")
             }
         }
         .tint(Color.primaryColor)
@@ -130,16 +138,33 @@ private struct WorkoutTemplateBuilderWrapper: View {
     }
 }
 
+private struct ProfileWrapper: View {
+    let authService: any AuthServiceProtocol
+    @State private var viewModel: Profile.ContentView.ViewModel
+
+    init(authService: any AuthServiceProtocol) {
+        self.authService = authService
+        self._viewModel = State(wrappedValue: Profile.ContentView.ViewModel(authService: authService))
+    }
+
+    var body: some View {
+        Profile.ContentView(viewModel: viewModel)
+    }
+}
+
 enum TabBarItem: String, CaseIterable, Hashable {
     case workoutSessions
     case workoutTemplates
-    
+    case profile
+
     var title: String {
         switch self {
         case .workoutSessions:
             return "Sessions"
         case .workoutTemplates:
             return "Workouts"
+        case .profile:
+            return "Profile"
         }
     }
 }
