@@ -13,6 +13,7 @@ enum Profile {
 
         // MARK: - Properties
         let viewModel: ViewModel
+        @State private var isConfirmingSignOut = false
 
         // MARK: - Body
         var body: some View {
@@ -26,6 +27,14 @@ enum Profile {
             .padding(.top, 32)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.background)
+            .alert(
+                "Sign out of WorkoutApp?",
+                isPresented: $isConfirmingSignOut,
+//                titleVisibility: .visible
+            ) {
+                Button("Sign out", role: .destructive) { viewModel.signOut() }
+                Button("Cancel", role: .cancel) {}
+            }
             .alert(
                 "Sign-Out Failed",
                 isPresented: errorAlertBinding,
@@ -56,8 +65,8 @@ enum Profile {
         }
 
         private var signOutButton: some View {
-            Button(role: .destructive) {
-                viewModel.signOut()
+            Button {
+                isConfirmingSignOut = true
             } label: {
                 Text("Sign out")
                     .font(.headline)

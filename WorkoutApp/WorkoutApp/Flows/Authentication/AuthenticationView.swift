@@ -33,8 +33,7 @@ enum Authentication {
                 isPresented: errorAlertBinding,
                 actions: { Button("OK") { viewModel.errorMessage = nil } },
                 message: { Text(viewModel.errorMessage ?? "") }
-            ) //TODO: either add generic error dialog or use .alert with error option
-            
+            )
         }
 
         // MARK: - Subviews
