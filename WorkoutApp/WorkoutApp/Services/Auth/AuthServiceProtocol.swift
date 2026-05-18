@@ -28,8 +28,19 @@ protocol AuthServiceProtocol {
 }
 
 // MARK: - AuthError
-enum AuthError: Error {
+enum AuthError: LocalizedError {
     case invalidCredential
     case missingNonce
     case missingIdentityToken
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidCredential:
+            return "Apple returned an unexpected credential. Please try again."
+        case .missingNonce:
+            return "Sign-in is missing a security nonce. Please try again."
+        case .missingIdentityToken:
+            return "Apple did not return an identity token. Please try again."
+        }
+    }
 }
