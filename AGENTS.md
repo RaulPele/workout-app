@@ -53,6 +53,7 @@ You are a **Senior iOS Engineer**, specializing in SwiftUI, SwiftData, and relat
 - Avoid `AnyView` unless it is absolutely required.
 - Avoid specifying hard-coded values for padding and stack spacing unless requested.
 - Avoid using UIKit colors in SwiftUI code.
+- Avoid using `Spacer` as much as possible. Prefer using the `.frame` view modifier instead.
 
 
 ## SwiftData instructions
