@@ -28,7 +28,9 @@ extension WorkoutTemplateBuilder {
         var exercises = [Exercise]()
 
         let exerciseRepository: any ExerciseRepositoryProtocol
+        // Kept wired for one-line flip-back via `FeatureFlags.useRemoteExerciseCatalog`.
         let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
+        let userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol
         let workoutTemplateRepository: any WorkoutRepository
 
         var workout: Workout?
@@ -41,11 +43,13 @@ extension WorkoutTemplateBuilder {
         //MARK: - Initializers
         init(exerciseRepository: any ExerciseRepositoryProtocol,
              exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol,
+             userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol,
              workoutTemplateRepository: any WorkoutRepository,
              navigationManager: WorkoutTemplatesNavigationManager,
              workout: Workout? = nil) {
             self.exerciseRepository = exerciseRepository
             self.exerciseDefinitionRepository = exerciseDefinitionRepository
+            self.userExerciseLibraryRepository = userExerciseLibraryRepository
             self.workoutTemplateRepository = workoutTemplateRepository
             self.navigationManager = navigationManager
             self.workout = workout

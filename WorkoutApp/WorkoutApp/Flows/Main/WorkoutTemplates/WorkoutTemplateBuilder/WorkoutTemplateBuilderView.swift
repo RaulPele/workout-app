@@ -45,13 +45,22 @@ struct WorkoutTemplateBuilder {
                 }
             }
             .sheet(isPresented: $viewModel.showAddExerciseView) {
-                AddExerciseView(
-                    exerciseDefinitionRepository: viewModel.exerciseDefinitionRepository,
-                    exerciseRepository: viewModel.exerciseRepository,
-                    onExerciseSelected: { exercise in
-                        viewModel.exercises.append(exercise)
-                    }
-                )
+                if FeatureFlags.useRemoteExerciseCatalog {
+                    AddExerciseView(
+                        exerciseDefinitionRepository: viewModel.exerciseDefinitionRepository,
+                        exerciseRepository: viewModel.exerciseRepository,
+                        onExerciseSelected: { exercise in
+                            viewModel.exercises.append(exercise)
+                        }
+                    )
+                } else {
+                    ExerciseLibraryPicker(
+                        libraryRepository: viewModel.userExerciseLibraryRepository,
+                        onExerciseSelected: { exercise in
+                            viewModel.exercises.append(exercise)
+                        }
+                    )
+                }
             }
             .appBottomSheet(item: $viewModel.editingExerciseIndex) { indexWrapper in
                 let index = indexWrapper.id
@@ -195,6 +204,7 @@ struct WorkoutTemplateBuilder {
             viewModel: .init(
                 exerciseRepository: MockedExerciseRepository(),
                 exerciseDefinitionRepository: MockedExerciseDefinitionRepository(),
+                userExerciseLibraryRepository: MockedUserExerciseLibraryRepository(),
                 workoutTemplateRepository: MockedWorkoutRepository(),
                 navigationManager: WorkoutTemplatesNavigationManager(),
                 workout: nil
@@ -209,11 +219,12 @@ struct WorkoutTemplateBuilder {
 
 private struct WorkoutTemplateBuilderPreviewWithExercises: View {
     private var viewModel: WorkoutTemplateBuilder.ViewModel
-    
+
     init() {
         viewModel = WorkoutTemplateBuilder.ViewModel(
             exerciseRepository: MockedExerciseRepository(),
             exerciseDefinitionRepository: MockedExerciseDefinitionRepository(),
+            userExerciseLibraryRepository: MockedUserExerciseLibraryRepository(),
             workoutTemplateRepository: MockedWorkoutRepository(),
             navigationManager: WorkoutTemplatesNavigationManager(),
             workout: nil
