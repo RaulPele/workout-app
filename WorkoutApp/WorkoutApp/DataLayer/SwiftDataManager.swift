@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftData
+import Playgrounds
+import FoundationModels
 
 // MARK: - Conversion Protocols
 
@@ -35,6 +37,7 @@ actor SwiftDataManager {
             WorkoutDTO.self,
             WorkoutSessionDTO.self,
             ExerciseDefinitionDTO.self,
+            UserExerciseDefinitionDTO.self,
         ])
         
         
@@ -141,31 +144,24 @@ actor SwiftDataManager {
     
 }
 
-class SwiftDataDataSource<T: SwiftDataConvertible> where T: Identifiable, T.ID == UUID {
-    
+class SwiftDataDataSource<T: SwiftDataConvertible> where T: Identifiable, T.DTO.DomainType == T {
+
     private let manager = SwiftDataManager.shared
     private let logger = CustomLogger(
         subsystem: Bundle.main.bundleIdentifier ?? "WorkoutApp",
         category: "SwiftDataDataSource"
     )
-    
+
     func save(entity: T) async throws {
         do {
             let allDTOs: [T.DTO] = try await manager.fetchAll()
-            let existingDTO = allDTOs.first(where: { dto in
-                let domain = dto.toDomain()
-                if let identifiable = domain as? any Identifiable {
-                    return (identifiable.id as? UUID) == entity.id
-                }
-                return false
-            })
+            let existingDTO = allDTOs.first { $0.toDomain().id == entity.id }
 
             if let existing = existingDTO {
                 entity.update(existing)
                 try await manager.saveContext()
             } else {
-                let dto = entity.dto
-                try await manager.save(dto)
+                try await manager.save(entity.dto)
             }
         } catch {
             let entityType = String(describing: T.self)
@@ -173,33 +169,24 @@ class SwiftDataDataSource<T: SwiftDataConvertible> where T: Identifiable, T.ID =
             throw error
         }
     }
-    
-    func fetchAll() async throws -> [T.DTO.DomainType] {
+
+    func fetchAll() async throws -> [T] {
         let list: [T.DTO] = try await manager.fetchAll()
-        let domainEntities = list.map { $0.toDomain() }
-        return domainEntities
+        return list.map { $0.toDomain() }
     }
-    
+
     func delete(entity: T) async throws {
         let entityId = entity.id
-        
+
         do {
-            // Fetch all DTOs and find the matching one
             let allDTOs: [T.DTO] = try await manager.fetchAll()
-            
-            // Find the DTO with matching ID
-            guard let dtoToDelete = allDTOs.first(where: { dto in
-                let domainEntity = dto.toDomain()
-                if let identifiable = domainEntity as? any Identifiable {
-                    return (identifiable.id as? UUID) == entityId
-                }
-                return false
-            }) else {
+
+            guard let dtoToDelete = allDTOs.first(where: { $0.toDomain().id == entityId }) else {
                 let entityType = String(describing: T.self)
                 logger.debug("No DTO found to delete for entity of type: \(entityType), id: \(entityId)")
                 return
             }
-            
+
             try await manager.delete(dtoToDelete)
             logger.info("Successfully deleted entity of type: \(String(describing: T.self)), id: \(entityId)")
         } catch {

@@ -135,6 +135,12 @@
 		DEF951AB2A27E0C800D80381 /* ExerciseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951AA2A27E0C800D80381 /* ExerciseCardView.swift */; };
 		DEF951AD2A27E12300D80381 /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF951AC2A27E12300D80381 /* EditView.swift */; };
 		F032F7635E3744C0A7321770 /* ExerciseForce.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3C2F7E665B48539B14929A /* ExerciseForce.swift */; };
+		DE2026051901000000000002 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026051901000000000001 /* FeatureFlags.swift */; };
+		DE2026051901000000000004 /* UserExerciseLibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026051901000000000003 /* UserExerciseLibraryRepository.swift */; };
+		DE2026051901000000000006 /* EditExerciseDefinitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026051901000000000005 /* EditExerciseDefinitionView.swift */; };
+		DE2026051901000000000008 /* ExerciseLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026051901000000000007 /* ExerciseLibraryPicker.swift */; };
+		DE2026052001000000000002 /* EditExerciseDefinitionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026052001000000000001 /* EditExerciseDefinitionViewModel.swift */; };
+		DE2026052001000000000004 /* ExerciseLibraryPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026052001000000000003 /* ExerciseLibraryPickerViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -268,6 +274,12 @@
 		DEF951AC2A27E12300D80381 /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 		F4B2B886029C4C6AAB52D4B7 /* ExerciseDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseDefinition.swift; sourceTree = "<group>"; };
 		F7D4726D412847A6AAF6DFF1 /* WatchNavigationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNavigationRoutes.swift; sourceTree = "<group>"; };
+		DE2026051901000000000001 /* FeatureFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
+		DE2026051901000000000003 /* UserExerciseLibraryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExerciseLibraryRepository.swift; sourceTree = "<group>"; };
+		DE2026051901000000000005 /* EditExerciseDefinitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExerciseDefinitionView.swift; sourceTree = "<group>"; };
+		DE2026051901000000000007 /* ExerciseLibraryPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryPicker.swift; sourceTree = "<group>"; };
+		DE2026052001000000000001 /* EditExerciseDefinitionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExerciseDefinitionViewModel.swift; sourceTree = "<group>"; };
+		DE2026052001000000000003 /* ExerciseLibraryPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseLibraryPickerViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -575,6 +587,7 @@
 				DE012DEB2A01944A0071601B /* Font + Extension.swift */,
 				DEDFC2F02A0AC6B300E736E0 /* HKWorkout + Extensions.swift */,
 				DEDFC2F92A0B83F300E736E0 /* Constants.swift */,
+				DE2026051901000000000001 /* FeatureFlags.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -636,6 +649,7 @@
 				DEE2FBF42A1A4AF80062437A /* WorkoutRepository.swift */,
 				DEDC056D2A3F69E5007E90B4 /* ExerciseRepository.swift */,
 				2A70369596A341398F99629A /* ExerciseDefinitionRepository.swift */,
+				DE2026051901000000000003 /* UserExerciseLibraryRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -676,6 +690,10 @@
 				DEF951AC2A27E12300D80381 /* EditView.swift */,
 				DE63022A2A2B32DC00BA5E54 /* AddExerciseView.swift */,
 				7F39C58C85634BAE83B66B49 /* ExerciseDefinitionDetailView.swift */,
+				DE2026051901000000000007 /* ExerciseLibraryPicker.swift */,
+				DE2026052001000000000003 /* ExerciseLibraryPickerViewModel.swift */,
+				DE2026051901000000000005 /* EditExerciseDefinitionView.swift */,
+				DE2026052001000000000001 /* EditExerciseDefinitionViewModel.swift */,
 			);
 			path = WorkoutTemplateBuilder;
 			sourceTree = "<group>";
@@ -920,6 +938,12 @@
 				DEA0AE00000000000000000C /* AuthenticationViewModel.swift in Sources */,
 				DEA0AE000000000000000010 /* ProfileView.swift in Sources */,
 				DEA0AE000000000000000012 /* ProfileViewModel.swift in Sources */,
+				DE2026051901000000000002 /* FeatureFlags.swift in Sources */,
+				DE2026051901000000000004 /* UserExerciseLibraryRepository.swift in Sources */,
+				DE2026051901000000000006 /* EditExerciseDefinitionView.swift in Sources */,
+				DE2026051901000000000008 /* ExerciseLibraryPicker.swift in Sources */,
+				DE2026052001000000000002 /* EditExerciseDefinitionViewModel.swift in Sources */,
+				DE2026052001000000000004 /* ExerciseLibraryPickerViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,7 +15,9 @@ protocol DependencyContainerProtocol {
     var watchCommunicator: any WatchCommunicatorProtocol { get }
     var exerciseRepository: any ExerciseRepositoryProtocol { get }
     var workoutTemplateRepository: any WorkoutRepository { get }
+    // Kept registered for one-line flip-back via `FeatureFlags.useRemoteExerciseCatalog`.
     var exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol { get }
+    var userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol { get }
     var authService: any AuthServiceProtocol { get }
 }
 
@@ -28,6 +30,7 @@ struct DependencyContainer: DependencyContainerProtocol {
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
     let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
+    let userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol
     let authService: any AuthServiceProtocol
 
     static func live() -> DependencyContainer {
@@ -41,6 +44,7 @@ struct DependencyContainer: DependencyContainerProtocol {
         )
         let apiClient = APIClient(baseURL: Constants.apiBaseURL)
         let exerciseDefinitionRepository = ExerciseDefinitionRepository(apiClient: apiClient)
+        let userExerciseLibraryRepository = UserExerciseLibraryRepository()
         let authService = FirebaseAuthService()
 
         return DependencyContainer(
@@ -50,6 +54,7 @@ struct DependencyContainer: DependencyContainerProtocol {
             exerciseRepository: exerciseRepository,
             workoutTemplateRepository: workoutTemplateRepository,
             exerciseDefinitionRepository: exerciseDefinitionRepository,
+            userExerciseLibraryRepository: userExerciseLibraryRepository,
             authService: authService
         )
     }
@@ -75,6 +80,7 @@ struct MockedDependencyContainer: DependencyContainerProtocol {
     let exerciseRepository: any ExerciseRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
     let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
+    let userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol
     let authService: any AuthServiceProtocol
 
     init() {
@@ -85,6 +91,7 @@ struct MockedDependencyContainer: DependencyContainerProtocol {
         self.healthKitManager = MockedHealthKitManager()
         self.watchCommunicator = MockedWatchCommunicator()
         self.exerciseDefinitionRepository = MockedExerciseDefinitionRepository()
+        self.userExerciseLibraryRepository = MockedUserExerciseLibraryRepository()
         self.authService = MockAuthService()
     }
 }
