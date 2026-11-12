@@ -7,105 +7,61 @@
 
 import SwiftUI
 
+// MARK: - WorkoutTemplateCardView
+/// A workout template as a card: name, the muscles it trains, counts and an exercise preview.
 struct WorkoutTemplateCardView: View {
 
+    // MARK: - Properties
     let workout: Workout
 
-    private let cardCornerRadius: CGFloat = 14
-    private let maxVisibleExercises = 4
-
+    // MARK: - Body
     var body: some View {
-        HStack(spacing: 0) {
-            AccentBar()
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(workout.name)
+                    .font(.title3)
+                    .bold()
+                    .foregroundStyle(Color.onSurface)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: 6) {
-                CardHeader(
-                    title: workout.name,
-                    exerciseCount: workout.exercises.count
-                )
+                Image(systemName: "chevron.right")
+                    .font(.footnote.bold())
+                    .foregroundStyle(.tertiary)
+            }
 
-                if !workout.exercises.isEmpty {
-                    ExerciseSummary(
-                        exercises: workout.exercises,
-                        maxVisible: maxVisibleExercises
-                    )
+            let muscles = workout.topMuscles()
+            if !muscles.isEmpty {
+                FlowLayout(spacing: 6) {
+                    ForEach(muscles, id: \.self) { muscle in
+                        PillView(text: muscle.displayName, style: .accent, isMonospaced: false)
+                    }
                 }
             }
-            .padding(.vertical, 14)
-            .padding(.horizontal, 14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .background(Color.surface)
-        .clipShape(.rect(cornerRadius: cardCornerRadius))
-    }
-}
 
-// MARK: - Accent Bar
-
-private struct AccentBar: View {
-    var body: some View {
-        Color.primaryColor
-            .frame(width: 4)
-    }
-}
-
-// MARK: - Card Header
-
-private struct CardHeader: View {
-    let title: String
-    let exerciseCount: Int
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(Color.onSurface)
-                .lineLimit(2)
-
-            Text(exerciseCountText)
-                .font(.subheadline)
+            Text(workout.countsSummary)
+                .font(.subheadline.monospacedDigit())
                 .foregroundStyle(.secondary)
-        }
-    }
 
-    private var exerciseCountText: String {
-        "\(exerciseCount) \(exerciseCount == 1 ? "exercise" : "exercises")"
+            if !workout.exercises.isEmpty {
+                Text(workout.exercisePreview())
+                    .font(.footnote)
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+            }
+        }
+        .cardStyle()
+        .accessibilityElement(children: .combine)
     }
 }
 
-// MARK: - Exercise Summary
-
-private struct ExerciseSummary: View {
-    let exercises: [Exercise]
-    let maxVisible: Int
-
-    var body: some View {
-        Text(summaryText)
-            .font(.footnote)
-            .foregroundStyle(.tertiary)
-            .lineLimit(1)
-    }
-
-    private var summaryText: String {
-        let visible = exercises.prefix(maxVisible).map(\.name)
-        let remaining = exercises.count - maxVisible
-
-        if remaining > 0 {
-            return visible.joined(separator: ", ") + " +\(remaining)"
-        }
-        return visible.joined(separator: ", ")
-    }
-}
-
+// MARK: - Previews
 #Preview {
-    ZStack {
-        Color.background
-            .ignoresSafeArea()
-
-        VStack(spacing: 12) {
-            WorkoutTemplateCardView(workout: .mockedWorkoutTemplate)
-            WorkoutTemplateCardView(workout: .mockedWorkoutTemplate)
-        }
-        .padding()
+    VStack(spacing: 12) {
+        WorkoutTemplateCardView(workout: .mockedWorkoutTemplate)
+        WorkoutTemplateCardView(workout: .mockedWorkoutTemplate2())
     }
+    .padding()
+    .frame(maxHeight: .infinity)
+    .background(Color.background)
 }
