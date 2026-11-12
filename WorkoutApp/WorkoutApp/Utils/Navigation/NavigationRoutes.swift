@@ -20,20 +20,7 @@ struct WorkoutRoute: Hashable {
     }
 }
 
-/// Navigation route for Workout Template Builder screen
-struct WorkoutTemplateBuilderRoute: Hashable {
-    let workout: Workout?
-
-    init(workout: Workout? = nil) {
-        self.workout = workout
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(workout?.id)
-    }
-
-    static func == (lhs: WorkoutTemplateBuilderRoute, rhs: WorkoutTemplateBuilderRoute) -> Bool {
-        lhs.workout?.id == rhs.workout?.id
-    }
+/// Navigation route for the read-only Workout Template Detail screen
+struct WorkoutTemplateDetailRoute: Hashable {
+    let workoutId: UUID
 }
-

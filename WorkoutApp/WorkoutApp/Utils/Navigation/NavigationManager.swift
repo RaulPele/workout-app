@@ -42,15 +42,13 @@ class WorkoutSessionsNavigationManager: NavigationManager {}
 
 /// Navigation manager for Workout Templates tab
 @Observable
-class WorkoutTemplatesNavigationManager: NavigationManager {
+class WorkoutTemplatesNavigationManager: NavigationManager {}
 
-    enum Screens {
-        case workoutsList
-        case workoutsBuilderView(Workout?)
-    }
-}
+/// Navigation manager for Exercises tab
+@Observable
+class ExercisesNavigationManager: NavigationManager {}
 
-/// Navigation manager for Profile tab
+/// Navigation manager for Profile (shown as a sheet from the Workouts tab)
 @Observable
 class ProfileNavigationManager: NavigationManager {}
 

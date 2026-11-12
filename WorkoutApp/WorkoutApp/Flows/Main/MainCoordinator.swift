@@ -9,90 +9,81 @@ import Foundation
 import SwiftUI
 
 struct MainCoordinatorView: View {
-    
+
     @Environment(\.dependencyContainer) private var dependencyContainer
-    
-    @State private var selectedTab: TabBarItem = .workoutSessions
-    @State private var workoutSessionsNavigationManager = WorkoutSessionsNavigationManager()
+
+    @State private var selectedTab: TabBarItem = .workouts
     @State private var workoutTemplatesNavigationManager = WorkoutTemplatesNavigationManager()
-    @State private var profileNavigationManager = ProfileNavigationManager()
+    @State private var exercisesNavigationManager = ExercisesNavigationManager()
+    @State private var historyNavigationManager = WorkoutSessionsNavigationManager()
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab(value: TabBarItem.workoutSessions) {
-                NavigationStack(path: $workoutSessionsNavigationManager.path) {
-                    HomeWrapper(
-                        workoutRepository: dependencyContainer.workoutRepository,
-                        healthKitManager: dependencyContainer.healthKitManager,
-                        navigationManager: workoutSessionsNavigationManager
-                    )
-                }
-            } label: {
-                Label(TabBarItem.workoutSessions.title, systemImage: "dumbbell")
-            }
-            Tab(value: TabBarItem.workoutTemplates) {
+            Tab(TabBarItem.workouts.title, systemImage: TabBarItem.workouts.systemImage, value: .workouts) {
                 NavigationStack(path: $workoutTemplatesNavigationManager.path) {
                     WorkoutTemplatesListWrapper(
-                        exerciseRepository: dependencyContainer.exerciseRepository,
-                        exerciseDefinitionRepository: dependencyContainer.exerciseDefinitionRepository,
-                        userExerciseLibraryRepository: dependencyContainer.userExerciseLibraryRepository,
                         workoutTemplateRepository: dependencyContainer.workoutTemplateRepository,
                         navigationManager: workoutTemplatesNavigationManager
                     )
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            ProfileButton(authService: dependencyContainer.authService)
+                        }
+                    }
                 }
-            } label: {
-                Label(TabBarItem.workoutTemplates.title, systemImage: "list.bullet.clipboard")
             }
-            Tab(value: TabBarItem.profile) {
-                NavigationStack(path: $profileNavigationManager.path) {
-                    ProfileWrapper(authService: dependencyContainer.authService)
+
+            Tab(TabBarItem.exercises.title, systemImage: TabBarItem.exercises.systemImage, value: .exercises) {
+                NavigationStack(path: $exercisesNavigationManager.path) {
+                    ExerciseLibraryWrapper(
+                        libraryRepository: dependencyContainer.userExerciseLibraryRepository,
+                        navigationManager: exercisesNavigationManager
+                    )
                 }
-            } label: {
-                Label(TabBarItem.profile.title, systemImage: "person.crop.circle")
+            }
+
+            Tab(TabBarItem.history.title, systemImage: TabBarItem.history.systemImage, value: .history) {
+                NavigationStack(path: $historyNavigationManager.path) {
+                    HistoryWrapper(
+                        workoutRepository: dependencyContainer.workoutRepository,
+                        navigationManager: historyNavigationManager
+                    )
+                }
             }
         }
         .tint(Color.primaryColor)
     }
 }
 
-private struct HomeWrapper: View {
-    let workoutRepository: any WorkoutSessionRepository
-    let healthKitManager: any HealthKitManagerProtocol
-    let navigationManager: WorkoutSessionsNavigationManager
-    @State private var viewModel: Home.ViewModel
+// MARK: - HistoryWrapper
+private struct HistoryWrapper: View {
+    @State private var viewModel: HistoryViewModel
+    @Namespace private var transitionNamespace
 
-    init(workoutRepository: any WorkoutSessionRepository, healthKitManager: any HealthKitManagerProtocol, navigationManager: WorkoutSessionsNavigationManager) {
-        self.workoutRepository = workoutRepository
-        self.healthKitManager = healthKitManager
-        self.navigationManager = navigationManager
-        self._viewModel = State(wrappedValue: Home.ViewModel(
+    init(workoutRepository: any WorkoutSessionRepository, navigationManager: WorkoutSessionsNavigationManager) {
+        self._viewModel = State(wrappedValue: HistoryViewModel(
             workoutRepository: workoutRepository,
-            healthKitManager: healthKitManager,
             navigationManager: navigationManager
         ))
     }
 
     var body: some View {
-        Home.ContentView(viewModel: viewModel)
+        HistoryView(viewModel: viewModel, transitionNamespace: transitionNamespace)
             .navigationDestination(for: WorkoutRoute.self) { route in
-                WorkoutDetails.ContentView(viewModel: WorkoutDetails.ViewModel(session: route.workout))
+                SessionDetailView(viewModel: SessionDetailViewModel(session: route.workout))
+                    .navigationTransition(.zoom(sourceID: route.workout.id, in: transitionNamespace))
             }
     }
 }
 
+// MARK: - WorkoutTemplatesListWrapper
 private struct WorkoutTemplatesListWrapper: View {
-
-    let exerciseRepository: any ExerciseRepositoryProtocol
-    let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
-    let userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol
     let workoutTemplateRepository: any WorkoutRepository
     let navigationManager: WorkoutTemplatesNavigationManager
     @State private var viewModel: WorkoutTemplatesList.ViewModel
+    @Namespace private var transitionNamespace
 
-    init(exerciseRepository: any ExerciseRepositoryProtocol, exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol, userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager) {
-        self.exerciseRepository = exerciseRepository
-        self.exerciseDefinitionRepository = exerciseDefinitionRepository
-        self.userExerciseLibraryRepository = userExerciseLibraryRepository
+    init(workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager) {
         self.workoutTemplateRepository = workoutTemplateRepository
         self.navigationManager = navigationManager
         self._viewModel = State(wrappedValue: WorkoutTemplatesList.ViewModel(
@@ -102,52 +93,72 @@ private struct WorkoutTemplatesListWrapper: View {
     }
 
     var body: some View {
-        WorkoutTemplatesList.ContentView(viewModel: viewModel)
-            .navigationDestination(for: WorkoutTemplateBuilderRoute.self) { route in
-                WorkoutTemplateBuilderWrapper(
-                    exerciseRepository: exerciseRepository,
-                    exerciseDefinitionRepository: exerciseDefinitionRepository,
-                    userExerciseLibraryRepository: userExerciseLibraryRepository,
+        WorkoutTemplatesList.ContentView(viewModel: viewModel, transitionNamespace: transitionNamespace)
+            .navigationDestination(for: WorkoutTemplateDetailRoute.self) { route in
+                WorkoutTemplateDetailWrapper(
+                    route: route,
                     workoutTemplateRepository: workoutTemplateRepository,
-                    navigationManager: navigationManager,
-                    route: route
+                    navigationManager: navigationManager
                 )
+                .navigationTransition(.zoom(sourceID: route.workoutId, in: transitionNamespace))
             }
     }
 }
 
-private struct WorkoutTemplateBuilderWrapper: View {
-    let exerciseRepository: any ExerciseRepositoryProtocol
-    let exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol
-    let userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol
-    let workoutTemplateRepository: any WorkoutRepository
-    let navigationManager: WorkoutTemplatesNavigationManager
-    @State private var viewModel: WorkoutTemplateBuilder.ViewModel
+// MARK: - WorkoutTemplateDetailWrapper
+private struct WorkoutTemplateDetailWrapper: View {
+    @State private var viewModel: WorkoutTemplateDetailViewModel
 
-    init(exerciseRepository: any ExerciseRepositoryProtocol, exerciseDefinitionRepository: any ExerciseDefinitionRepositoryProtocol, userExerciseLibraryRepository: any UserExerciseLibraryRepositoryProtocol, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager, route: WorkoutTemplateBuilderRoute) {
-        self.exerciseRepository = exerciseRepository
-        self.exerciseDefinitionRepository = exerciseDefinitionRepository
-        self.userExerciseLibraryRepository = userExerciseLibraryRepository
-        self.workoutTemplateRepository = workoutTemplateRepository
-        self.navigationManager = navigationManager
-        self._viewModel = State(wrappedValue: WorkoutTemplateBuilder.ViewModel(
-            exerciseRepository: exerciseRepository,
-            exerciseDefinitionRepository: exerciseDefinitionRepository,
-            userExerciseLibraryRepository: userExerciseLibraryRepository,
-            workoutTemplateRepository: workoutTemplateRepository,
-            navigationManager: navigationManager,
-            workout: route.workout
+    init(route: WorkoutTemplateDetailRoute, workoutTemplateRepository: any WorkoutRepository, navigationManager: WorkoutTemplatesNavigationManager) {
+        self._viewModel = State(wrappedValue: WorkoutTemplateDetailViewModel(
+            workoutId: route.workoutId,
+            workoutRepository: workoutTemplateRepository,
+            navigationManager: navigationManager
         ))
     }
 
     var body: some View {
-        WorkoutTemplateBuilder.ContentView(viewModel: viewModel)
+        WorkoutTemplateDetailView(viewModel: viewModel)
     }
 }
 
-private struct ProfileWrapper: View {
+// MARK: - ExerciseLibraryWrapper
+private struct ExerciseLibraryWrapper: View {
+    @State private var viewModel: ExerciseLibraryViewModel
+
+    init(libraryRepository: any UserExerciseLibraryRepositoryProtocol, navigationManager: ExercisesNavigationManager) {
+        self._viewModel = State(initialValue: ExerciseLibraryViewModel(
+            libraryRepository: libraryRepository,
+            navigationManager: navigationManager
+        ))
+    }
+
+    var body: some View {
+        ExerciseLibraryView(viewModel: viewModel)
+    }
+}
+
+// MARK: - ProfileButton
+/// Account button for the Workouts toolbar. Profile isn't a tab in v1; it opens as a sheet.
+private struct ProfileButton: View {
+    let authService: any AuthServiceProtocol
+    @State private var isPresented = false
+
+    var body: some View {
+        Button("Account", systemImage: "person.crop.circle") {
+            isPresented = true
+        }
+        .sheet(isPresented: $isPresented) {
+            ProfileSheet(authService: authService)
+        }
+    }
+}
+
+// MARK: - ProfileSheet
+private struct ProfileSheet: View {
     let authService: any AuthServiceProtocol
     @State private var viewModel: Profile.ContentView.ViewModel
+    @Environment(\.dismiss) private var dismiss
 
     init(authService: any AuthServiceProtocol) {
         self.authService = authService
@@ -155,23 +166,38 @@ private struct ProfileWrapper: View {
     }
 
     var body: some View {
-        Profile.ContentView(viewModel: viewModel)
+        NavigationStack {
+            Profile.ContentView(viewModel: viewModel)
+                .navigationTitle("Account")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
+                    }
+                }
+        }
     }
 }
 
+// MARK: - TabBarItem
 enum TabBarItem: String, CaseIterable, Hashable {
-    case workoutSessions
-    case workoutTemplates
-    case profile
+    case workouts
+    case exercises
+    case history
 
     var title: String {
         switch self {
-        case .workoutSessions:
-            return "Sessions"
-        case .workoutTemplates:
-            return "Workouts"
-        case .profile:
-            return "Profile"
+        case .workouts: "Workouts"
+        case .exercises: "Exercises"
+        case .history: "History"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .workouts: "dumbbell"
+        case .exercises: "figure.strengthtraining.traditional"
+        case .history: "clock.arrow.circlepath"
         }
     }
 }
