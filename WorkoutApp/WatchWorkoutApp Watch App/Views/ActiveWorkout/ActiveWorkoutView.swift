@@ -9,7 +9,6 @@ import WatchKit
 struct ActiveWorkoutView: View {
 
     // MARK: - Properties
-    @Environment(WorkoutManager.self) private var workoutManager
     @Environment(\.isLuminanceReduced) private var isLuminanceReduced
     @State private var viewModel: ActiveWorkoutViewModel
     @State private var horizontalSelection: HorizontalTab = .content
@@ -21,8 +20,10 @@ struct ActiveWorkoutView: View {
     }
 
     // MARK: - Initializers
-    init(workout: Workout) {
-        _viewModel = State(wrappedValue: ActiveWorkoutViewModel(workout: workout))
+    init(template: Workout, workoutManager: WorkoutManager) {
+        _viewModel = State(
+            initialValue: ActiveWorkoutViewModel(template: template, workoutManager: workoutManager)
+        )
     }
 
     // MARK: - Body
@@ -32,7 +33,7 @@ struct ActiveWorkoutView: View {
                 ControlsView()
             }
             Tab(value: HorizontalTab.content) {
-                SessionContentView(viewModel: viewModel, onFinishWorkout: handleFinishWorkout)
+                SessionContentView(viewModel: viewModel.exerciseTracking)
             }
             Tab(value: HorizontalTab.nowPlaying) {
                 NowPlayingView()
@@ -42,10 +43,9 @@ struct ActiveWorkoutView: View {
         .navigationBarBackButtonHidden(true)
         .layoutPriority(1)
         .task {
-            WKInterfaceDevice.current().play(.start)
-            await workoutManager.startWorkout(template: viewModel.workout)
+            await viewModel.start()
         }
-        .onChange(of: workoutManager.running) { _, _ in
+        .onChange(of: viewModel.isRunning) { _, _ in
             withAnimation {
                 horizontalSelection = .content
             }
@@ -58,21 +58,13 @@ struct ActiveWorkoutView: View {
             }
         }
     }
-
-    // MARK: - Private Methods
-    private func handleFinishWorkout() {
-        workoutManager.finishWorkout(
-            performedExercises: viewModel.performedExercises
-        )
-    }
 }
 
 // MARK: - SessionContentView
 private struct SessionContentView: View {
 
     // MARK: - Properties
-    @Bindable var viewModel: ActiveWorkoutViewModel
-    let onFinishWorkout: () -> Void
+    let viewModel: ExerciseTrackingViewModel
     @State private var verticalSelection: VerticalTab = .exercise
 
     private enum VerticalTab {
@@ -85,7 +77,7 @@ private struct SessionContentView: View {
         VStack(spacing: 0) {
             TabView(selection: $verticalSelection) {
                 Tab(value: VerticalTab.exercise) {
-                    ExerciseTrackingView(viewModel: viewModel, onFinishWorkout: onFinishWorkout)
+                    ExerciseTrackingView(viewModel: viewModel)
                 }
                 Tab(value: VerticalTab.metrics) {
                     MetricsPageView()

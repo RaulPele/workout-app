@@ -8,6 +8,7 @@
 import Foundation
 import HealthKit
 import Combine
+import WatchKit
 
 @MainActor @Observable
 class WorkoutManager: NSObject {
@@ -36,11 +37,9 @@ class WorkoutManager: NSObject {
 
     // MARK: - Workout exercises
     var workoutTemplates = [Workout]()
-    private(set) var activeWorkoutTemplate: Workout?
-    private(set) var workoutSession: WorkoutSession?
-
-    // MARK: - Internal State
-    private var pendingPerformedExercises: [PerformedExercise] = []
+    /// Progress of the active workout. Owned here, not by a view, so every end path
+    /// can save the logged exercises.
+    private(set) var progress: WorkoutProgress?
 
     // MARK: - Workout metrics
     private(set) var workout: HKWorkout?
@@ -116,13 +115,29 @@ class WorkoutManager: NSObject {
         session?.resume()
     }
 
+    /// Ends the workout. Every end (Controls, the last set, or the system ending the
+    /// session) saves `progress.exercisesToSave` once the session reports `.ended`.
     func endWorkout() {
         session?.end()
     }
 
-    func finishWorkout(performedExercises: [PerformedExercise]) {
-        self.pendingPerformedExercises = performedExercises
-        endWorkout()
+    // MARK: - Exercise Tracking
+    /// Logs a set for the current exercise and ends the workout after its final set.
+    func logSet(reps: Int, weight: Double) {
+        guard let outcome = progress?.logSet(reps: reps, weight: weight, at: .now) else { return }
+        if outcome == .workoutComplete {
+            endWorkout()
+        }
+    }
+
+    func finishRest() {
+        guard progress?.isResting == true else { return }
+        progress?.finishRest(at: .now)
+        WKInterfaceDevice.current().play(.start)
+    }
+
+    func swapCurrentExercise(with exercise: Exercise) {
+        progress?.swapCurrentExercise(with: exercise)
     }
 
     func loadWorkoutTemplates() async {
@@ -141,7 +156,8 @@ class WorkoutManager: NSObject {
     }
 
     func startWorkout(template: Workout) async {
-        activeWorkoutTemplate = template
+        let startDate = Date()
+        progress = WorkoutProgress(template: template, startDate: startDate)
 
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = .traditionalStrengthTraining
@@ -160,17 +176,10 @@ class WorkoutManager: NSObject {
 
         builder?.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: configuration)
 
-        let startDate = Date()
         session?.startActivity(with: startDate)
 
         do {
             try await builder?.beginCollection(at: startDate)
-
-            workoutSession = WorkoutSession(
-                id: UUID(),
-                workoutTemplate: template,
-                performedExercises: []
-            )
         } catch {
             logger.error("Error in builder's beginCollection method: \(error.localizedDescription)")
         }
@@ -178,12 +187,10 @@ class WorkoutManager: NSObject {
 
     // MARK: - Private Methods
     private func resetWorkout() {
-        activeWorkoutTemplate = nil
         builder = nil
         session = nil
         workout = nil
-        workoutSession = nil
-        pendingPerformedExercises = []
+        progress = nil
 
         activeEnergyBurned = 0
         averageHeartRate = 0
@@ -208,19 +215,23 @@ class WorkoutManager: NSObject {
 
             self.workout = workout
 
-            workoutSession?.id = workout?.uuid ?? .init()
-            workoutSession?.activeCalories = workout?.activeEnergyBurned
-            workoutSession?.averageHeartRate = workout?.averageHeartRate
-            workoutSession?.totalCalories = workout?.totalCalories
-            workoutSession?.duration = workout?.duration
-            workoutSession?.performedExercises = pendingPerformedExercises
-            workoutSession?.endDate = endDate
-            workoutSession?.startDate = workout?.startDate
-            workoutSession?.title = workout?.startDate.toMMMdd()
+            if let progress {
+                var workoutSession = WorkoutSession(
+                    id: workout?.uuid ?? UUID(),
+                    workoutTemplate: progress.template,
+                    performedExercises: progress.exercisesToSave
+                )
+                workoutSession.activeCalories = workout?.activeEnergyBurned
+                workoutSession.averageHeartRate = workout?.averageHeartRate
+                workoutSession.totalCalories = workout?.totalCalories
+                workoutSession.duration = workout?.duration
+                workoutSession.endDate = endDate
+                workoutSession.startDate = workout?.startDate
+                workoutSession.title = workout?.startDate.toMMMdd()
 
-            guard let wkSession = workoutSession else { return }
-            logger.info("Sent workout session with id: \(wkSession.id) to phone")
-            phoneCommunicator.send(workoutSession: wkSession)
+                logger.info("Sent workout session with id: \(workoutSession.id) and \(workoutSession.performedExercises.count) exercises to phone")
+                phoneCommunicator.send(workoutSession: workoutSession)
+            }
 
             showingSummaryView = true
         } catch {
@@ -228,6 +239,18 @@ class WorkoutManager: NSObject {
         }
     }
 }
+
+// MARK: - Previews
+#if DEBUG
+extension WorkoutManager {
+    /// A manager with an in-progress workout and no HealthKit session, for previews.
+    static func preview(progress: WorkoutProgress?) -> WorkoutManager {
+        let workoutManager = WorkoutManager(phoneCommunicator: MockedPhoneCommunicator())
+        workoutManager.progress = progress
+        return workoutManager
+    }
+}
+#endif
 
 // MARK: - HKWorkoutSessionDelegate
 extension WorkoutManager: HKWorkoutSessionDelegate {

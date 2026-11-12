@@ -9,91 +9,73 @@ import WatchKit
 struct ExerciseTrackingView: View {
 
     // MARK: - Properties
-    @Bindable var viewModel: ActiveWorkoutViewModel
-    let onFinishWorkout: () -> Void
-
-    private var trackingVM: ExerciseTrackingViewModel {
-        viewModel.exerciseTrackingViewModel
-    }
+    @Bindable var viewModel: ExerciseTrackingViewModel
 
     // MARK: - Body
     var body: some View {
         ZStack {
-            switch trackingVM.phase {
-            case .active:
-                exerciseMainView
+            if viewModel.exercise == nil {
+                NoExercisesView()
                     .scenePadding()
-                    .transition(.opacity)
+            } else {
+                switch viewModel.phase {
+                case .active:
+                    SetActionsView(viewModel: viewModel)
+                        .scenePadding()
+                        .transition(.opacity)
 
-            case .resting:
-                RestTimerView(viewModel: trackingVM)
-                    .scenePadding()
-                    .transition(.opacity)
-
-            case .exerciseComplete:
-                EmptyView()
+                case .resting:
+                    RestTimerView(viewModel: viewModel)
+                        .scenePadding()
+                        .transition(.opacity)
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .animation(.easeInOut(duration: 0.3), value: trackingVM.phase)
-        .navigationTitle(trackingVM.phase == .resting ? "" : trackingVM.exercise.name)
-        .toolbar(trackingVM.phase == .resting ? .hidden : .automatic, for: .navigationBar)
-        .onChange(of: trackingVM.phase) { _, newPhase in
-            guard case .exerciseComplete = newPhase else { return }
-            let isLast = viewModel.isLastExercise
-            let performed = trackingVM.finishExercise()
-            viewModel.completeExercise(performed)
-            WKInterfaceDevice.current().play(.success)
-            if isLast {
-                onFinishWorkout()
-            }
+        .animation(.easeInOut(duration: 0.3), value: viewModel.phase)
+        .navigationTitle(viewModel.phase == .resting ? "" : viewModel.exercise?.name ?? "")
+        .toolbar(viewModel.phase == .resting ? .hidden : .automatic, for: .navigationBar)
+        .sheet(isPresented: $viewModel.showingLogSheet, onDismiss: viewModel.logSheetDidDismiss) {
+            SetInputSheet(viewModel: viewModel)
         }
-        .sheet(isPresented: Bindable(trackingVM).showingLogSheet) {
-            SetInputSheet(viewModel: trackingVM)
-        }
-        .sheet(isPresented: Bindable(trackingVM).showingSwapSheet) {
+        .sheet(isPresented: $viewModel.showingSwapSheet) {
             SwapExerciseSheet(
                 exercises: viewModel.remainingExercises,
-                onSelect: { exercise in
-                    trackingVM.showingSwapSheet = false
-                    viewModel.swapExercise(with: exercise)
-                }
+                onSelect: viewModel.swap(to:)
             )
         }
-
     }
+}
 
-    // MARK: - Private Views
-    @ViewBuilder
-    private var exerciseMainView: some View {
+// MARK: - SetActionsView
+private struct SetActionsView: View {
+
+    let viewModel: ExerciseTrackingViewModel
+
+    var body: some View {
         VStack(spacing: 16) {
-            Text("Set \(trackingVM.currentSet) of \(trackingVM.totalSets)")
+            Text("Set \(viewModel.currentSet) of \(viewModel.totalSets)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            let canSwap = !viewModel.remainingExercises.isEmpty && trackingVM.performedSets.isEmpty
-
             HStack(spacing: 20) {
-                if canSwap {
+                if viewModel.canSwap {
                     actionButton(
                         icon: "checkmark",
                         label: "End",
-                        color: Color.primaryColor
-                    ) {
-                        trackingVM.showingLogSheet = true
-                    }
+                        color: Color.primaryColor,
+                        action: viewModel.openLogSheet
+                    )
 
                     actionButton(
                         icon: "arrow.triangle.2.circlepath",
                         label: "Swap",
                         color: .secondary
                     ) {
-                        trackingVM.showingSwapSheet = true
+                        viewModel.showingSwapSheet = true
                     }
                 } else {
-                    Button {
-                        trackingVM.showingLogSheet = true
-                    } label: {
+                    Button(action: viewModel.openLogSheet) {
                         Text("End")
                             .font(.title3)
                             .fontWeight(.semibold)
@@ -117,6 +99,22 @@ struct ExerciseTrackingView: View {
             Text(label)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
+        }
+    }
+}
+
+// MARK: - NoExercisesView
+private struct NoExercisesView: View {
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Text("No Exercises")
+                .font(.headline)
+
+            Text("End the workout from the controls page.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
     }
 }
@@ -228,48 +226,30 @@ private struct SwapExerciseSheet: View {
 // MARK: - Previews
 #if DEBUG
 @MainActor
-private func previewTrackingView(
-    workout: Workout = .mockedWorkoutTemplate,
-    phase: ExercisePhase = .active,
-    currentSet: Int = 1,
-    performedSets: [PerformedSet] = []
-) -> some View {
-    let trackingVM = ExerciseTrackingViewModel(
-        exercise: workout.exercises[0],
-        phase: phase,
-        currentSet: currentSet,
-        performedSets: performedSets
-    )
-    let vm = ActiveWorkoutViewModel(workout: workout, exerciseTrackingViewModel: trackingVM)
+private func previewTrackingView(completedSets: Int = 0, resting: Bool = false) -> some View {
+    var progress = WorkoutProgress(template: .mockedWorkoutTemplate, startDate: .now)
+    for _ in 0..<completedSets {
+        _ = progress.logSet(reps: 5, weight: 70, at: .now)
+        progress.finishRest(at: .now)
+    }
+    if resting {
+        _ = progress.logSet(reps: 12, weight: 60, at: .now)
+    }
+    let workoutManager = WorkoutManager.preview(progress: progress)
 
-    return ExerciseTrackingView(
-        viewModel: vm,
-        onFinishWorkout: {}
-    )
-    .environment(WorkoutManager(phoneCommunicator: MockedPhoneCommunicator()))
+    return ExerciseTrackingView(viewModel: ExerciseTrackingViewModel(workoutManager: workoutManager))
+        .environment(workoutManager)
 }
 
 #Preview("Active - Set 1") {
     previewTrackingView()
 }
 
-#Preview("Active - Set 3 of 4") {
-    let sets = (1...2).map { _ in
-        PerformedSet(id: UUID(), set: ExerciseSet.mockedBBSquats, reps: 5, weight: 70, restTime: 90)
-    }
-    return previewTrackingView(
-        phase: .active,
-        currentSet: 3,
-        performedSets: sets
-    )
+#Preview("Active - Set 2") {
+    previewTrackingView(completedSets: 1)
 }
 
 #Preview("Rest Timer") {
-    let set = PerformedSet(id: UUID(), set: ExerciseSet.mockedBBBenchPress, reps: 12, weight: 60, restTime: 0)
-    return previewTrackingView(
-        phase: .resting,
-        currentSet: 1,
-        performedSets: [set]
-    )
+    previewTrackingView(resting: true)
 }
 #endif

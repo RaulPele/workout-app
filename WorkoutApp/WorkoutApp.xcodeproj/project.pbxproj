@@ -130,6 +130,8 @@
 		F032F7635E3744C0A7321770 /* ExerciseForce.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3C2F7E665B48539B14929A /* ExerciseForce.swift */; };
 		DE2026051901000000000002 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026051901000000000001 /* FeatureFlags.swift */; };
 		DE2026051901000000000004 /* UserExerciseLibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026051901000000000003 /* UserExerciseLibraryRepository.swift */; };
+		BB0000012E00000000A00002 /* WorkoutProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00001 /* WorkoutProgress.swift */; };
+		BB0000012E00000000A00004 /* ExercisePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00003 /* ExercisePhase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -258,6 +260,8 @@
 		F7D4726D412847A6AAF6DFF1 /* WatchNavigationRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNavigationRoutes.swift; sourceTree = "<group>"; };
 		DE2026051901000000000001 /* FeatureFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 		DE2026051901000000000003 /* UserExerciseLibraryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExerciseLibraryRepository.swift; sourceTree = "<group>"; };
+		BB0000012E00000000A00001 /* WorkoutProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutProgress.swift; sourceTree = "<group>"; };
+		BB0000012E00000000A00003 /* ExercisePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePhase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -291,6 +295,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BB0000012E00000000A00005 /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000012E00000000A00001 /* WorkoutProgress.swift */,
+				BB0000012E00000000A00003 /* ExercisePhase.swift */,
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
 		AA0000012D000000000C0001 /* ActiveWorkout */ = {
 			isa = PBXGroup;
 			children = (
@@ -439,6 +452,7 @@
 		DEAF7F382A0D353200682ACD /* WatchWorkoutApp Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				BB0000012E00000000A00005 /* Workout */,
 				DE3D0A4B2A0D511400EF23CB /* WorkoutManager.swift */,
 				DE3D0A512A0D66ED00EF23CB /* Views */,
 				DEAF7F492A0D356D00682ACD /* WatchWorkoutApp-Watch-App-Info.plist */,
@@ -780,6 +794,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB0000012E00000000A00002 /* WorkoutProgress.swift in Sources */,
+				BB0000012E00000000A00004 /* ExercisePhase.swift in Sources */,
 				DEAF7F4B2A0D3AEC00682ACD /* WorkoutsListView.swift in Sources */,
 				DED4576C2A1E6CDA00066DAE /* PhoneCommunicator.swift in Sources */,
 				DE3D0A532A0D773E00EF23CB /* ElapsedTimeView.swift in Sources */,

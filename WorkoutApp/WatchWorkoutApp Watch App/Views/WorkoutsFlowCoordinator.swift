@@ -18,7 +18,7 @@ struct WorkoutsFlowCoordinator: View {
         NavigationStack(path: $navigationManager.path) {
             WorkoutsListView()
                 .navigationDestination(for: WatchWorkoutSessionRoute.self) { route in
-                    ActiveWorkoutView(workout: route.workoutTemplate)
+                    ActiveWorkoutView(template: route.workoutTemplate, workoutManager: workoutManager)
                 }
         }
         .onChange(of: workoutManager.showingSummaryView) { oldValue, newValue in
