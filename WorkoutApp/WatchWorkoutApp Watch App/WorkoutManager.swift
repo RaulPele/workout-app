@@ -19,27 +19,24 @@ class WorkoutManager: NSObject {
     @ObservationIgnored private var builder: HKLiveWorkoutBuilder?
     @ObservationIgnored let phoneCommunicator: any PhoneCommunicatorProtocol
     @ObservationIgnored private var cancellables = Set<AnyCancellable>()
+    @ObservationIgnored private var isFinalizing = false
     @ObservationIgnored private let logger = CustomLogger(
         subsystem: "com.raulpele.WatchWorkoutApp",
         category: "WorkoutManager"
     )
 
+    private(set) var lifecycle: WorkoutLifecycle = .idle
     private(set) var running = false
     private(set) var isLoading = false
     private(set) var loadError: Error?
-    var showingSummaryView: Bool = false {
-        didSet {
-            if showingSummaryView == false {
-                resetWorkout()
-            }
-        }
-    }
 
     // MARK: - Workout exercises
     var workoutTemplates = [Workout]()
     /// Progress of the active workout. Owned here, not by a view, so every end path
     /// can save the logged exercises.
     private(set) var progress: WorkoutProgress?
+    /// Exercises captured when the workout ended; these are what get sent to the phone.
+    private(set) var exercisesToSave: [PerformedExercise] = []
 
     // MARK: - Workout metrics
     private(set) var workout: HKWorkout?
@@ -55,6 +52,10 @@ class WorkoutManager: NSObject {
     }
 
     // MARK: - Computed Properties
+    var isShowingSummary: Bool {
+        lifecycle.isShowingSummary
+    }
+
     var workoutStartDate: Date? {
         builder?.startDate
     }
@@ -115,28 +116,47 @@ class WorkoutManager: NSObject {
         session?.resume()
     }
 
-    /// Ends the workout. Every end (Controls, the last set, or the system ending the
-    /// session) saves `progress.exercisesToSave` once the session reports `.ended`.
+    /// The single end path, used by Controls and the final set. Captures the logged
+    /// exercises and shows the summary right away; saving finishes in `finalize`.
     func endWorkout() {
-        session?.end()
+        guard lifecycle.isInProgress else { return }
+        beginSaving()
+
+        if let session, session.state != .ended {
+            session.end() // finalize runs when the session reports .ended
+        } else {
+            Task { await finalize(endDate: .now) }
+        }
+    }
+
+    /// Closes the summary once saving has finished or failed, and resets for the next workout.
+    func dismissSummary() {
+        switch lifecycle {
+        case .finished, .saveFailed:
+            resetWorkout()
+        case .idle, .starting, .active, .saving:
+            return
+        }
     }
 
     // MARK: - Exercise Tracking
     /// Logs a set for the current exercise and ends the workout after its final set.
     func logSet(reps: Int, weight: Double) {
-        guard let outcome = progress?.logSet(reps: reps, weight: weight, at: .now) else { return }
+        guard lifecycle.isInProgress,
+              let outcome = progress?.logSet(reps: reps, weight: weight, at: .now) else { return }
         if outcome == .workoutComplete {
             endWorkout()
         }
     }
 
     func finishRest() {
-        guard progress?.isResting == true else { return }
+        guard lifecycle.isInProgress, progress?.isResting == true else { return }
         progress?.finishRest(at: .now)
         WKInterfaceDevice.current().play(.start)
     }
 
     func swapCurrentExercise(with exercise: Exercise) {
+        guard lifecycle.isInProgress else { return }
         progress?.swapCurrentExercise(with: exercise)
     }
 
@@ -156,6 +176,7 @@ class WorkoutManager: NSObject {
     }
 
     func startWorkout(template: Workout) async {
+        lifecycle = .starting
         let startDate = Date()
         progress = WorkoutProgress(template: template, startDate: startDate)
 
@@ -180,6 +201,9 @@ class WorkoutManager: NSObject {
 
         do {
             try await builder?.beginCollection(at: startDate)
+            if lifecycle == .starting {
+                lifecycle = .active
+            }
         } catch {
             logger.error("Error in builder's beginCollection method: \(error.localizedDescription)")
         }
@@ -191,6 +215,10 @@ class WorkoutManager: NSObject {
         session = nil
         workout = nil
         progress = nil
+        exercisesToSave = []
+        isFinalizing = false
+        lifecycle = .idle
+        running = false
 
         activeEnergyBurned = 0
         averageHeartRate = 0
@@ -207,36 +235,60 @@ class WorkoutManager: NSObject {
             .store(in: &cancellables)
     }
 
-    private func finalizeWorkout(endDate: Date) async {
-        do {
-            try await builder?.endCollection(at: endDate)
+    private func beginSaving() {
+        exercisesToSave = progress?.exercisesToSave ?? []
+        lifecycle = .saving
+    }
 
-            let workout = try await builder?.finishWorkout()
+    /// Saves the workout to HealthKit and sends the logged exercises to the phone.
+    /// Always leaves the summary in `.finished` or `.saveFailed` so it can be dismissed.
+    private func finalize(endDate: Date) async {
+        guard lifecycle == .saving, !isFinalizing else { return }
+        isFinalizing = true
 
-            self.workout = workout
-
-            if let progress {
-                var workoutSession = WorkoutSession(
-                    id: workout?.uuid ?? UUID(),
-                    workoutTemplate: progress.template,
-                    performedExercises: progress.exercisesToSave
-                )
-                workoutSession.activeCalories = workout?.activeEnergyBurned
-                workoutSession.averageHeartRate = workout?.averageHeartRate
-                workoutSession.totalCalories = workout?.totalCalories
-                workoutSession.duration = workout?.duration
-                workoutSession.endDate = endDate
-                workoutSession.startDate = workout?.startDate
-                workoutSession.title = workout?.startDate.toMMMdd()
-
-                logger.info("Sent workout session with id: \(workoutSession.id) and \(workoutSession.performedExercises.count) exercises to phone")
-                phoneCommunicator.send(workoutSession: workoutSession)
+        var savedWorkout: HKWorkout?
+        var didSave = false
+        if let builder {
+            do {
+                try await builder.endCollection(at: endDate)
+                savedWorkout = try await builder.finishWorkout()
+                didSave = true
+            } catch {
+                logger.error("Error finalizing workout: \(error.localizedDescription)")
             }
-
-            showingSummaryView = true
-        } catch {
-            logger.error("Error finalizing workout: \(error.localizedDescription)")
+        } else {
+            logger.error("Cannot save workout: no workout builder")
         }
+
+        workout = savedWorkout
+        sendWorkoutSession(workout: savedWorkout, endDate: endDate)
+        lifecycle = didSave ? .finished : .saveFailed(message: "This workout couldn't be saved to Apple Health.")
+    }
+
+    /// Sends the session to the phone even if the HealthKit save failed, so logged sets aren't lost.
+    private func sendWorkoutSession(workout: HKWorkout?, endDate: Date) {
+        guard let progress else { return }
+        guard workout != nil || !exercisesToSave.isEmpty else {
+            logger.info("No workout saved and no sets logged; nothing to send to phone")
+            return
+        }
+
+        let startDate = workout?.startDate ?? progress.startDate
+        var workoutSession = WorkoutSession(
+            id: workout?.uuid ?? UUID(),
+            workoutTemplate: progress.template,
+            performedExercises: exercisesToSave
+        )
+        workoutSession.title = startDate.toMMMdd()
+        workoutSession.startDate = startDate
+        workoutSession.endDate = endDate
+        workoutSession.duration = workout?.duration ?? endDate.timeIntervalSince(startDate)
+        workoutSession.activeCalories = workout?.activeEnergyBurned
+        workoutSession.averageHeartRate = workout?.averageHeartRate
+        workoutSession.totalCalories = workout?.totalCalories
+
+        logger.info("Sent workout session with id: \(workoutSession.id) and \(exercisesToSave.count) exercises to phone")
+        phoneCommunicator.send(workoutSession: workoutSession)
     }
 }
 
@@ -247,21 +299,33 @@ extension WorkoutManager {
     static func preview(progress: WorkoutProgress?) -> WorkoutManager {
         let workoutManager = WorkoutManager(phoneCommunicator: MockedPhoneCommunicator())
         workoutManager.progress = progress
+        workoutManager.lifecycle = progress == nil ? .idle : .active
         return workoutManager
     }
 }
 #endif
+
+// MARK: - Session State
+extension WorkoutManager {
+
+    fileprivate func handleStateChange(of workoutSession: HKWorkoutSession, to state: HKWorkoutSessionState, date: Date) async {
+        guard workoutSession === session else { return }
+        running = state == .running
+
+        guard state == .ended else { return }
+        if lifecycle.isInProgress {
+            beginSaving() // the system ended the session, not the user
+        }
+        await finalize(endDate: date)
+    }
+}
 
 // MARK: - HKWorkoutSessionDelegate
 extension WorkoutManager: HKWorkoutSessionDelegate {
 
     nonisolated func workoutSession(_ workoutSession: HKWorkoutSession, didChangeTo toState: HKWorkoutSessionState, from fromState: HKWorkoutSessionState, date: Date) {
         Task { @MainActor in
-            self.running = toState == .running
-
-            if toState == .ended {
-                await self.finalizeWorkout(endDate: date)
-            }
+            await self.handleStateChange(of: workoutSession, to: toState, date: date)
         }
     }
 

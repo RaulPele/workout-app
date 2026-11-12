@@ -132,6 +132,7 @@
 		DE2026051901000000000004 /* UserExerciseLibraryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2026051901000000000003 /* UserExerciseLibraryRepository.swift */; };
 		BB0000012E00000000A00002 /* WorkoutProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00001 /* WorkoutProgress.swift */; };
 		BB0000012E00000000A00004 /* ExercisePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00003 /* ExercisePhase.swift */; };
+		BB0000012E00000000A00007 /* WorkoutLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00006 /* WorkoutLifecycle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +263,7 @@
 		DE2026051901000000000003 /* UserExerciseLibraryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserExerciseLibraryRepository.swift; sourceTree = "<group>"; };
 		BB0000012E00000000A00001 /* WorkoutProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutProgress.swift; sourceTree = "<group>"; };
 		BB0000012E00000000A00003 /* ExercisePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePhase.swift; sourceTree = "<group>"; };
+		BB0000012E00000000A00006 /* WorkoutLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutLifecycle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -298,6 +300,7 @@
 		BB0000012E00000000A00005 /* Workout */ = {
 			isa = PBXGroup;
 			children = (
+				BB0000012E00000000A00006 /* WorkoutLifecycle.swift */,
 				BB0000012E00000000A00001 /* WorkoutProgress.swift */,
 				BB0000012E00000000A00003 /* ExercisePhase.swift */,
 			);
@@ -794,6 +797,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB0000012E00000000A00007 /* WorkoutLifecycle.swift in Sources */,
 				BB0000012E00000000A00002 /* WorkoutProgress.swift in Sources */,
 				BB0000012E00000000A00004 /* ExercisePhase.swift in Sources */,
 				DEAF7F4B2A0D3AEC00682ACD /* WorkoutsListView.swift in Sources */,

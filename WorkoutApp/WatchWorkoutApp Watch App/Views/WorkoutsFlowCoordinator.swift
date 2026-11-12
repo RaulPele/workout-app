@@ -21,10 +21,19 @@ struct WorkoutsFlowCoordinator: View {
                     ActiveWorkoutView(template: route.workoutTemplate, workoutManager: workoutManager)
                 }
         }
-        .onChange(of: workoutManager.showingSummaryView) { oldValue, newValue in
-            if oldValue && !newValue {
-                navigationManager.popToRoot() //TODO: should we move this somewhere else?
-            }
+        .onChange(of: workoutManager.progress?.template.id, initial: true) { _, templateID in
+            syncNavigation(withActiveTemplateID: templateID)
+        }
+    }
+
+    // MARK: - Private Methods
+    /// Pops back to the list when the workout is reset, and shows the active workout
+    /// when one appears without a navigation push (e.g. after crash recovery).
+    private func syncNavigation(withActiveTemplateID templateID: Workout.ID?) {
+        if templateID == nil {
+            navigationManager.popToRoot()
+        } else if navigationManager.path.isEmpty, let template = workoutManager.progress?.template {
+            navigationManager.push(WatchWorkoutSessionRoute(workoutTemplate: template))
         }
     }
 }
