@@ -42,16 +42,25 @@ final class SessionDetailViewModel {
         session.volume > 0 ? session.volume.kilogramsFormatted : "–"
     }
 
-    var heartRateText: String? {
-        session.averageHeartRate.map { "\($0)" }
+    /// A dash when HealthKit has no heart rate for this session, e.g. the watch couldn't save it.
+    var heartRateText: String {
+        Self.healthValueText(session.averageHeartRate)
     }
 
-    var activeCaloriesText: String? {
-        session.activeCalories.map { "\($0)" }
+    /// A dash when HealthKit has no energy for this session, e.g. the watch couldn't save it.
+    var activeCaloriesText: String {
+        Self.healthValueText(session.activeCalories)
     }
 
     // MARK: - Initializers
     init(session: WorkoutSession) {
         self.session = session
+    }
+
+    // MARK: - Private Methods
+    /// The `HKWorkout` extensions turn missing statistics into 0, so treat 0 like nil.
+    private static func healthValueText(_ value: Int?) -> String {
+        guard let value, value > 0 else { return "–" }
+        return "\(value)"
     }
 }

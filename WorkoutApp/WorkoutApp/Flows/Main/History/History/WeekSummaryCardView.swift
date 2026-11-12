@@ -37,7 +37,7 @@ struct WeekSummaryCardView: View {
             } else {
                 valuesLayout {
                     WeekSummaryValueView(value: "\(summary.workoutCount)", label: summary.workoutCount == 1 ? "workout" : "workouts")
-                    WeekSummaryValueView(value: summary.totalDuration.durationFormatted, label: "time")
+                    WeekSummaryValueView(value: summary.totalDuration?.durationFormatted ?? "–", label: "time")
                     WeekSummaryValueView(value: "\(summary.totalSets)", label: "sets")
                 }
             }

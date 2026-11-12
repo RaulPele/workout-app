@@ -34,12 +34,8 @@ struct SessionDetailView: View {
                     StatTileView(value: viewModel.durationText, label: "duration", systemImage: "timer")
                     StatTileView(value: viewModel.setsText, label: "sets", systemImage: "checkmark.circle")
                     StatTileView(value: viewModel.volumeText, label: "volume", systemImage: "scalemass")
-                    if let heartRateText = viewModel.heartRateText {
-                        StatTileView(value: heartRateText, label: "avg bpm", systemImage: "heart")
-                    }
-                    if let activeCaloriesText = viewModel.activeCaloriesText {
-                        StatTileView(value: activeCaloriesText, label: "active kcal", systemImage: "flame")
-                    }
+                    StatTileView(value: viewModel.heartRateText, label: "avg bpm", systemImage: "heart")
+                    StatTileView(value: viewModel.activeCaloriesText, label: "active kcal", systemImage: "flame")
                 }
 
                 SectionHeaderView(title: "Exercises")
