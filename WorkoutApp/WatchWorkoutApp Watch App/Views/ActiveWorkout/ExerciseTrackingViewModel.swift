@@ -73,6 +73,7 @@ final class ExerciseTrackingViewModel {
 
     // MARK: - Public Methods
     func saveSet() {
+        guard phase == .active else { return }
         let performedSet = PerformedSet(
             id: UUID(),
             set: exercise.setData,
@@ -104,6 +105,7 @@ final class ExerciseTrackingViewModel {
     }
 
     func completeRest() {
+        guard phase == .resting else { return }
         let actualRestTime = Date.now.timeIntervalSince(restStartDate ?? Date.now)
         if var lastSet = performedSets.last {
             performedSets.removeLast()

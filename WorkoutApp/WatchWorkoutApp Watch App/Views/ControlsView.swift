@@ -15,8 +15,6 @@ struct ControlsView: View {
     // MARK: - Body
     var body: some View {
         VStack(spacing: 16) {
-            Spacer()
-
             HStack(spacing: 20) {
                 controlButton(
                     icon: "xmark",
@@ -34,9 +32,8 @@ struct ControlsView: View {
                     workoutManager.togglePauseWorkout()
                 }
             }
-
-            Spacer()
         }
+        .frame(maxHeight: .infinity)
         .scenePadding()
     }
 

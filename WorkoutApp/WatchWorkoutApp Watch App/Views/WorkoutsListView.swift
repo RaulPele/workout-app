@@ -20,10 +20,10 @@ struct WorkoutsListView: View {
             if workoutManager.isLoading && workoutManager.workoutTemplates.isEmpty {
                 ZStack {
                     Color.background.ignoresSafeArea()
-                    ActivityIndicator(color: .primaryColor)
+                    ActivityIndicator(color: .primaryColor) //TODO: check if this needs to be fixed or not
                 }
             } else if workoutManager.loadError != nil && workoutManager.workoutTemplates.isEmpty {
-                ErrorStateView {
+                ErrorStateView { //TODO: validate
                     Task { await workoutManager.loadWorkoutTemplates() }
                 }
             } else if workoutManager.workoutTemplates.isEmpty {
@@ -117,7 +117,7 @@ private struct ErrorStateView: View {
 }
 
 // MARK: - HKWorkoutActivityType + Identifiable
-extension HKWorkoutActivityType: Identifiable {
+extension HKWorkoutActivityType: Identifiable { //TODO: fix the warning here
     public var id: UInt {
         rawValue
     }

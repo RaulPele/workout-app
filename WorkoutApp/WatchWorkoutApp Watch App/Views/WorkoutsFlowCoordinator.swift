@@ -10,12 +10,10 @@ import SwiftUI
 struct WorkoutsFlowCoordinator: View {
 
     // MARK: - Properties
-
-    @State private var navigationManager = WatchWorkoutsNavigationManager()
+    @State private var navigationManager = NavigationManager()
     @Environment(WorkoutManager.self) private var workoutManager
 
     // MARK: - Body
-
     var body: some View {
         NavigationStack(path: $navigationManager.path) {
             WorkoutsListView()
@@ -25,7 +23,7 @@ struct WorkoutsFlowCoordinator: View {
         }
         .onChange(of: workoutManager.showingSummaryView) { oldValue, newValue in
             if oldValue && !newValue {
-                navigationManager.popToRoot()
+                navigationManager.popToRoot() //TODO: should we move this somewhere else?
             }
         }
     }

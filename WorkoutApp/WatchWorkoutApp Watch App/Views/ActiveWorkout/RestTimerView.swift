@@ -17,8 +17,6 @@ struct RestTimerView: View {
             let progress = viewModel.restProgress(at: context.date)
 
             VStack(spacing: 16) {
-                Spacer()
-
                 VStack(spacing: 4) {
                     Text("Rest")
                         .font(.caption2)
@@ -29,8 +27,7 @@ struct RestTimerView: View {
                         .fontWeight(.bold)
                         .monospacedDigit()
                 }
-
-                Spacer()
+                .frame(maxHeight: .infinity)
 
                 skipButton(progress: progress)
             }

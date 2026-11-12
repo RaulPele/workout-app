@@ -22,10 +22,12 @@ struct ExerciseTrackingView: View {
             switch trackingVM.phase {
             case .active:
                 exerciseMainView
+                    .scenePadding()
                     .transition(.opacity)
 
             case .resting:
                 RestTimerView(viewModel: trackingVM)
+                    .scenePadding()
                     .transition(.opacity)
 
             case .exerciseComplete:
@@ -33,7 +35,6 @@ struct ExerciseTrackingView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .scenePadding()
         .animation(.easeInOut(duration: 0.3), value: trackingVM.phase)
         .navigationTitle(trackingVM.phase == .resting ? "" : trackingVM.exercise.name)
         .toolbar(trackingVM.phase == .resting ? .hidden : .automatic, for: .navigationBar)
@@ -59,6 +60,7 @@ struct ExerciseTrackingView: View {
                 }
             )
         }
+
     }
 
     // MARK: - Private Views
@@ -135,8 +137,6 @@ private struct SetInputSheet: View {
             Text("Log Set \(viewModel.currentSet)")
                 .font(.headline)
 
-            Spacer()
-
             inputField(
                 value: $viewModel.currentReps,
                 label: "reps",
@@ -169,8 +169,6 @@ private struct SetInputSheet: View {
             )
             .onTapGesture { focusedField = .weight }
 
-            Spacer()
-
             Button {
                 viewModel.saveSet()
             } label: {
@@ -188,11 +186,11 @@ private struct SetInputSheet: View {
 
     @ViewBuilder
     private func inputField(value: Binding<Double>, label: String, isFocused: Bool) -> some View {
-        HStack {
+        HStack { //TODO: what if we'd use traditional pickers instead
             Text("\(Int(value.wrappedValue))")
                 .font(.title2)
                 .fontWeight(.semibold)
-                .fontDesign(.rounded)
+                .fontDesign(.rounded) //TODO: unify fonts
                 .monospacedDigit()
                 .foregroundStyle(isFocused ? Color.primaryColor : .primary)
 

@@ -16,7 +16,7 @@ struct WatchWorkoutApp_Watch_AppApp: App {
         WindowGroup {
             AppCoordinator()
                 .sheet(isPresented: $workoutManager.showingSummaryView) {
-                    SummaryView()
+                    SummaryView() //TODO: improve summary view!
                 }
                 .environment(workoutManager)
         }

@@ -28,17 +28,19 @@ struct ActiveWorkoutView: View {
     // MARK: - Body
     var body: some View {
         TabView(selection: $horizontalSelection) {
-            ControlsView()
-                .tag(HorizontalTab.controls)
-
-            SessionContentView(viewModel: viewModel, onFinishWorkout: handleFinishWorkout)
-                .tag(HorizontalTab.content)
-
-            NowPlayingView()
-                .tag(HorizontalTab.nowPlaying)
+            Tab(value: HorizontalTab.controls) {
+                ControlsView()
+            }
+            Tab(value: HorizontalTab.content) {
+                SessionContentView(viewModel: viewModel, onFinishWorkout: handleFinishWorkout)
+            }
+            Tab(value: HorizontalTab.nowPlaying) {
+                NowPlayingView()
+            }
         }
         .tabViewStyle(.page(indexDisplayMode: isLuminanceReduced ? .never : .automatic))
         .navigationBarBackButtonHidden(true)
+        .layoutPriority(1)
         .task {
             WKInterfaceDevice.current().play(.start)
             await workoutManager.startWorkout(template: viewModel.workout)
@@ -80,16 +82,17 @@ private struct SessionContentView: View {
 
     // MARK: - Body
     var body: some View {
-        TabView(selection: $verticalSelection) {
-            ExerciseTrackingView(
-                viewModel: viewModel,
-                onFinishWorkout: onFinishWorkout
-            )
-            .tag(VerticalTab.exercise)
-
-            MetricsPageView()
-                .tag(VerticalTab.metrics)
+        VStack(spacing: 0) {
+            TabView(selection: $verticalSelection) {
+                Tab(value: VerticalTab.exercise) {
+                    ExerciseTrackingView(viewModel: viewModel, onFinishWorkout: onFinishWorkout)
+                }
+                Tab(value: VerticalTab.metrics) {
+                    MetricsPageView()
+                }
+            }
+            .tabViewStyle(.verticalPage)
+//            .layoutPriority(1)
         }
-        .tabViewStyle(.verticalPage)
     }
 }
