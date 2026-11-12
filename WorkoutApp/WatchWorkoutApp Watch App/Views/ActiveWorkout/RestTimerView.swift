@@ -31,11 +31,6 @@ struct RestTimerView: View {
 
                 skipButton(progress: progress)
             }
-            .onChange(of: remaining) { _, newValue in
-                if newValue <= 0 {
-                    viewModel.completeRest()
-                }
-            }
         }
     }
 

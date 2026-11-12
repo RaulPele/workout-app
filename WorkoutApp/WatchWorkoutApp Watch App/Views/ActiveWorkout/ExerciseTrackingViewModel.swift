@@ -79,10 +79,6 @@ final class ExerciseTrackingViewModel {
         workoutManager.logSet(reps: pendingSet.reps, weight: pendingSet.weight)
     }
 
-    func completeRest() {
-        workoutManager.finishRest()
-    }
-
     func skipRest() {
         workoutManager.finishRest()
     }

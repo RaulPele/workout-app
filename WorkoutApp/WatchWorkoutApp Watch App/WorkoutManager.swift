@@ -19,9 +19,10 @@ class WorkoutManager: NSObject {
     @ObservationIgnored private var builder: HKLiveWorkoutBuilder?
     @ObservationIgnored let phoneCommunicator: any PhoneCommunicatorProtocol
     @ObservationIgnored private let progressStore: any WorkoutProgressStoring
-    @ObservationIgnored private var cancellables = Set<AnyCancellable>()
+    @ObservationIgnored private var templatesTask: Task<Void, Never>?
+    @ObservationIgnored private var restTask: Task<Void, Never>?
     @ObservationIgnored private var isFinalizing = false
-    @ObservationIgnored private var isRecovering = false
+    @ObservationIgnored private var recoveryTask: Task<Void, Never>?
     private static let startFailureMessage = "Check that Health access is allowed for this app, then try again."
     @ObservationIgnored private let logger = CustomLogger(
         subsystem: "com.raulpele.WatchWorkoutApp",
@@ -169,13 +170,24 @@ class WorkoutManager: NSObject {
     func logSet(reps: Int, weight: Double) {
         guard lifecycle.isInProgress,
               let outcome = progress?.logSet(reps: reps, weight: weight, at: .now) else { return }
-        if outcome == .workoutComplete {
+
+        switch outcome {
+        case .resting:
+            if session?.state == .paused {
+                progress?.pauseRest(at: .now)
+            }
+            scheduleRestEnd()
+        case .nextExercise:
+            break
+        case .workoutComplete:
             endWorkout()
         }
     }
 
+    /// Ends the rest (when skipped or when its time is up) and signals the next set.
     func finishRest() {
         guard lifecycle.isInProgress, progress?.isResting == true else { return }
+        cancelRestTimer()
         progress?.finishRest(at: .now)
         WKInterfaceDevice.current().play(.start)
     }
@@ -204,13 +216,16 @@ class WorkoutManager: NSObject {
     /// (e.g. when retrying). Safe to call repeatedly, such as when the view's `.task`
     /// re-runs: it does nothing unless idle or retrying after a failed start.
     func startWorkout(template: Workout) async {
+        // Let a launch-time recovery finish first; it may restore this or another workout.
+        await recoveryTask?.value
+
         switch lifecycle {
         case .idle, .failedToStart:
             break
         case .starting, .active, .saving, .finished, .saveFailed:
             return
         }
-        guard session == nil, !isRecovering else { return }
+        guard session == nil else { return }
         if let progress, progress.template.id != template.id { return }
 
         lifecycle = .starting
@@ -266,7 +281,30 @@ class WorkoutManager: NSObject {
         builder = nil
     }
 
+    /// Ends the rest on time from a task rather than a view's timeline, so it fires with
+    /// the screen off (the active workout session keeps the app running).
+    private func scheduleRestEnd() {
+        cancelRestTimer()
+        guard let progress, progress.isResting, !progress.isRestPaused else { return }
+
+        let remaining = progress.restRemaining(at: .now)
+        restTask = Task { [weak self] in
+            do {
+                try await Task.sleep(for: .seconds(remaining))
+            } catch {
+                return // cancelled: rest skipped, workout paused or ended
+            }
+            self?.finishRest()
+        }
+    }
+
+    private func cancelRestTimer() {
+        restTask?.cancel()
+        restTask = nil
+    }
+
     private func resetWorkout() {
+        cancelRestTimer()
         detachSession()
         workout = nil
         progress = nil
@@ -281,16 +319,16 @@ class WorkoutManager: NSObject {
     }
 
     private func subscribeToTemplates() {
-        phoneCommunicator
-            .templatesPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] templates in
-                self?.workoutTemplates = templates
+        let templates = phoneCommunicator.templatesPublisher.values
+        templatesTask = Task { [weak self] in
+            for await value in templates {
+                self?.workoutTemplates = value
             }
-            .store(in: &cancellables)
+        }
     }
 
     private func beginSaving() {
+        cancelRestTimer()
         exercisesToSave = progress?.exercisesToSave ?? []
         lifecycle = .saving
     }
@@ -377,10 +415,19 @@ extension WorkoutManager {
     /// logged progress. If no session is left (e.g. after a force-quit) but progress
     /// was saved, it is offered through `interruptedProgress` instead.
     func recoverActiveWorkout() async {
-        guard lifecycle == .idle, session == nil, !isRecovering else { return }
-        isRecovering = true
-        defer { isRecovering = false }
+        if let recoveryTask {
+            await recoveryTask.value
+            return
+        }
+        guard lifecycle == .idle, session == nil else { return }
 
+        let task = Task { await performRecovery() }
+        recoveryTask = task
+        await task.value
+        recoveryTask = nil
+    }
+
+    private func performRecovery() async {
         let savedProgress = progressStore.load()
         let recoveredSession: HKWorkoutSession?
         do {
@@ -391,7 +438,11 @@ extension WorkoutManager {
         }
 
         guard let recoveredSession else {
-            interruptedProgress = savedProgress
+            if let savedProgress, savedProgress.loggedSetCount > 0 {
+                interruptedProgress = savedProgress
+            } else {
+                progressStore.clear() // nothing worth offering
+            }
             return
         }
 
@@ -407,8 +458,12 @@ extension WorkoutManager {
         running = recoveredSession.state == .running
         lifecycle = .active
 
-        let canContinue = recoveredSession.state == .running || recoveredSession.state == .paused
-        if savedProgress == nil || !canContinue {
+        switch recoveredSession.state {
+        case .running where savedProgress != nil:
+            scheduleRestEnd() // a rest that ran out while the app was down ends now
+        case .paused where savedProgress != nil:
+            progress?.pauseRest(at: .now)
+        default:
             endWorkout() // nothing to continue; save what HealthKit recorded
         }
     }
@@ -439,11 +494,21 @@ extension WorkoutManager {
         guard workoutSession === session else { return }
         running = state == .running
 
-        guard state == .ended else { return }
-        if lifecycle.isInProgress {
-            beginSaving() // the system ended the session, not the user
+        switch state {
+        case .paused:
+            cancelRestTimer()
+            progress?.pauseRest(at: date)
+        case .running:
+            progress?.resumeRest(at: date)
+            scheduleRestEnd()
+        case .ended:
+            if lifecycle.isInProgress {
+                beginSaving() // the system ended the session, not the user
+            }
+            await finalize(endDate: date)
+        default:
+            break
         }
-        await finalize(endDate: date)
     }
 }
 

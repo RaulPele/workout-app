@@ -185,7 +185,7 @@ private struct SetInputSheet: View {
     @ViewBuilder
     private func inputField(value: Binding<Double>, label: String, isFocused: Bool) -> some View {
         HStack { //TODO: what if we'd use traditional pickers instead
-            Text("\(Int(value.wrappedValue))")
+            Text(value.wrappedValue, format: .number.precision(.fractionLength(0...1)))
                 .font(.title2)
                 .fontWeight(.semibold)
                 .fontDesign(.rounded) //TODO: unify fonts

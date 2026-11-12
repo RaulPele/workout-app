@@ -28,6 +28,8 @@ struct WorkoutProgress: Codable, Hashable {
     private(set) var completedExercises: [PerformedExercise] = []
     private(set) var currentSets: [PerformedSet] = []
     private(set) var restStartDate: Date?
+    /// Set while the workout is paused during a rest; the countdown is frozen.
+    private(set) var restPauseDate: Date?
     private(set) var isComplete = false
 
     // MARK: - Initializers
@@ -48,6 +50,10 @@ struct WorkoutProgress: Codable, Hashable {
 
     var isResting: Bool {
         restStartDate != nil
+    }
+
+    var isRestPaused: Bool {
+        restPauseDate != nil
     }
 
     /// The 1-based number of the set the user is working on (or resting before).
@@ -92,6 +98,7 @@ struct WorkoutProgress: Codable, Hashable {
 
         if currentSets.count < exercise.numberOfSets {
             restStartDate = date
+            restPauseDate = nil
             return .resting
         }
 
@@ -99,21 +106,36 @@ struct WorkoutProgress: Codable, Hashable {
         return isComplete ? .workoutComplete : .nextExercise
     }
 
-    /// Ends the current rest and records its duration on the last logged set.
+    /// Ends the current rest and records its duration (excluding pauses) on the last logged set.
     mutating func finishRest(at date: Date) {
-        guard let restStartDate, !currentSets.isEmpty else { return }
-        currentSets[currentSets.count - 1].restTime = max(0, date.timeIntervalSince(restStartDate))
-        self.restStartDate = nil
+        guard !currentSets.isEmpty, let elapsed = restElapsed(at: date) else { return }
+        currentSets[currentSets.count - 1].restTime = elapsed
+        restStartDate = nil
+        restPauseDate = nil
+    }
+
+    mutating func pauseRest(at date: Date) {
+        guard isResting, restPauseDate == nil else { return }
+        restPauseDate = date
+    }
+
+    /// Resumes the countdown, shifting the rest start by the time spent paused.
+    mutating func resumeRest(at date: Date) {
+        guard let restStartDate, let restPauseDate else { return }
+        self.restStartDate = restStartDate.addingTimeInterval(max(0, date.timeIntervalSince(restPauseDate)))
+        self.restPauseDate = nil
     }
 
     func restRemaining(at date: Date) -> TimeInterval {
-        guard let restStartDate, let exercise = currentExercise else { return 0 }
-        return max(0, exercise.restBetweenSets - date.timeIntervalSince(restStartDate))
+        guard let elapsed = restElapsed(at: date), let exercise = currentExercise else { return 0 }
+        return max(0, exercise.restBetweenSets - elapsed)
     }
 
     func restProgress(at date: Date) -> Double {
-        guard let restStartDate, let exercise = currentExercise, exercise.restBetweenSets > 0 else { return 1 }
-        return min(1, max(0, date.timeIntervalSince(restStartDate) / exercise.restBetweenSets))
+        guard let elapsed = restElapsed(at: date), let exercise = currentExercise, exercise.restBetweenSets > 0 else {
+            return 1
+        }
+        return min(1, elapsed / exercise.restBetweenSets)
     }
 
     /// Moves `chosen` (a later exercise in the queue) into the current slot; the
@@ -129,12 +151,18 @@ struct WorkoutProgress: Codable, Hashable {
     }
 
     // MARK: - Private Methods
+    private func restElapsed(at date: Date) -> TimeInterval? {
+        guard let restStartDate else { return nil }
+        return max(0, (restPauseDate ?? date).timeIntervalSince(restStartDate))
+    }
+
     private mutating func completeCurrentExercise() {
         guard let exercise = currentExercise else { return }
 
         completedExercises.append(PerformedExercise(id: currentExerciseID, exercise: exercise, sets: currentSets))
         currentSets = []
         restStartDate = nil
+        restPauseDate = nil
 
         if currentExerciseIndex + 1 < exerciseQueue.count {
             currentExerciseIndex += 1
