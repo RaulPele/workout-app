@@ -27,7 +27,7 @@ struct SummaryView: View {
             case .saveFailed(let message):
                 SaveFailedView(message: message, onDone: workoutManager.dismissSummary)
 
-            case .idle, .starting, .active, .saving:
+            case .idle, .starting, .failedToStart, .active, .saving:
                 ProgressView("Saving Workout")
                     .tint(.primaryColor)
             }

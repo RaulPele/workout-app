@@ -9,6 +9,7 @@ import Foundation
 enum WorkoutLifecycle: Equatable {
     case idle
     case starting
+    case failedToStart(message: String)
     case active
     /// End was requested; the summary is shown while HealthKit saves.
     case saving
@@ -20,7 +21,7 @@ enum WorkoutLifecycle: Equatable {
         switch self {
         case .saving, .finished, .saveFailed:
             true
-        case .idle, .starting, .active:
+        case .idle, .starting, .failedToStart, .active:
             false
         }
     }

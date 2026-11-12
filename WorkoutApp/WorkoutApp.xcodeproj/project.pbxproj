@@ -133,6 +133,7 @@
 		BB0000012E00000000A00002 /* WorkoutProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00001 /* WorkoutProgress.swift */; };
 		BB0000012E00000000A00004 /* ExercisePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00003 /* ExercisePhase.swift */; };
 		BB0000012E00000000A00007 /* WorkoutLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00006 /* WorkoutLifecycle.swift */; };
+		BB0000012E00000000A00009 /* WorkoutStartErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00008 /* WorkoutStartErrorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -264,6 +265,7 @@
 		BB0000012E00000000A00001 /* WorkoutProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutProgress.swift; sourceTree = "<group>"; };
 		BB0000012E00000000A00003 /* ExercisePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePhase.swift; sourceTree = "<group>"; };
 		BB0000012E00000000A00006 /* WorkoutLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutLifecycle.swift; sourceTree = "<group>"; };
+		BB0000012E00000000A00008 /* WorkoutStartErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStartErrorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -310,6 +312,7 @@
 		AA0000012D000000000C0001 /* ActiveWorkout */ = {
 			isa = PBXGroup;
 			children = (
+				BB0000012E00000000A00008 /* WorkoutStartErrorView.swift */,
 				AA0000012D000000000A0001 /* ActiveWorkoutView.swift */,
 				AA0000012D000000000A0002 /* ActiveWorkoutViewModel.swift */,
 				AA0000012D000000000A0003 /* ExerciseTrackingView.swift */,
@@ -797,6 +800,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB0000012E00000000A00009 /* WorkoutStartErrorView.swift in Sources */,
 				BB0000012E00000000A00007 /* WorkoutLifecycle.swift in Sources */,
 				BB0000012E00000000A00002 /* WorkoutProgress.swift in Sources */,
 				BB0000012E00000000A00004 /* ExercisePhase.swift in Sources */,

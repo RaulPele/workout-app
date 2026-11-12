@@ -28,18 +28,30 @@ struct ActiveWorkoutView: View {
 
     // MARK: - Body
     var body: some View {
-        TabView(selection: $horizontalSelection) {
-            Tab(value: HorizontalTab.controls) {
-                ControlsView()
-            }
-            Tab(value: HorizontalTab.content) {
-                SessionContentView(viewModel: viewModel.exerciseTracking)
-            }
-            Tab(value: HorizontalTab.nowPlaying) {
-                NowPlayingView()
+        // A ZStack, not a Group, so `.task` belongs to the container and doesn't
+        // re-run (and retry) when the error view replaces the pages.
+        ZStack {
+            if let message = viewModel.startErrorMessage {
+                WorkoutStartErrorView(
+                    message: message,
+                    onRetry: { Task { await viewModel.start() } },
+                    onCancel: viewModel.cancelStart
+                )
+            } else {
+                TabView(selection: $horizontalSelection) {
+                    Tab(value: HorizontalTab.controls) {
+                        ControlsView()
+                    }
+                    Tab(value: HorizontalTab.content) {
+                        SessionContentView(viewModel: viewModel.exerciseTracking)
+                    }
+                    Tab(value: HorizontalTab.nowPlaying) {
+                        NowPlayingView()
+                    }
+                }
+                .tabViewStyle(.page(indexDisplayMode: isLuminanceReduced ? .never : .automatic))
             }
         }
-        .tabViewStyle(.page(indexDisplayMode: isLuminanceReduced ? .never : .automatic))
         .navigationBarBackButtonHidden(true)
         .layoutPriority(1)
         .task {

@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import WatchKit
 
 @MainActor @Observable
 final class ActiveWorkoutViewModel {
@@ -19,6 +18,11 @@ final class ActiveWorkoutViewModel {
         workoutManager.running
     }
 
+    var startErrorMessage: String? {
+        guard case .failedToStart(let message) = workoutManager.lifecycle else { return nil }
+        return message
+    }
+
     // MARK: - Initializers
     init(template: Workout, workoutManager: WorkoutManager) {
         self.template = template
@@ -27,8 +31,12 @@ final class ActiveWorkoutViewModel {
     }
 
     // MARK: - Public Methods
+    /// Starts (or retries starting) the workout; a no-op once it is running.
     func start() async {
-        WKInterfaceDevice.current().play(.start)
         await workoutManager.startWorkout(template: template)
+    }
+
+    func cancelStart() {
+        workoutManager.discardWorkout()
     }
 }

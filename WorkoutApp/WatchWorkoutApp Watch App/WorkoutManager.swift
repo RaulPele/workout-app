@@ -20,6 +20,7 @@ class WorkoutManager: NSObject {
     @ObservationIgnored let phoneCommunicator: any PhoneCommunicatorProtocol
     @ObservationIgnored private var cancellables = Set<AnyCancellable>()
     @ObservationIgnored private var isFinalizing = false
+    private static let startFailureMessage = "Check that Health access is allowed for this app, then try again."
     @ObservationIgnored private let logger = CustomLogger(
         subsystem: "com.raulpele.WatchWorkoutApp",
         category: "WorkoutManager"
@@ -134,9 +135,15 @@ class WorkoutManager: NSObject {
         switch lifecycle {
         case .finished, .saveFailed:
             resetWorkout()
-        case .idle, .starting, .active, .saving:
+        case .idle, .starting, .failedToStart, .active, .saving:
             return
         }
+    }
+
+    /// Abandons a workout that failed to start, returning to the workout list.
+    func discardWorkout() {
+        guard case .failedToStart = lifecycle else { return }
+        resetWorkout()
     }
 
     // MARK: - Exercise Tracking
@@ -175,44 +182,74 @@ class WorkoutManager: NSObject {
         isLoading = false
     }
 
+    /// Starts a HealthKit session for `template`, keeping any progress already logged
+    /// (e.g. when retrying). Safe to call repeatedly, such as when the view's `.task`
+    /// re-runs: it does nothing unless idle or retrying after a failed start.
     func startWorkout(template: Workout) async {
+        switch lifecycle {
+        case .idle, .failedToStart:
+            break
+        case .starting, .active, .saving, .finished, .saveFailed:
+            return
+        }
+        guard session == nil else { return }
+        if let progress, progress.template.id != template.id { return }
+
         lifecycle = .starting
-        let startDate = Date()
-        progress = WorkoutProgress(template: template, startDate: startDate)
+        let startDate = Date.now
+        if progress == nil {
+            progress = WorkoutProgress(template: template, startDate: startDate)
+        }
 
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = .traditionalStrengthTraining
         configuration.locationType = .indoor
 
+        let newSession: HKWorkoutSession
         do {
-            session = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
-            builder = session?.associatedWorkoutBuilder()
+            newSession = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
         } catch {
             logger.error("Error while creating session: \(error.localizedDescription)")
+            lifecycle = .failedToStart(message: Self.startFailureMessage)
             return
         }
 
-        session?.delegate = self
-        builder?.delegate = self
-
-        builder?.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: configuration)
-
-        session?.startActivity(with: startDate)
+        let newBuilder = newSession.associatedWorkoutBuilder()
+        newBuilder.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore, workoutConfiguration: configuration)
+        attach(session: newSession, builder: newBuilder)
+        newSession.startActivity(with: startDate)
 
         do {
-            try await builder?.beginCollection(at: startDate)
-            if lifecycle == .starting {
-                lifecycle = .active
-            }
+            try await newBuilder.beginCollection(at: startDate)
+            guard lifecycle == .starting else { return }
+            lifecycle = .active
+            WKInterfaceDevice.current().play(.start)
         } catch {
             logger.error("Error in builder's beginCollection method: \(error.localizedDescription)")
+            guard lifecycle == .starting else { return } // ended while starting; the end path owns it
+            detachSession()
+            newSession.end()
+            lifecycle = .failedToStart(message: Self.startFailureMessage)
         }
     }
 
     // MARK: - Private Methods
-    private func resetWorkout() {
-        builder = nil
+    private func attach(session: HKWorkoutSession, builder: HKLiveWorkoutBuilder) {
+        session.delegate = self
+        builder.delegate = self
+        self.session = session
+        self.builder = builder
+    }
+
+    private func detachSession() {
+        session?.delegate = nil
+        builder?.delegate = nil
         session = nil
+        builder = nil
+    }
+
+    private func resetWorkout() {
+        detachSession()
         workout = nil
         progress = nil
         exercisesToSave = []
