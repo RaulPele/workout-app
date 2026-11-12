@@ -18,8 +18,10 @@ class WorkoutManager: NSObject {
     @ObservationIgnored private var session: HKWorkoutSession?
     @ObservationIgnored private var builder: HKLiveWorkoutBuilder?
     @ObservationIgnored let phoneCommunicator: any PhoneCommunicatorProtocol
+    @ObservationIgnored private let progressStore: any WorkoutProgressStoring
     @ObservationIgnored private var cancellables = Set<AnyCancellable>()
     @ObservationIgnored private var isFinalizing = false
+    @ObservationIgnored private var isRecovering = false
     private static let startFailureMessage = "Check that Health access is allowed for this app, then try again."
     @ObservationIgnored private let logger = CustomLogger(
         subsystem: "com.raulpele.WatchWorkoutApp",
@@ -34,8 +36,20 @@ class WorkoutManager: NSObject {
     // MARK: - Workout exercises
     var workoutTemplates = [Workout]()
     /// Progress of the active workout. Owned here, not by a view, so every end path
-    /// can save the logged exercises.
-    private(set) var progress: WorkoutProgress?
+    /// can save the logged exercises. Persisted on every change for crash recovery.
+    private(set) var progress: WorkoutProgress? {
+        didSet {
+            guard progress != oldValue else { return }
+            if let progress {
+                progressStore.save(progress)
+            } else {
+                progressStore.clear()
+            }
+        }
+    }
+    /// Saved progress whose HealthKit session couldn't be recovered (e.g. the app was
+    /// force-quit). The user can resume it in a new session or discard it.
+    private(set) var interruptedProgress: WorkoutProgress?
     /// Exercises captured when the workout ended; these are what get sent to the phone.
     private(set) var exercisesToSave: [PerformedExercise] = []
 
@@ -46,8 +60,12 @@ class WorkoutManager: NSObject {
     private(set) var averageHeartRate: Double = 0
 
     // MARK: - Initializers
-    init(phoneCommunicator: any PhoneCommunicatorProtocol = PhoneCommunicator()) {
+    init(
+        phoneCommunicator: any PhoneCommunicatorProtocol = PhoneCommunicator(),
+        progressStore: any WorkoutProgressStoring = FileWorkoutProgressStore()
+    ) {
         self.phoneCommunicator = phoneCommunicator
+        self.progressStore = progressStore
         super.init()
         subscribeToTemplates()
     }
@@ -192,7 +210,7 @@ class WorkoutManager: NSObject {
         case .starting, .active, .saving, .finished, .saveFailed:
             return
         }
-        guard session == nil else { return }
+        guard session == nil, !isRecovering else { return }
         if let progress, progress.template.id != template.id { return }
 
         lifecycle = .starting
@@ -299,6 +317,7 @@ class WorkoutManager: NSObject {
 
         workout = savedWorkout
         sendWorkoutSession(workout: savedWorkout, endDate: endDate)
+        progressStore.clear() // sent (or nothing to send); don't offer it for recovery
         lifecycle = didSave ? .finished : .saveFailed(message: "This workout couldn't be saved to Apple Health.")
     }
 
@@ -334,13 +353,84 @@ class WorkoutManager: NSObject {
 extension WorkoutManager {
     /// A manager with an in-progress workout and no HealthKit session, for previews.
     static func preview(progress: WorkoutProgress?) -> WorkoutManager {
-        let workoutManager = WorkoutManager(phoneCommunicator: MockedPhoneCommunicator())
+        let workoutManager = WorkoutManager(
+            phoneCommunicator: MockedPhoneCommunicator(),
+            progressStore: InMemoryWorkoutProgressStore()
+        )
         workoutManager.progress = progress
         workoutManager.lifecycle = progress == nil ? .idle : .active
         return workoutManager
     }
 }
 #endif
+
+// MARK: - Recovery
+extension WorkoutManager {
+
+    /// Called at launch: tries to recover a session only if progress was saved.
+    func recoverActiveWorkoutIfNeeded() async {
+        guard progressStore.load() != nil else { return }
+        await recoverActiveWorkout()
+    }
+
+    /// Re-attaches to a workout session that survived an app crash and restores the
+    /// logged progress. If no session is left (e.g. after a force-quit) but progress
+    /// was saved, it is offered through `interruptedProgress` instead.
+    func recoverActiveWorkout() async {
+        guard lifecycle == .idle, session == nil, !isRecovering else { return }
+        isRecovering = true
+        defer { isRecovering = false }
+
+        let savedProgress = progressStore.load()
+        let recoveredSession: HKWorkoutSession?
+        do {
+            recoveredSession = try await healthStore.recoverActiveWorkoutSession()
+        } catch {
+            logger.error("Error recovering workout session: \(error.localizedDescription)")
+            recoveredSession = nil
+        }
+
+        guard let recoveredSession else {
+            interruptedProgress = savedProgress
+            return
+        }
+
+        logger.info("Recovered workout session in state \(recoveredSession.state.rawValue)")
+        let recoveredBuilder = recoveredSession.associatedWorkoutBuilder()
+        recoveredBuilder.dataSource = HKLiveWorkoutDataSource(
+            healthStore: healthStore,
+            workoutConfiguration: recoveredSession.workoutConfiguration
+        )
+        attach(session: recoveredSession, builder: recoveredBuilder)
+        interruptedProgress = nil
+        progress = savedProgress
+        running = recoveredSession.state == .running
+        lifecycle = .active
+
+        let canContinue = recoveredSession.state == .running || recoveredSession.state == .paused
+        if savedProgress == nil || !canContinue {
+            endWorkout() // nothing to continue; save what HealthKit recorded
+        }
+    }
+
+    /// Continues an interrupted workout. `WorkoutsFlowCoordinator` then shows
+    /// `ActiveWorkoutView`, whose `.task` starts a new session with this progress.
+    func resumeInterruptedWorkout(_ interrupted: WorkoutProgress) {
+        guard lifecycle == .idle, session == nil else { return }
+        interruptedProgress = nil
+        progress = interrupted
+    }
+
+    func discardInterruptedWorkout() {
+        interruptedProgress = nil
+        progressStore.clear()
+    }
+
+    /// Hides the prompt but keeps the saved progress, so it is offered again next launch.
+    func dismissInterruptedWorkoutPrompt() {
+        interruptedProgress = nil
+    }
+}
 
 // MARK: - Session State
 extension WorkoutManager {

@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import WatchKit
 
 @main
 struct WatchWorkoutApp_Watch_AppApp: App {
 
     // MARK: - Properties
-    @State private var workoutManager = WorkoutManager()
+    @WKApplicationDelegateAdaptor private var appDelegate: WatchAppDelegate
+
+    private var workoutManager: WorkoutManager {
+        appDelegate.workoutManager
+    }
 
     // MARK: - Body
     var body: some Scene {

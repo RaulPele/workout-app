@@ -134,6 +134,8 @@
 		BB0000012E00000000A00004 /* ExercisePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00003 /* ExercisePhase.swift */; };
 		BB0000012E00000000A00007 /* WorkoutLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00006 /* WorkoutLifecycle.swift */; };
 		BB0000012E00000000A00009 /* WorkoutStartErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A00008 /* WorkoutStartErrorView.swift */; };
+		BB0000012E00000000A0000B /* WorkoutProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A0000A /* WorkoutProgressStore.swift */; };
+		BB0000012E00000000A0000D /* WatchAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000012E00000000A0000C /* WatchAppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -266,6 +268,8 @@
 		BB0000012E00000000A00003 /* ExercisePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisePhase.swift; sourceTree = "<group>"; };
 		BB0000012E00000000A00006 /* WorkoutLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutLifecycle.swift; sourceTree = "<group>"; };
 		BB0000012E00000000A00008 /* WorkoutStartErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStartErrorView.swift; sourceTree = "<group>"; };
+		BB0000012E00000000A0000A /* WorkoutProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutProgressStore.swift; sourceTree = "<group>"; };
+		BB0000012E00000000A0000C /* WatchAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAppDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -302,6 +306,7 @@
 		BB0000012E00000000A00005 /* Workout */ = {
 			isa = PBXGroup;
 			children = (
+				BB0000012E00000000A0000A /* WorkoutProgressStore.swift */,
 				BB0000012E00000000A00006 /* WorkoutLifecycle.swift */,
 				BB0000012E00000000A00001 /* WorkoutProgress.swift */,
 				BB0000012E00000000A00003 /* ExercisePhase.swift */,
@@ -458,6 +463,7 @@
 		DEAF7F382A0D353200682ACD /* WatchWorkoutApp Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				BB0000012E00000000A0000C /* WatchAppDelegate.swift */,
 				BB0000012E00000000A00005 /* Workout */,
 				DE3D0A4B2A0D511400EF23CB /* WorkoutManager.swift */,
 				DE3D0A512A0D66ED00EF23CB /* Views */,
@@ -800,6 +806,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB0000012E00000000A0000D /* WatchAppDelegate.swift in Sources */,
+				BB0000012E00000000A0000B /* WorkoutProgressStore.swift in Sources */,
 				BB0000012E00000000A00009 /* WorkoutStartErrorView.swift in Sources */,
 				BB0000012E00000000A00007 /* WorkoutLifecycle.swift in Sources */,
 				BB0000012E00000000A00002 /* WorkoutProgress.swift in Sources */,

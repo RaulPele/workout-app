@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import HealthKit
 import WatchKit
 
 struct WorkoutsListView: View {
@@ -42,6 +41,32 @@ struct WorkoutsListView: View {
         .task {
             await workoutManager.loadWorkoutTemplates()
         }
+        .alert(
+            "Unfinished Workout",
+            isPresented: interruptedWorkoutBinding,
+            presenting: workoutManager.interruptedProgress
+        ) { interrupted in
+            Button("Resume") {
+                workoutManager.resumeInterruptedWorkout(interrupted)
+            }
+            Button("Discard", role: .destructive) {
+                workoutManager.discardInterruptedWorkout()
+            }
+        } message: { interrupted in
+            Text("\(interrupted.template.name) has \(interrupted.loggedSetCount) logged sets from before the app closed.")
+        }
+    }
+
+    // MARK: - Private Properties
+    private var interruptedWorkoutBinding: Binding<Bool> {
+        Binding(
+            get: { workoutManager.interruptedProgress != nil },
+            set: { isPresented in
+                if !isPresented {
+                    workoutManager.dismissInterruptedWorkoutPrompt()
+                }
+            }
+        )
     }
 }
 
@@ -116,28 +141,16 @@ private struct ErrorStateView: View {
     }
 }
 
-// MARK: - HKWorkoutActivityType + Identifiable
-extension HKWorkoutActivityType: Identifiable { //TODO: fix the warning here
-    public var id: UInt {
-        rawValue
-    }
-
-    var name: String {
-        switch self {
-        case .traditionalStrengthTraining:
-            return "Traditional Strength Training"
-
-        default:
-            return ""
-        }
-    }
-}
-
 #if DEBUG
 #Preview("With Templates") {
     NavigationStack {
         WorkoutsListView()
-            .environment(WorkoutManager(phoneCommunicator: MockedPhoneCommunicator()))
+            .environment(
+                WorkoutManager(
+                    phoneCommunicator: MockedPhoneCommunicator(),
+                    progressStore: InMemoryWorkoutProgressStore()
+                )
+            )
     }
 }
 #endif
