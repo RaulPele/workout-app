@@ -21,7 +21,7 @@ xcodebuild -project WorkoutApp/WorkoutApp.xcodeproj -scheme WorkoutApp -configur
 xcodebuild -project WorkoutApp/WorkoutApp.xcodeproj -scheme "WatchWorkoutApp Watch App" -configuration Debug build
 ```
 
-There are no test targets, linters, or CI pipelines configured.
+There are no unit test targets, linters, or CI pipelines configured. On-device UI tests live in `DeviceTests/`, a separate Xcode project. To verify a branch's fixes on the real iPhone and Apple Watch, run `DeviceTests/run-device-tests.sh <suite> --app <checkout>`. Read `DeviceTests/README.md` first: it covers the prerequisites and the suites.
 
 ## Architecture
 
