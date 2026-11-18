@@ -59,7 +59,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DEAF7F362A0D353200682ACD"
             BuildableName = "WatchWorkoutApp Watch App.app"
-            BlueprintName = "WatchWorkoutApp Watch App"
             ReferencedContainer = "container:WorkoutApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -76,7 +75,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DEAF7F362A0D353200682ACD"
             BuildableName = "WatchWorkoutApp Watch App.app"
-            BlueprintName = "WatchWorkoutApp Watch App"
             ReferencedContainer = "container:WorkoutApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
