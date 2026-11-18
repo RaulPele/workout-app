@@ -31,7 +31,7 @@ There are no test targets, linters, or CI pipelines configured.
 
 - **Coordinators** manage navigation flows using `NavigationStack(path:)`. `RootCoordinator` → `MainCoordinator` (tabs) → per-tab `NavigationManager` instances.
 - **ViewModels** use `@Observable` (never `ObservableObject`) and hold business logic for views. Combine publishers (`CurrentValueSubject`, `AnyPublisher`) handle reactive data flow.
-- **Repositories** are protocol-based abstractions over data sources. `WorkoutLocalRepository` uses SwiftData; `WorkoutSessionAPIRepository` uses HealthKit. Mock implementations exist for previews/testing.
+- **Repositories** are protocol-based abstractions over data sources. `WorkoutLocalRepository` and `WorkoutSessionAPIRepository` both use SwiftData (sessions are stored locally; HealthKit records the workouts). Mock implementations exist for previews/testing.
 - **DTOs** (`WorkoutDTO`, `ExerciseDTO`) are `@Model` classes for SwiftData persistence. `SwiftDataConvertible` and `DomainConvertible` protocols handle domain↔DTO conversion.
 
 ### Dependency Injection
