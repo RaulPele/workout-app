@@ -53,7 +53,7 @@ final class HistoryViewModel {
             try await workoutRepository.loadData()
             loadErrorMessage = nil
         } catch {
-            loadErrorMessage = "Your sessions couldn't be loaded from Apple Health."
+            loadErrorMessage = "Your sessions couldn't be loaded."
         }
         hasLoaded = true
     }

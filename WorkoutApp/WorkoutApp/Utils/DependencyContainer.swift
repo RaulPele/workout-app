@@ -35,7 +35,7 @@ struct DependencyContainer: DependencyContainerProtocol {
 
     static func live() -> DependencyContainer {
         let healthKitManager = HealthKitManager()
-        let workoutRepository = WorkoutSessionAPIRepository(healthKitManager: healthKitManager)
+        let workoutRepository = WorkoutSessionAPIRepository()
         let exerciseRepository = ExerciseRepository()
         let workoutTemplateRepository = WorkoutLocalRepository()
         let watchCommunicator = WatchCommunicator(
