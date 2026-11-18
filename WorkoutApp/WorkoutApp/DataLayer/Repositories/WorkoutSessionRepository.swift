@@ -34,7 +34,6 @@ extension WorkoutSession: SwiftDataConvertible {
 class WorkoutSessionAPIRepository: WorkoutSessionRepository {
 
     // MARK: - Properties
-    private let healthKitManager: any HealthKitManagerProtocol
     private let localDataSource = SwiftDataDataSource<WorkoutSession>()
     private let sessionsSubject = CurrentValueSubject<[WorkoutSession], Never>([])
 
@@ -47,19 +46,12 @@ class WorkoutSessionAPIRepository: WorkoutSessionRepository {
         sessionsSubject.eraseToAnyPublisher()
     }
 
-    // MARK: - Initializers
-    init(healthKitManager: any HealthKitManagerProtocol) {
-        self.healthKitManager = healthKitManager
-    }
-
     // MARK: - Public Methods
+    /// Publishes every stored session. SwiftData is the source of truth: sessions arrive
+    /// from the watch before HealthKit has synced the matching workout to the phone, so
+    /// gating on HealthKit would hide a just-finished workout.
     func loadData() async throws {
-        let hkWorkouts = try await healthKitManager.loadWorkouts()
-        let hkWorkoutIDs = Set(hkWorkouts.map(\.uuid))
-
-        let allSessions: [WorkoutSession] = try await localDataSource.fetchAll()
-        let sessions = allSessions.filter { hkWorkoutIDs.contains($0.id) }
-
+        let sessions: [WorkoutSession] = try await localDataSource.fetchAll()
         sessionsSubject.send(sessions)
     }
 

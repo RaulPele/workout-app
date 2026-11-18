@@ -212,7 +212,10 @@ class WorkoutManager: NSObject {
 
             self.workout = workout
 
-            workoutSession?.id = workout?.uuid ?? .init()
+            // Link the session to its HealthKit workout; keep the original id if there isn't one.
+            if let workoutUUID = workout?.uuid {
+                workoutSession?.id = workoutUUID
+            }
             workoutSession?.activeCalories = workout?.activeEnergyBurned
             workoutSession?.averageHeartRate = workout?.averageHeartRate
             workoutSession?.totalCalories = workout?.totalCalories

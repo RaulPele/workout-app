@@ -87,6 +87,7 @@
 		DEA431C629D8936200DFA6E4 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C529D8936200DFA6E4 /* RoundedButton.swift */; };
 		DEA431C829D8B7C600DFA6E4 /* RoundedButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */; };
 		DEA6064D2A1DF8E50061BF9A /* WatchCommunicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6064C2A1DF8E50061BF9A /* WatchCommunicator.swift */; };
+		377688F6144F4A13986670A1 /* WorkoutSessionInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC80BF3DD39C4FD4BA07ABB0 /* WorkoutSessionInbox.swift */; };
 		DEAF7F3A2A0D353200682ACD /* WatchWorkoutAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAF7F392A0D353200682ACD /* WatchWorkoutAppApp.swift */; };
 		DEAF7F3E2A0D353400682ACD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEAF7F3D2A0D353400682ACD /* Assets.xcassets */; };
 		DEAF7F412A0D353400682ACD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DEAF7F402A0D353400682ACD /* Preview Assets.xcassets */; };
@@ -217,6 +218,7 @@
 		DEA431C529D8936200DFA6E4 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
 		DEA431C729D8B7C600DFA6E4 /* RoundedButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButtonStyle.swift; sourceTree = "<group>"; };
 		DEA6064C2A1DF8E50061BF9A /* WatchCommunicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCommunicator.swift; sourceTree = "<group>"; };
+		FC80BF3DD39C4FD4BA07ABB0 /* WorkoutSessionInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSessionInbox.swift; sourceTree = "<group>"; };
 		DEAF7F372A0D353200682ACD /* WatchWorkoutApp Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WatchWorkoutApp Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEAF7F392A0D353200682ACD /* WatchWorkoutAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkoutAppApp.swift; sourceTree = "<group>"; };
 		DEAF7F3D2A0D353400682ACD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -594,6 +596,7 @@
 			children = (
 				DE1052482A06AF9800399C2B /* HealthKitManager.swift */,
 				DEA6064C2A1DF8E50061BF9A /* WatchCommunicator.swift */,
+				FC80BF3DD39C4FD4BA07ABB0 /* WorkoutSessionInbox.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -834,6 +837,7 @@
 				DEDFC2F82A0B834700E736E0 /* HealthKitAuthorizationViewModel.swift in Sources */,
 				DEF951AD2A27E12300D80381 /* EditView.swift in Sources */,
 				DEA6064D2A1DF8E50061BF9A /* WatchCommunicator.swift in Sources */,
+				377688F6144F4A13986670A1 /* WorkoutSessionInbox.swift in Sources */,
 				DE012DE32A0146CC0071601B /* Color + Extensions.swift in Sources */,
 				DE4D0A122A3864BA00A9DFC5 /* OnboardingView.swift in Sources */,
 				DEF9519D2A24E7FC00D80381 /* WorkoutTemplatesListViewModel.swift in Sources */,

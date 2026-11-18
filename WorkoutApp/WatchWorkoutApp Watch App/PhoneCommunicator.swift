@@ -94,6 +94,16 @@ class PhoneCommunicator: NSObject, WCSessionDelegate, PhoneCommunicatorProtocol 
         }
     }
 
+    func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
+        // Transfers wait in the system queue until the phone is available, so an error here
+        // is a permanent failure rather than a connectivity blip; surface it in the logs.
+        if let error {
+            logger.error("Workout session transfer failed: \(error.localizedDescription)")
+        } else {
+            logger.info("Workout session transfer delivered to phone")
+        }
+    }
+
     func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
         logger.info("Received application context from phone")
         do {
